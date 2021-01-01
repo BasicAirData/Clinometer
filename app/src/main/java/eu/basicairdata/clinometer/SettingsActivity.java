@@ -139,8 +139,10 @@ public class SettingsActivity extends AppCompatActivity {
 //                preferenceCalibration.setSummary(getResources().getString(R.string.pref_calibration_summary_calibrated)
 //                        + String.format(" (%1.2f°; %1.2f°; %1.2f°)", preferences.getFloat("prefCalibrationAngle0", 0),
 //                        preferences.getFloat("prefCalibrationAngle1", 0), preferences.getFloat("prefCalibrationAngle2", 0)));
+                preferenceResetCalibration.setEnabled(true);
             } else {
                 preferenceCalibration.setSummary(getResources().getString(R.string.pref_calibration_summary_notcalibrated));
+                preferenceResetCalibration.setEnabled(false);
             }
         }
     }
