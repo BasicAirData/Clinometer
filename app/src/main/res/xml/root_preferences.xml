@@ -1,0 +1,131 @@
+<!--
+  ~ root_preferences.xml
+  ~ Created by G.Capelli (BasicAirData) on 2/6/2020
+  ~
+  ~ This file is part of BasicAirData Spirit Level for Android.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<PreferenceCategory app:title="@string/messages_header">-->
+    <PreferenceCategory
+        android:title="@string/pref_category_calibration">
+
+        <Preference
+            app:key="prefCalibration"
+            app:title="@string/pref_calibration"
+            app:summary="@string/pref_calibration_summary_notcalibrated"
+            app:defaultValue="false"
+            app:icon="@drawable/ic_calibration_white_24dp">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="eu.basicairdata.spiritlevel"
+                android:targetClass="eu.basicairdata.spiritlevel.CalibrationActivity" />
+        </Preference>
+
+        <Preference
+            app:key="prefResetCalibration"
+            app:title="@string/pref_calibration_reset"
+            app:summary="@string/pref_calibration_reset_summary"
+            app:defaultValue="false">
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_category_autolocking">
+
+        <SwitchPreferenceCompat
+            app:key="prefAutoLock"
+            app:title="@string/pref_autolocking"
+            app:summary="@string/pref_autolocking_summary"
+            app:defaultValue="false"
+            app:icon="@drawable/ic_lock_open_white_24dp"/>
+
+        <SwitchPreferenceCompat
+            app:key="prefAutoLockHorizonCheck"
+            app:dependency="prefAutoLock"
+            app:title="@string/pref_autolocking_horizon"
+            app:summary="@string/pref_autolocking_horizon_summary"
+            app:defaultValue="true"/>
+
+        <SeekBarPreference
+            app:key="prefAutoLockPrecision"
+            app:dependency="prefAutoLock"
+            app:title="@string/pref_autolocking_precision"
+            android:max="1000"
+            app:defaultValue="500"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_category_info">
+
+        <Preference
+            app:key="prefAbout"
+            app:title="@string/pref_about"
+            app:summary="@string/pref_about_summary"
+            app:defaultValue="false"
+            app:icon="@drawable/ic_info_white_24dp"/>
+
+    </PreferenceCategory>
+    <!--</PreferenceCategory>
+
+    <PreferenceCategory
+    android:title="@string/titleEtcSetup">
+    <Preference
+        android:key="renameCourses"
+        android:title="@string/titleRenameCourses"
+        android:summary="@string/textRenameDisplayedCoursesNames">
+        <intent
+             android:action="android.intent.action.VIEW"
+             android:targetPackage="my.notifier.ui"
+             android:targetClass="my.notifier.ui.EditCoursesNamesActivity" />
+    </Preference>
+.....
+</PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <ListPreference
+            app:key="prefCalibration"
+            app:title="@string/pref_calibration"
+            app:defaultValue="0"
+            app:icon="@drawable/ic_calibration_white_24dp"
+            app:entries="@array/calibration_entries"
+            app:entryValues="@array/calibration_values"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="prefCalibration"
+            app:title="@string/signature_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/sync_title" />
+
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="@string/attachment_title" />
+
+    </PreferenceCategory>-->
+
+</PreferenceScreen>

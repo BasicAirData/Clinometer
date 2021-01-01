@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ spiritlevel_activity.xml
+  ~ Created by G.Capelli (BasicAirData) on 21/5/2020
+  ~
+  ~ This file is part of BasicAirData Spirit Level for Android.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/id_framelayout_spiritlevel"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SpiritLevelActivity">
+
+
+    <eu.basicairdata.spiritlevel.SpiritView
+        android:id="@+id/id_spiritview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/id_linearlayout_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="3dp"
+        android:gravity="top">
+
+        <LinearLayout
+            android:id="@+id/id_linearlayout_angles"
+            android:background="@drawable/rounded_corner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/id_imageview_lock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginEnd="3dp"
+            android:src="@drawable/ic_lock_open_white_24dp">
+        </androidx.appcompat.widget.AppCompatImageView>
+
+        <TextView
+            android:id="@+id/id_textview_angles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:paddingStart="0dp"
+            android:textColor="@color/colorAccent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="">
+        </TextView>
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/id_imageview_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/ic_more_white_24dp">
+        </androidx.appcompat.widget.AppCompatImageView>
+
+    </LinearLayout>
+
+</FrameLayout>

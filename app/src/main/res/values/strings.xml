@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli (BasicAirData) on 21/5/2020
+  ~
+  ~ This file is part of BasicAirData Spirit Level for Android.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<resources>
+    <string name="app_name">Spirit Level</string>
+
+    <!-- Preferences -->
+    <string name="Settings">Settings</string>
+
+    <string name="pref_category_calibration">CALIBRATION</string>
+    <string name="pref_calibration">Calibration</string>
+    <string name="pref_calibration_summary_notcalibrated">Not calibrated</string>
+    <string name="pref_calibration_summary_calibrated">Calibrated</string>
+    <string name="pref_calibration_reset">Reset</string>
+    <string name="pref_calibration_reset_summary">Clear the calibration</string>
+
+    <string name="pref_category_autolocking">AUTO LOCKING</string>
+    <string name="pref_autolocking">Auto Locking</string>
+    <string name="pref_autolocking_summary">locks measurement when steady</string>
+    <string name="pref_autolocking_horizon">Horizon Alignment</string>
+    <string name="pref_autolocking_horizon_summary">for vertical measurements</string>
+    <string name="pref_autolocking_precision">Precision</string>
+
+    <string name="pref_category_info">INFO</string>
+    <string name="pref_about">Info</string>
+    <string name="pref_about_summary">about the app</string>
+
+    <!-- About Dialog -->
+    <string name="about_version">ver.</string>
+    <string name="about_description_googleplaystore">Copyright (C) 2020 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData Spirit Level measures the inclination angles relative to the ground using the onboard Accelerometers.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt\n\nIf You enjoy using this app, please take a moment to rate Spirit Level in the Google Store.</string>
+    <string name="about_ok">Close</string>
+    <string name="about_rate_this_app">Rate this App</string>
+    <string name="about_unable_to_rate">Unable to reach the Store</string>
+    <string name="title_activity_calibration">Calibration</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="calibration_active_calibration">Calibration active:</string>
+    <string name="calibration_active_calibration_gains">Gains</string>
+    <string name="calibration_active_calibration_offsets">Offsets</string>
+    <string name="calibration_active_calibration_angles">Angles</string>
+    <string name="calibration_step1">Step 1 of 7\nLay flat and press next</string>
+    <string name="calibration_step2">Step 2 of 7\nRotate 180° and press next</string>
+    <string name="calibration_step3">Step 3 of 7\nLay on the left side and press next</string>
+    <string name="calibration_step4">Step 4 of 7\nRotate 180° and press next</string>
+    <string name="calibration_step5">Step 5 of 7\nLay vertical and press next</string>
+    <string name="calibration_step6">Step 6 of 7\nRotate 180° upside-down and press next</string>
+    <string name="calibration_step7">Step 7 of 7\nPress next and lay face down</string>
+    <string name="calibration_calibrating">Calibrating...\nDon\'t move the device</string>
+
+    <string name="next">Next >></string>
+    <string name="previous">Previous</string>
+
+
+    <!-- Dialogs -->
+    <string name="reset_calibration_confirmation">Do you want to reset the current calibration?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ colors.xml
+  ~ Created by G.Capelli (BasicAirData) on 21/5/2020
+  ~
+  ~ This file is part of BasicAirData Spirit Level for Android.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<resources>
+    <color name="colorPrimary">#3a3a3a</color>
+    <color name="colorPrimaryDark">#00000000</color>
+    <color name="colorAccent">#FFDD11</color>
+
+    <color name="bghorizon">#1AFFDD11</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <color name="bgpaint_light">#3a3a3a</color>
+    <color name="bgpaint_dark">#070707</color>
+    <color name="line_white">#dddddd</color>
+    <color name="line_light">#777777</color>
+    <color name="line_dark">#4a4a4a</color>
+
+    <color name="colorToolbarBackground">#88000000</color>
+</resources>

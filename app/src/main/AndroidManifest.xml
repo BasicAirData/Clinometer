@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.basicairdata.spiritlevel">
+
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/spiritlevel"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/spiritlevel"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true">
+
+        <activity
+            android:name=".SpiritLevelActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="nosensor"
+            android:resizeableActivity="false"
+            android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/Settings"
+            android:screenOrientation="nosensor"
+            android:theme="@style/MyTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SpiritLevelActivity" />
+        </activity>
+
+        <activity
+            android:name=".CalibrationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_calibration"
+            android:screenOrientation="nosensor"
+            android:theme="@style/MyTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SettingsActivity" />
+        </activity>
+
+    </application>
+
+</manifest>
