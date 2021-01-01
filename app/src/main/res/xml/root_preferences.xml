@@ -30,7 +30,7 @@
             app:title="@string/pref_calibration"
             app:summary="@string/pref_calibration_summary_notcalibrated"
             app:defaultValue="false"
-            app:icon="@drawable/ic_calibration_white_24dp">
+            app:icon="@drawable/ic_calibration_24">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="eu.basicairdata.clinometer"
@@ -54,7 +54,7 @@
             app:title="@string/pref_autolocking"
             app:summary="@string/pref_autolocking_summary"
             app:defaultValue="false"
-            app:icon="@drawable/ic_lock_open_white_24dp"/>
+            app:icon="@drawable/ic_lock_24"/>
 
         <SwitchPreferenceCompat
             app:key="prefAutoLockHorizonCheck"
@@ -80,7 +80,7 @@
             app:title="@string/pref_about"
             app:summary="@string/pref_about_summary"
             app:defaultValue="false"
-            app:icon="@drawable/ic_info_white_24dp"/>
+            app:icon="@drawable/ic_info_24"/>
 
     </PreferenceCategory>
     <!--</PreferenceCategory>

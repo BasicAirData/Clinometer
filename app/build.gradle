@@ -22,6 +22,8 @@ android {
         versionCode 1
         // -----------------------------------------------------------------------------------------
 
+        vectorDrawables.useSupportLibrary = true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

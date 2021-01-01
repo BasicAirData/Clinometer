@@ -414,14 +414,14 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private void UpdateLockIcon() {
         if (isLocked) {
-            mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_white_24dp));
+            mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_24));
             mImageViewLock.setAlpha(0.8f);
         } else {
             if (isLockRequested) {
-                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_white_24dp));
+                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_24));
                 mImageViewLock.setAlpha(0.8f);
             } else {
-                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_white_24dp));
+                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_24));
                 mImageViewLock.setAlpha(0.4f);
             }
         }

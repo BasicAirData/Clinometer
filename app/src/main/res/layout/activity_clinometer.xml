@@ -21,6 +21,7 @@
 -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/id_framelayout_clinometer"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -53,7 +54,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:layout_marginEnd="3dp"
-            android:src="@drawable/ic_lock_open_white_24dp">
+            app:srcCompat="@drawable/ic_lock_open_24">
         </androidx.appcompat.widget.AppCompatImageView>
 
         <TextView
@@ -78,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:src="@drawable/ic_more_white_24dp">
+            app:srcCompat="@drawable/ic_more_24">
         </androidx.appcompat.widget.AppCompatImageView>
 
     </LinearLayout>
