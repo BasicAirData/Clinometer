@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ spiritlevel.xml
+  ~ clinometer.xml
   ~ Created by G.Capelli (BasicAirData) on 1/6/2020
   ~
   ~ This file is part of BasicAirData Spirit Level for Android.
@@ -21,6 +21,6 @@
 -->
 
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/spiritlevel_background"/>
-    <foreground android:drawable="@drawable/spiritlevel_foreground"/>
+    <background android:drawable="@drawable/clinometer_background"/>
+    <foreground android:drawable="@drawable/clinometer_foreground"/>
 </adaptive-icon>

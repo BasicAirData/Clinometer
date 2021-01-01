@@ -2,7 +2,7 @@
  * CalibrationActivity - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 3/6/2020
  *
- * This file is part of BasicAirData Spirit Level for Android.
+ * This file is part of BasicAirData Clinometer for Android.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.basicairdata.spiritlevel;
+package eu.basicairdata.clinometer;
 
 import android.content.Context;
 import android.content.SharedPreferences;

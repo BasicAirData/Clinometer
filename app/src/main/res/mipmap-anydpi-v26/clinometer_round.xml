@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ settings_activity.xml
-  ~ Created by G.Capelli (BasicAirData) on 2/6/2020
+  ~ clinometer_round.xml
+  ~ Created by G.Capelli (BasicAirData) on 1/6/2020
   ~
   ~ This file is part of BasicAirData Spirit Level for Android.
   ~
@@ -20,12 +20,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <FrameLayout
-        android:id="@+id/framelayout_settings"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/clinometer_background"/>
+    <foreground android:drawable="@drawable/clinometer_foreground"/>
+</adaptive-icon>

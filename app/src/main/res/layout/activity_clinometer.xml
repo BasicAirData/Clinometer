@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ spiritlevel_activity.xml
+  ~ activity_clinometer.xml
   ~ Created by G.Capelli (BasicAirData) on 21/5/2020
   ~
-  ~ This file is part of BasicAirData Spirit Level for Android.
+  ~ This file is part of BasicAirData Clinometer for Android.
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SpiritLevelActivity">
+    tools:context=".ClinometerActivity">
 
 
-    <eu.basicairdata.spiritlevel.SpiritView
-        android:id="@+id/id_spiritview"
+    <eu.basicairdata.clinometer.ClinometerView
+        android:id="@+id/id_clinometerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -1,8 +1,8 @@
 /*
- * SpiritLevelActivity - Singleton Java Class for Android
+ * ClinometerActivity - Singleton Java Class for Android
  * Created by G.Capelli (BasicAirData) on 21/5/2020
  *
- * This file is part of BasicAirData Spirit Level for Android.
+ * This file is part of BasicAirData Clinometer for Android.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.basicairdata.spiritlevel;
+package eu.basicairdata.clinometer;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -46,7 +46,7 @@ import android.widget.TextView;
 
 
 
-public class SpiritLevelActivity extends AppCompatActivity implements SensorEventListener {
+public class ClinometerActivity extends AppCompatActivity implements SensorEventListener {
 
     ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
     private Vibrator vibrator;
@@ -70,12 +70,12 @@ public class SpiritLevelActivity extends AppCompatActivity implements SensorEven
     public float DisplayRotation = 0;                   // The rotation angle from the natural position of the device
 
     // Singleton instance
-    private static SpiritLevelActivity singleton;
-    public static SpiritLevelActivity getInstance(){
+    private static ClinometerActivity singleton;
+    public static ClinometerActivity getInstance(){
         return singleton;
     }
 
-    private SpiritView mSpiritView;
+    private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
     private FrameLayout mFrameLayoutSpiritLevel;
     private LinearLayout mLinearLayoutOverlays;
@@ -127,9 +127,9 @@ public class SpiritLevelActivity extends AppCompatActivity implements SensorEven
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        setContentView(R.layout.spiritlevel_activity);
+        setContentView(R.layout.activity_clinometer);
 
-        mSpiritView = findViewById(R.id.id_spiritview);
+        mClinometerView = findViewById(R.id.id_clinometerview);
         mTextViewAngles = findViewById(R.id.id_textview_angles);
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
@@ -200,7 +200,7 @@ public class SpiritLevelActivity extends AppCompatActivity implements SensorEven
 
         LoadPreferences();
 
-        mSpiritView.setSystemUiVisibility(
+        mClinometerView.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
                 // Set the content to appear under the system bars so that the
                 // content doesn't resize when the system bars hide and show.
@@ -240,7 +240,7 @@ public class SpiritLevelActivity extends AppCompatActivity implements SensorEven
                 if (!prefAutoLock) {
                     isLockRequested = false;
                     isLocked = true;
-                    mSpiritView.invalidate();
+                    mClinometerView.invalidate();
                     UpdateLockIcon();
                     Beep();
                 } else if ((MVAngle0.getTolerance() < prefAutoLockTolerance)
@@ -283,7 +283,7 @@ public class SpiritLevelActivity extends AppCompatActivity implements SensorEven
 
                     isLockRequested = false;
                     isLocked = true;
-                    mSpiritView.invalidate();
+                    mClinometerView.invalidate();
                     UpdateLockIcon();
                     Beep();
 
@@ -396,7 +396,7 @@ public class SpiritLevelActivity extends AppCompatActivity implements SensorEven
 
                 // Apply Changes
 
-                mSpiritView.invalidate();
+                mClinometerView.invalidate();
             }
 
             // You must put this setText here in order to force the re-layout also during the rotations.

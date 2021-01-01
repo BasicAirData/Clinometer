@@ -1,8 +1,8 @@
 /*
- * SpiritView - Java Class for Android
+ * ClinometerView - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 21/5/2020
  *
- * This file is part of BasicAirData Spirit Level for Android.
+ * This file is part of BasicAirData Clinometer for Android.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  */
 
 
-package eu.basicairdata.spiritlevel;
+package eu.basicairdata.clinometer;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,7 +33,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class SpiritView extends View {
+public class ClinometerView extends View {
 
     private static final float TEXT_ALIGNMENT_LEFT = 0.0f;
     private static final float TEXT_ALIGNMENT_CENTER = 0.5f;
@@ -47,7 +47,7 @@ public class SpiritView extends View {
 
     private static final float N_CIRCLES_FULLY_VISIBLE = 4.5f;
 
-    SpiritLevelActivity SVActivity = SpiritLevelActivity.getInstance();
+    ClinometerActivity SVActivity = ClinometerActivity.getInstance();
 
     private Paint paint_bg;                 // For Background Gradient
     private Paint paint_LTGray;             // For Background Lines 30° + Circles
@@ -93,21 +93,21 @@ public class SpiritView extends View {
     private boolean isShaderCreated = false;                    // True if the Background Shader has been created
 
 
-    public SpiritView(Context context, AttributeSet attrs) {
+    public ClinometerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         CreatePaints();
 
     }
 
 
-    public SpiritView(Context context, AttributeSet attrs, int defStyle) {
+    public ClinometerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         CreatePaints();
 
     }
 
 
-    public SpiritView(Context context) {
+    public ClinometerView(Context context) {
         super(context);
         CreatePaints();
 

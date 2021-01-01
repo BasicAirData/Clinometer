@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="eu.basicairdata.spiritlevel">
+    package="eu.basicairdata.clinometer">
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -10,15 +10,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/spiritlevel"
+        android:icon="@mipmap/clinometer"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/spiritlevel"
+        android:roundIcon="@mipmap/clinometer"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true">
 
         <activity
-            android:name=".SpiritLevelActivity"
+            android:name=".ClinometerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask"
@@ -38,7 +38,7 @@
             android:theme="@style/MyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SpiritLevelActivity" />
+                android:value=".ClinometerActivity" />
         </activity>
 
         <activity

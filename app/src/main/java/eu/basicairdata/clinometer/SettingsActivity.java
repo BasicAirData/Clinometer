@@ -2,7 +2,7 @@
  * SettingsActivity - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 2/6/2020
  *
- * This file is part of BasicAirData Spirit Level for Android.
+ * This file is part of BasicAirData Clinometer for Android.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.basicairdata.spiritlevel;
+package eu.basicairdata.clinometer;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -44,7 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
-        setContentView(R.layout.settings_activity);
+        setContentView(R.layout.activity_settings);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.framelayout_settings, new SettingsFragment())

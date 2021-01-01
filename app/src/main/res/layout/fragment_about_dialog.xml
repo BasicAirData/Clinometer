@@ -4,7 +4,7 @@
   ~ fragment_about_dialog.xml
   ~ Created by G.Capelli (BasicAirData) on 2/6/2020
   ~
-  ~ This file is part of BasicAirData Spirit Level for Android.
+  ~ This file is part of BasicAirData Clinometer for Android.
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/id_about_imageView_icon"
-            android:src="@mipmap/spiritlevel"
+            android:src="@mipmap/clinometer"
             android:layout_gravity="center_horizontal" />
 
         <TextView
