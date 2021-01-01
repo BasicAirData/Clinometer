@@ -77,7 +77,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
-    private FrameLayout mFrameLayoutSpiritLevel;
+    private FrameLayout mFrameLayoutClinometer;
     private LinearLayout mLinearLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
     private ImageView mImageViewLock;
@@ -133,7 +133,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mTextViewAngles = findViewById(R.id.id_textview_angles);
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
-        mFrameLayoutSpiritLevel = findViewById(R.id.id_framelayout_spiritlevel);
+        mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
         mLinearLayoutOverlays = findViewById(R.id.id_linearlayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
 
