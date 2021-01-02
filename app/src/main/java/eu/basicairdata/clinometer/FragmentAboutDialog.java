@@ -26,21 +26,29 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 public class FragmentAboutDialog extends DialogFragment {
 
+    public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
+    public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;  // The app is installed via the Google Play Store
+
+    private int appOrigin = APP_ORIGIN_NOT_SPECIFIED;       // Which package manager is used to install this app
+
     TextView tvVersion;
     TextView tvDescription;
 
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -51,40 +59,60 @@ public class FragmentAboutDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_about_dialog, null);
 
-        tvVersion = (TextView) view.findViewById(R.id.id_about_textView_Version);
+        tvVersion = view.findViewById(R.id.id_about_textView_Version);
         String versionName = BuildConfig.VERSION_NAME;
         tvVersion.setText(getString(R.string.about_version) + " " + versionName);
 
-        tvDescription = (TextView) view.findViewById(R.id.id_about_textView_description);
+        tvDescription = view.findViewById(R.id.id_about_textView_description);
 
-        tvDescription.setText(getString(R.string.about_description_googleplaystore));
+
+        try {                                                                           // Determine the app installation source
+            String installer;
+            installer = getActivity().getApplicationContext().getPackageManager().getInstallerPackageName(getActivity().getApplicationContext().getPackageName());
+            if (installer.equals("com.android.vending") || installer.equals("com.google.android.feedback"))
+                appOrigin = APP_ORIGIN_GOOGLE_PLAY_STORE;                               // App installed from Google Play Store
+            else appOrigin = APP_ORIGIN_NOT_SPECIFIED;                                  // Otherwise
+        } catch (Exception e) {
+            Log.w("myApp", "[#] GPSApplication.java - Exception trying to determine the package installer");
+            appOrigin = APP_ORIGIN_NOT_SPECIFIED;
+        }
+
+        switch (appOrigin) {
+            case APP_ORIGIN_NOT_SPECIFIED:
+                tvDescription.setText(getString(R.string.about_description));
+                break;
+            case APP_ORIGIN_GOOGLE_PLAY_STORE:
+                tvDescription.setText(getString(R.string.about_description) + "\n\n" + getString(R.string.about_description_googleplaystore));
+
+                createAboutAlert.setView(view).setNegativeButton(R.string.about_rate_this_app, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        boolean marketfailed = false;
+                        try {
+                            getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
+                        } catch (Throwable e) {
+                            // Unable to start the Google Play app for rating
+                            marketfailed = true;
+                        }
+                        if (marketfailed) {
+                            try {               // Try with the web browser
+                                getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
+                            } catch (Throwable e) {
+                                // Unable to start also the browser for rating
+                                Toast.makeText(getContext(), getString(R.string.about_unable_to_rate), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+
+                break;
+        }
 
         createAboutAlert.setView(view).setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {}
         });
 
-
-        createAboutAlert.setView(view).setNegativeButton(R.string.about_rate_this_app, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                boolean marketfailed = false;
-                try {
-                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
-                } catch (Throwable e) {
-                    // Unable to start the Google Play app for rating
-                    marketfailed = true;
-                }
-                if (marketfailed) {
-                    try {               // Try with the web browser
-                        getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
-                    } catch (Throwable e) {
-                        // Unable to start also the browser for rating
-                        Toast.makeText(getContext(), getString(R.string.about_unable_to_rate), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
         return createAboutAlert.create();
     }
 
