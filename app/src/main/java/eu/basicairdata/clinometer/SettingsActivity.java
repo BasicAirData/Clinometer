@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 editor.remove("prefCalibrationTime");
                                 editor.commit();
 
-                                UpdatePreferences();
+                                updatePreferences();
                             }
                         });
                         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -122,11 +122,11 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onResume() {
             super.onResume();
-            UpdatePreferences();
+            updatePreferences();
         }
 
 
-        private void UpdatePreferences() {
+        private void updatePreferences() {
             preferenceCalibration = findPreference("prefCalibration");
 
             SimpleDateFormat dfdt = new SimpleDateFormat("dd LLL yyyy HH:mm");        // date and time formatter for timestamp

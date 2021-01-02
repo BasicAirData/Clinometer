@@ -37,8 +37,9 @@ import androidx.fragment.app.DialogFragment;
 
 public class FragmentAboutDialog extends DialogFragment {
 
-    TextView TVVersion;
-    TextView TVDescription;
+    TextView tvVersion;
+    TextView tvDescription;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -50,13 +51,13 @@ public class FragmentAboutDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_about_dialog, null);
 
-        TVVersion = (TextView) view.findViewById(R.id.id_about_textView_Version);
+        tvVersion = (TextView) view.findViewById(R.id.id_about_textView_Version);
         String versionName = BuildConfig.VERSION_NAME;
-        TVVersion.setText(getString(R.string.about_version) + " " + versionName);
+        tvVersion.setText(getString(R.string.about_version) + " " + versionName);
 
-        TVDescription = (TextView) view.findViewById(R.id.id_about_textView_description);
+        tvDescription = (TextView) view.findViewById(R.id.id_about_textView_description);
 
-        TVDescription.setText(getString(R.string.about_description_googleplaystore));
+        tvDescription.setText(getString(R.string.about_description_googleplaystore));
 
         createAboutAlert.setView(view).setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
             @Override
@@ -84,9 +85,9 @@ public class FragmentAboutDialog extends DialogFragment {
                 }
             }
         });
-
         return createAboutAlert.create();
     }
+
 
     @Override
     public void onStart() {

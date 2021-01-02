@@ -26,128 +26,140 @@ import java.util.Arrays;
 
 public class MeanVariance {
 
-    private float[] Sample;
-    private int CurrentSample = -1;
-    private int Loaded = 0;
+    private float[] sample;
+    private int currentSample = -1;
+    private int loaded = 0;
 
-    private float MeanValue = 0;
-    private float Variance = 0;
-    private float StdDeviation = 0;
-    private float Tolerance = 0;        // Confidence 95%
+    private float meanValue = 0;
+    private float variance = 0;
+    private float stdDeviation = 0;
+    private float tolerance = 0;        // Confidence 95%
+
 
     public MeanVariance(int size) {
-        Sample = new float[size];
+        sample = new float[size];
     }
 
-    public void LoadSample(float sample) {
-        CurrentSample++;
-        if (CurrentSample == Sample.length) {
-            CurrentSample = 0;
+
+    public void loadSample(float sample) {
+        currentSample++;
+        if (currentSample == this.sample.length) {
+            currentSample = 0;
             //Log.d("MeanVariance", (String.format("MeanVariance: Mean=%+1.4f Uncertainty=%+1.4f (Std Deviation=%+1.4f)", MeanValue, Tolerance, StdDeviation)));
         }
 
-        Sample[CurrentSample] = sample;
-        Loaded++;
+        this.sample[currentSample] = sample;
+        loaded++;
 
-        Calculate();
+        calculate();
     }
 
-    public void Reset() {
-        Loaded = 0;
-        CurrentSample = -1;
 
-        MeanValue = 0;
-        Variance = 0;
-        StdDeviation = 0;
-        Tolerance = 0;
+    public void reset() {
+        loaded = 0;
+        currentSample = -1;
 
-        Arrays.fill(Sample, 0);
+        meanValue = 0;
+        variance = 0;
+        stdDeviation = 0;
+        tolerance = 0;
+
+        Arrays.fill(sample, 0);
     }
 
-    public void Reset(float values) {
-        Loaded = 0;
-        CurrentSample = -1;
 
-        Arrays.fill(Sample, values);
-        Calculate();
+    public void reset(float values) {
+        loaded = 0;
+        currentSample = -1;
+
+        Arrays.fill(sample, values);
+        calculate();
     }
 
-    public boolean isLoaded() {
-        return (Loaded >= Sample.length);
+
+    public boolean getLoaded() {
+        return (loaded >= sample.length);
     }
+
 
     public float percentLoaded() {
-        return (Math.min(100 * Loaded / Sample.length, 100));
+        return (Math.min(100 * loaded / sample.length, 100));
     }
+
 
     public boolean isReady() {
-        return (Loaded > 10);
+        return (loaded > 10);
     }
+
 
     public float getMeanValue() {
-        return MeanValue;
+        return meanValue;
     }
+
 
     public float getVariance() {
-        return Variance;
+        return variance;
     }
+
 
     public float getStdDeviation() {
-        return StdDeviation;
+        return stdDeviation;
     }
+
 
     public float getTolerance() {
-        return Tolerance;
+        return tolerance;
     }
 
-    private void Calculate() {
-        int nsamples = Math.min(Sample.length, Loaded);
+
+    private void calculate() {
+        int nsamples = Math.min(sample.length, loaded);
         if (nsamples > 0) {
 
             // ------ Mean value
             double mv = 0;
             for (int i = 0; i < nsamples; i++) {
-                mv += Sample[i];
+                mv += sample[i];
             }
             mv /= nsamples;
-            MeanValue = (float) mv;
+            meanValue = (float) mv;
 
             // ------ Variance
             double var = 0;
             for (int i = 0; i < nsamples; i++) {
-                var += (Sample[i] - mv) * (Sample[i] - mv);
+                var += (sample[i] - mv) * (sample[i] - mv);
             }
-            Variance /= nsamples;
+            variance /= nsamples;
 
             // ------ Standard Deviation
-            StdDeviation = (float) Math.sqrt(var);
+            stdDeviation = (float) Math.sqrt(var);
 
             // ------ Uncertainty (confidence 95%)
-            Tolerance = (float) (1.96d * StdDeviation / Math.sqrt(nsamples));
+            tolerance = (float) (1.96d * stdDeviation / Math.sqrt(nsamples));
         } else {
-            Reset();
+            reset();
         }
     }
 
 
     public float getMeanValue(int number_of_last_samples) {
-        int nsamples = Math.min(Sample.length, Loaded);
-        if (number_of_last_samples <= 0) return MeanValue;
+        int nsamples = Math.min(sample.length, loaded);
+        if (number_of_last_samples <= 0) return meanValue;
         if (number_of_last_samples >= nsamples) return 0;
         if (nsamples > 0) {
             // ------ Mean value
             double mv = 0;
-            int index = (Loaded - number_of_last_samples) % nsamples;
-            Log.d("MeanVariance", ("MeanVariance: Loaded="+ Loaded + " Start=" + index));
+            int index = (loaded - number_of_last_samples) % nsamples;
+            Log.d("MeanVariance", ("MeanVariance: Loaded="+ loaded + " Start=" + index));
 
             for (int i = 0; i < number_of_last_samples; i++) {
-                mv += Sample[index];
+                mv += sample[index];
                 index++;
                 if (index == nsamples) index = 0;
             }
             mv /= number_of_last_samples;
 
-            Log.d("MeanVariance", (String.format("MeanVariance: Mean=%+1.4f Uncertainty=%+1.4f (Std Deviation=%+1.4f)", MeanValue, Tolerance, StdDeviation)));
+            Log.d("MeanVariance", (String.format("MeanVariance: Mean=%+1.4f Uncertainty=%+1.4f (Std Deviation=%+1.4f)", meanValue, tolerance, stdDeviation)));
             return (float) mv;
         }
         return 0;
@@ -155,15 +167,15 @@ public class MeanVariance {
 
 
     public float getTolerance(int number_of_last_samples) {
-        int nsamples = Math.min(Sample.length, Loaded);
-        if (number_of_last_samples <= 0) return Tolerance;
+        int nsamples = Math.min(sample.length, loaded);
+        if (number_of_last_samples <= 0) return tolerance;
         if (number_of_last_samples >= nsamples) return 0;
         if (nsamples > 0) {
             // ------ Mean value
             double mv = 0;
-            int index = (Loaded - number_of_last_samples) % nsamples;
+            int index = (loaded - number_of_last_samples) % nsamples;
             for (int i = 0; i < number_of_last_samples; i++) {
-                mv += Sample[index];
+                mv += sample[index];
                 index++;
                 if (index == nsamples) index = 0;
             }
@@ -171,9 +183,9 @@ public class MeanVariance {
 
             // ------ Variance
             double var = 0;
-            index = (Loaded - number_of_last_samples) % nsamples;
+            index = (loaded - number_of_last_samples) % nsamples;
             for (int i = 0; i < number_of_last_samples; i++) {
-                var += (Sample[index] - mv) * (Sample[index] - mv);
+                var += (sample[index] - mv) * (sample[index] - mv);
                 index++;
                 if (index == nsamples) index = 0;
             }

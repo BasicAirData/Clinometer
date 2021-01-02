@@ -51,15 +51,15 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private final static int SIZE_OF_MEANVARIANCE = 300;                    // 4 seconds
 
 
-    MeanVariance MVGravity0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance MVGravity1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance MVGravity2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    MeanVariance mvGravity0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    MeanVariance mvGravity1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    MeanVariance mvGravity2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
 
-    private float[][] Mean = new float[3][7];               // The Mean values of vectors
+    private final float[][] mean = new float[3][7];              // The Mean values of vectors
 
-    private float[] CalibrationOffset = new float[3];      // The Offsets of accelerometers
-    private float[] CalibrationGain = new float[3];        // The Gains of accelerometers
-    private float[] CalibrationAngle = new float[3];       // The calibration angles
+    private final float[] calibrationOffset = new float[3];      // The Offsets of accelerometers
+    private final float[] calibrationGain = new float[3];        // The Gains of accelerometers
+    private final float[] calibrationAngle = new float[3];       // The calibration angles
 
     private AppCompatButton buttonNext;
     private ProgressBar progressBar;
@@ -68,7 +68,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private TextView textViewLastCalibration;
     private TextView textViewProgress;
 
-    private int CurrentStep = 0;                // The current step of the wizard;
+    private int currentStep = 0;                // The current step of the wizard;
 
     private static final int STEP_1         = 0;    // Step 1 of 7      Lay flat and press next
     private static final int STEP_1_CAL     = 1;    // Calibrating...   Don't move the device
@@ -89,7 +89,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private static final float STANDARD_GRAVITY = 9.807f;
 
     private static final int DISCARD_FIRST_SAMPLES = 20;
-    private int SamplesDiscarded = 0;
+    private int samplesDiscarded = 0;
 
     ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
 
@@ -114,14 +114,14 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CurrentStep++;
-                StartStep();
+                currentStep++;
+                startStep();
             }
         });
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if (mRotationSensor == null) Log.d("SpiritLevel", "NO ACCELEROMETER FOUND!");
+        if (mRotationSensor == null) Log.d("Clinometer", "NO ACCELEROMETER FOUND!");
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -147,10 +147,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         super.onResume();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if ((int) (CurrentStep / 2) * 2 != CurrentStep) CurrentStep--;
-        Log.d("CalibrationActivity", "CurrentStep = " + CurrentStep);
+        if ((int) (currentStep / 2) * 2 != currentStep) currentStep--;
+        Log.d("CalibrationActivity", "CurrentStep = " + currentStep);
 
-        StartStep();
+        startStep();
 
         //mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
     }
@@ -163,13 +163,13 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     }
 
 
-    private void StartStep() {
+    private void startStep() {
         progressBar.setProgress(0);
         progressBar.setSecondaryProgress(0);
         textViewProgress.setText("");
         textViewLastCalibration.setVisibility(View.INVISIBLE);
 
-        switch (CurrentStep) {
+        switch (currentStep) {
             case STEP_1:
                 textViewLastCalibration.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
@@ -231,79 +231,79 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 buttonNext.setVisibility(View.INVISIBLE);
                 textViewProgress.setVisibility(View.VISIBLE);
                 textViewStepDescription.setText(R.string.calibration_calibrating);
-                MVGravity0.Reset();
-                MVGravity1.Reset();
-                MVGravity2.Reset();
-                SamplesDiscarded = 0;
+                mvGravity0.reset();
+                mvGravity1.reset();
+                mvGravity2.reset();
+                samplesDiscarded = 0;
                 mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
                 break;
             case STEP_COMPLETED:
                 // Calculations
-                Log.d("SpiritLevel","-- MEAN NOT CORRECTED ----------------------------------------------------");
-                Log.d("SpiritLevel", String.format("Mean0  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][0], Mean[1][0], Mean[2][0]));
-                Log.d("SpiritLevel", String.format("Mean1  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][1], Mean[1][1], Mean[2][1]));
-                Log.d("SpiritLevel", String.format("Mean2  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][2], Mean[1][2], Mean[2][2]));
-                Log.d("SpiritLevel", String.format("Mean3  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][3], Mean[1][3], Mean[2][3]));
-                Log.d("SpiritLevel", String.format("Mean4  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][4], Mean[1][4], Mean[2][4]));
-                Log.d("SpiritLevel", String.format("Mean5  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][5], Mean[1][5], Mean[2][5]));
-                Log.d("SpiritLevel", String.format("Mean6  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][6], Mean[1][6], Mean[2][6]));
+                Log.d("Clinometer","-- MEAN NOT CORRECTED ----------------------------------------------------");
+                Log.d("Clinometer", String.format("Mean0  =  %+1.4f  %+1.4f  %+1.4f", mean[0][0], mean[1][0], mean[2][0]));
+                Log.d("Clinometer", String.format("Mean1  =  %+1.4f  %+1.4f  %+1.4f", mean[0][1], mean[1][1], mean[2][1]));
+                Log.d("Clinometer", String.format("Mean2  =  %+1.4f  %+1.4f  %+1.4f", mean[0][2], mean[1][2], mean[2][2]));
+                Log.d("Clinometer", String.format("Mean3  =  %+1.4f  %+1.4f  %+1.4f", mean[0][3], mean[1][3], mean[2][3]));
+                Log.d("Clinometer", String.format("Mean4  =  %+1.4f  %+1.4f  %+1.4f", mean[0][4], mean[1][4], mean[2][4]));
+                Log.d("Clinometer", String.format("Mean5  =  %+1.4f  %+1.4f  %+1.4f", mean[0][5], mean[1][5], mean[2][5]));
+                Log.d("Clinometer", String.format("Mean6  =  %+1.4f  %+1.4f  %+1.4f", mean[0][6], mean[1][6], mean[2][6]));
 
                 // Calibration offset and Gain (https://www.digikey.it/it/articles/using-an-accelerometer-for-inclination-sensing)
 
-                CalibrationOffset[0] = (Mean[0][2] + Mean[0][3]) / 2;
-                CalibrationOffset[1] = (Mean[1][4] + Mean[1][5]) / 2;
-                CalibrationOffset[2] = (Mean[2][0] + Mean[2][6]) / 2;
+                calibrationOffset[0] = (mean[0][2] + mean[0][3]) / 2;
+                calibrationOffset[1] = (mean[1][4] + mean[1][5]) / 2;
+                calibrationOffset[2] = (mean[2][0] + mean[2][6]) / 2;
 
-                CalibrationGain[0] = (Mean[0][2] - Mean[0][3]) / (STANDARD_GRAVITY * 2);
-                CalibrationGain[1] = (Mean[1][4] - Mean[1][5]) / (STANDARD_GRAVITY * 2);
-                CalibrationGain[2] = (Mean[2][0] - Mean[2][6]) / (STANDARD_GRAVITY * 2);
+                calibrationGain[0] = (mean[0][2] - mean[0][3]) / (STANDARD_GRAVITY * 2);
+                calibrationGain[1] = (mean[1][4] - mean[1][5]) / (STANDARD_GRAVITY * 2);
+                calibrationGain[2] = (mean[2][0] - mean[2][6]) / (STANDARD_GRAVITY * 2);
 
                 // Estimation of the third axis
 //                CalibrationGain[2] = (CalibrationGain[0] + CalibrationGain[1]) / 2;
 //                CalibrationOffset[2] = (Mean[2][0] + Mean[2][0]) / 2 - (CalibrationGain[2] * STANDARD_GRAVITY);
 
-                Log.d("SpiritLevel","-- ACCELEROMETERS ----------------------------------------------------------");
-                Log.d("SpiritLevel", String.format("Offset  =  %+1.4f  %+1.4f  %+1.4f", CalibrationOffset[0], CalibrationOffset[1], CalibrationOffset[2]));
-                Log.d("SpiritLevel", String.format("Gain    =  %+1.4f  %+1.4f  %+1.4f", CalibrationGain[0], CalibrationGain[1], CalibrationGain[2]));
+                Log.d("Clinometer","-- ACCELEROMETERS ----------------------------------------------------------");
+                Log.d("Clinometer", String.format("Offset  =  %+1.4f  %+1.4f  %+1.4f", calibrationOffset[0], calibrationOffset[1], calibrationOffset[2]));
+                Log.d("Clinometer", String.format("Gain    =  %+1.4f  %+1.4f  %+1.4f", calibrationGain[0], calibrationGain[1], calibrationGain[2]));
 
                 // Apply the Gain and Offset Correction to measurement
 
                 for (int i = 0; i < 7; i++) {
-                    Mean[0][i] = (Mean[0][i] - CalibrationOffset[0]) / CalibrationGain[0];
-                    Mean[1][i] = (Mean[1][i] - CalibrationOffset[1]) / CalibrationGain[1];
-                    Mean[2][i] = (Mean[2][i] - CalibrationOffset[2]) / CalibrationGain[2];
+                    mean[0][i] = (mean[0][i] - calibrationOffset[0]) / calibrationGain[0];
+                    mean[1][i] = (mean[1][i] - calibrationOffset[1]) / calibrationGain[1];
+                    mean[2][i] = (mean[2][i] - calibrationOffset[2]) / calibrationGain[2];
                 }
 
-                Log.d("SpiritLevel","-- MEAN CORRECTED --------------------------------------------------------");
-                Log.d("SpiritLevel", String.format("Mean0  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][0], Mean[1][0], Mean[2][0]));
-                Log.d("SpiritLevel", String.format("Mean1  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][1], Mean[1][1], Mean[2][1]));
-                Log.d("SpiritLevel", String.format("Mean2  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][2], Mean[1][2], Mean[2][2]));
-                Log.d("SpiritLevel", String.format("Mean3  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][3], Mean[1][3], Mean[2][3]));
-                Log.d("SpiritLevel", String.format("Mean4  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][4], Mean[1][4], Mean[2][4]));
-                Log.d("SpiritLevel", String.format("Mean5  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][5], Mean[1][5], Mean[2][5]));
-                Log.d("SpiritLevel", String.format("Mean6  =  %+1.4f  %+1.4f  %+1.4f", Mean[0][6], Mean[1][6], Mean[2][6]));
+                Log.d("Clinometer","-- MEAN CORRECTED --------------------------------------------------------");
+                Log.d("Clinometer", String.format("Mean0  =  %+1.4f  %+1.4f  %+1.4f", mean[0][0], mean[1][0], mean[2][0]));
+                Log.d("Clinometer", String.format("Mean1  =  %+1.4f  %+1.4f  %+1.4f", mean[0][1], mean[1][1], mean[2][1]));
+                Log.d("Clinometer", String.format("Mean2  =  %+1.4f  %+1.4f  %+1.4f", mean[0][2], mean[1][2], mean[2][2]));
+                Log.d("Clinometer", String.format("Mean3  =  %+1.4f  %+1.4f  %+1.4f", mean[0][3], mean[1][3], mean[2][3]));
+                Log.d("Clinometer", String.format("Mean4  =  %+1.4f  %+1.4f  %+1.4f", mean[0][4], mean[1][4], mean[2][4]));
+                Log.d("Clinometer", String.format("Mean5  =  %+1.4f  %+1.4f  %+1.4f", mean[0][5], mean[1][5], mean[2][5]));
+                Log.d("Clinometer", String.format("Mean6  =  %+1.4f  %+1.4f  %+1.4f", mean[0][6], mean[1][6], mean[2][6]));
 
                 // Calculation of Angles
 
                 float[][] Angle = new float[3][7];
 
-                Log.d("SpiritLevel","-- ANGLES ----------------------------------------------------------------------");
+                Log.d("Clinometer","-- ANGLES ----------------------------------------------------------------------");
                 for (int i = 0; i < 7; i++) {
-                    Angle[0][i] = (float) (Math.toDegrees(Math.asin(Mean[0][i]
-                            / Math.sqrt(Mean[0][i] * Mean[0][i] + Mean[1][i] * Mean[1][i] + Mean[2][i] * Mean[2][i]))));
-                    Angle[1][i] = (float) (Math.toDegrees(Math.asin(Mean[1][i]
-                            / Math.sqrt(Mean[0][i] * Mean[0][i] + Mean[1][i] * Mean[1][i] + Mean[2][i] * Mean[2][i]))));
-                    Angle[2][i] = (float) (Math.toDegrees(Math.asin(Mean[2][i]
-                            / Math.sqrt(Mean[0][i] * Mean[0][i] + Mean[1][i] * Mean[1][i] + Mean[2][i] * Mean[2][i]))));
-                    Log.d("SpiritLevel", String.format("Angles =  %+1.4f°  %+1.4f°  %+1.4f°", Angle[0][i], Angle[1][i], Angle[2][i]));
+                    Angle[0][i] = (float) (Math.toDegrees(Math.asin(mean[0][i]
+                            / Math.sqrt(mean[0][i] * mean[0][i] + mean[1][i] * mean[1][i] + mean[2][i] * mean[2][i]))));
+                    Angle[1][i] = (float) (Math.toDegrees(Math.asin(mean[1][i]
+                            / Math.sqrt(mean[0][i] * mean[0][i] + mean[1][i] * mean[1][i] + mean[2][i] * mean[2][i]))));
+                    Angle[2][i] = (float) (Math.toDegrees(Math.asin(mean[2][i]
+                            / Math.sqrt(mean[0][i] * mean[0][i] + mean[1][i] * mean[1][i] + mean[2][i] * mean[2][i]))));
+                    Log.d("Clinometer", String.format("Angles =  %+1.4f°  %+1.4f°  %+1.4f°", Angle[0][i], Angle[1][i], Angle[2][i]));
                 }
 
-                CalibrationAngle[2] =  (Angle[0][0] + Angle[0][1])/2;       // Angle 0 = X axis
-                CalibrationAngle[1] = -(Angle[1][0] + Angle[1][1])/2;       // Angle 1 = Y axis
-                CalibrationAngle[0] = -(Angle[1][3] + Angle[1][2])/2;       // Angle 2 = Z axis
+                calibrationAngle[2] =  (Angle[0][0] + Angle[0][1])/2;       // Angle 0 = X axis
+                calibrationAngle[1] = -(Angle[1][0] + Angle[1][1])/2;       // Angle 1 = Y axis
+                calibrationAngle[0] = -(Angle[1][3] + Angle[1][2])/2;       // Angle 2 = Z axis
 
-                Log.d("SpiritLevel","-- CALIBRATION ANGLES ----------------------------------------------------------");
-                Log.d("SpiritLevel", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", CalibrationAngle[0], CalibrationAngle[1], CalibrationAngle[2]));
+                Log.d("Clinometer","-- CALIBRATION ANGLES ----------------------------------------------------------");
+                Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[0], calibrationAngle[1], calibrationAngle[2]));
 
 
 //                Angle[0][i] = (float) (180 / Math.PI * Math.asin((MVGravity0.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
@@ -314,27 +314,27 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 //                CalibrationAngle[1] = -(Angle[1][0] + Angle[1][1])/2;       // Angle 1 = Y axe
 //                CalibrationAngle[0] = -(Angle[1][3] + Angle[1][2])/2;       // Angle 2 = Z axe
 //
-//                Log.d("SpiritLevel", String.format("CAL   =  %+1.4f°  %+1.4f°  %+1.4f°", CalibrationAngle[0], CalibrationAngle[1], CalibrationAngle[2]));
+//                Log.d("Clinometer", String.format("CAL   =  %+1.4f°  %+1.4f°  %+1.4f°", CalibrationAngle[0], CalibrationAngle[1], CalibrationAngle[2]));
 //                Log.d("SpiritLevel","------------------------------------------------------");
 //
-//                //Log.d("SpiritLevel", String.format("GRAVX =  %+1.4f°  %+1.4f°", GravityXp, GravityXn));
+//                //Log.d("Clinometer", String.format("GRAVX =  %+1.4f°  %+1.4f°", GravityXp, GravityXn));
 //                Log.d("SpiritLevel","------------------------------------------------------");
 //
 
-                Log.d("SpiritLevel","----------------------------------------------------------------------------");
+                Log.d("Clinometer","----------------------------------------------------------------------------");
 
                 // Write Calibration Angles into Preferences
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putFloat("prefCalibrationAngle0", CalibrationAngle[0]);
-                editor.putFloat("prefCalibrationAngle1", CalibrationAngle[1]);
-                editor.putFloat("prefCalibrationAngle2", CalibrationAngle[2]);
-                editor.putFloat("prefCalibrationGain0", CalibrationGain[0]);
-                editor.putFloat("prefCalibrationGain1", CalibrationGain[1]);
-                editor.putFloat("prefCalibrationGain2", CalibrationGain[2]);
-                editor.putFloat("prefCalibrationOffset0", CalibrationOffset[0]);
-                editor.putFloat("prefCalibrationOffset1", CalibrationOffset[1]);
-                editor.putFloat("prefCalibrationOffset2", CalibrationOffset[2]);
+                editor.putFloat("prefCalibrationAngle0", calibrationAngle[0]);
+                editor.putFloat("prefCalibrationAngle1", calibrationAngle[1]);
+                editor.putFloat("prefCalibrationAngle2", calibrationAngle[2]);
+                editor.putFloat("prefCalibrationGain0", calibrationGain[0]);
+                editor.putFloat("prefCalibrationGain1", calibrationGain[1]);
+                editor.putFloat("prefCalibrationGain2", calibrationGain[2]);
+                editor.putFloat("prefCalibrationOffset0", calibrationOffset[0]);
+                editor.putFloat("prefCalibrationOffset1", calibrationOffset[1]);
+                editor.putFloat("prefCalibrationOffset2", calibrationOffset[2]);
                 editor.putLong("prefCalibrationTime", System.currentTimeMillis());
                 editor.commit();
 
@@ -346,53 +346,53 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     public void onSensorChanged(SensorEvent event) {
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            if ((int) (CurrentStep / 2) * 2 == CurrentStep) {
+            if ((int) (currentStep / 2) * 2 == currentStep) {
                 // Stop Calibration
                 mSensorManager.unregisterListener(this);
             } else {
 
-                if (SamplesDiscarded < DISCARD_FIRST_SAMPLES) {
-                    SamplesDiscarded++;
+                if (samplesDiscarded < DISCARD_FIRST_SAMPLES) {
+                    samplesDiscarded++;
                     return;
                 }
 
                 // Calibration
                 //Log.d("CalibrationActivity", "CALIBRATION");
 
-                MVGravity0.LoadSample(event.values[0]);
-                MVGravity1.LoadSample(event.values[1]);
-                MVGravity2.LoadSample(event.values[2]);
+                mvGravity0.loadSample(event.values[0]);
+                mvGravity1.loadSample(event.values[1]);
+                mvGravity2.loadSample(event.values[2]);
 
-                textViewProgress.setText(String.format("Progress %1.0f%%   Tolerance %1.3f", MVGravity0.percentLoaded(), MVGravity0.getTolerance()));
-                int progress1 = (int) (10 * MVGravity0.percentLoaded());
-                int progress2 = (int) (Math.min(1000, Math.max(0, 1000 - 1000 *(MVGravity0.getTolerance() / MIN_CALIBRATION_PRECISION))));
+                textViewProgress.setText(String.format("Progress %1.0f%%   Tolerance %1.3f", mvGravity0.percentLoaded(), mvGravity0.getTolerance()));
+                int progress1 = (int) (10 * mvGravity0.percentLoaded());
+                int progress2 = (int) (Math.min(1000, Math.max(0, 1000 - 1000 *(mvGravity0.getTolerance() / MIN_CALIBRATION_PRECISION))));
                 progressBar.setSecondaryProgress(Math.max(progress1, progress2));
                 progressBar.setProgress(Math.min(progress1, progress2));
 
 
                 // DEVICE MOVED
 
-                if (MVGravity0.isReady() && (MVGravity0.getTolerance() > MIN_CALIBRATION_PRECISION)) {
-                    MVGravity0.Reset();
-                    MVGravity1.Reset();
-                    MVGravity2.Reset();
+                if (mvGravity0.isReady() && (mvGravity0.getTolerance() > MIN_CALIBRATION_PRECISION)) {
+                    mvGravity0.reset();
+                    mvGravity1.reset();
+                    mvGravity2.reset();
                 }
 
                 // END OF CALIBRATION STEP
 
-                if (MVGravity0.percentLoaded() == 100) {
+                if (mvGravity0.percentLoaded() == 100) {
                     mSensorManager.unregisterListener(this);
 
-                    int i = (int) (CurrentStep / 2);
+                    int i = (int) (currentStep / 2);
 
-                    Mean[0][i] = MVGravity0.getMeanValue(SIZE_OF_MEANVARIANCE-100);
-                    Mean[1][i] = MVGravity1.getMeanValue(SIZE_OF_MEANVARIANCE-100);
-                    Mean[2][i] = MVGravity2.getMeanValue(SIZE_OF_MEANVARIANCE-100);
+                    mean[0][i] = mvGravity0.getMeanValue(SIZE_OF_MEANVARIANCE-100);
+                    mean[1][i] = mvGravity1.getMeanValue(SIZE_OF_MEANVARIANCE-100);
+                    mean[2][i] = mvGravity2.getMeanValue(SIZE_OF_MEANVARIANCE-100);
 
-                    Beep();
+                    beep();
 
-                    CurrentStep++;
-                    StartStep();
+                    currentStep++;
+                    startStep();
                 }
             }
         }
@@ -404,7 +404,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     }
 
-    private void Beep() {
+
+    private void beep() {
         //toneGen1.startTone(ToneGenerator.TONE_SUP_PIP,150);
         vibrator.vibrate(250);
         toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 150);

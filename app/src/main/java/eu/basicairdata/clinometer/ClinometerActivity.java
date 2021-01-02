@@ -67,7 +67,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     public boolean isFlat = true;                       // True if the device is oriented flat (for example on a table)
     public boolean isLocked = false;                    // True if the angles are locked by user
     private boolean isLockRequested = false;
-    public float DisplayRotation = 0;                   // The rotation angle from the natural position of the device
+    public float displayRotation = 0;                   // The rotation angle from the natural position of the device
 
     // Singleton instance
     private static ClinometerActivity singleton;
@@ -94,7 +94,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     public float[] angle_calibration    = {0, 0, 0};    // The angles for calibration: alpha, beta, gamma (in degrees)
     public float[] angle                = {0, 0, 0};    // The (filtered) current angles (in degrees)
 
-    private float[][] CalibrationMatrix = new float[3][3];
+    private final float[][] calibrationMatrix = new float[3][3];
 
     public float gravityXY = 0;
     public float gravityXYZ = 0;
@@ -104,12 +104,12 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private final static int ACCELEROMETER_UPDATE_INTERVAL_MICROS = 10000;
 
-    MeanVariance MVAngle0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance MVAngle1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance MVAngle2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance MVGravity0 = new MeanVariance(16);
-    MeanVariance MVGravity1 = new MeanVariance(16);
-    MeanVariance MVGravity2 = new MeanVariance(16);
+    MeanVariance mvAngle0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    MeanVariance mvAngle1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    MeanVariance mvAngle2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    MeanVariance mvGravity0 = new MeanVariance(16);
+    MeanVariance mvGravity1 = new MeanVariance(16);
+    MeanVariance mvGravity2 = new MeanVariance(16);
 
     ValueAnimator animationR = new ValueAnimator();
 
@@ -143,9 +143,9 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 //            MVGravity2.LoadSample(9.81f);
 //        }
 
-        MVGravity0.Reset(0.0f);
-        MVGravity1.Reset(0.0f);
-        MVGravity2.Reset(9.80f);
+        mvGravity0.reset(0.0f);
+        mvGravity1.reset(0.0f);
+        mvGravity2.reset(9.80f);
 
         // Check sensors
         Log.d("SpiritLevel", "- ROTATION_VECTOR Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR).size());
@@ -163,7 +163,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     isLockRequested = false;
                 }
                 else isLockRequested = !isLockRequested;
-                UpdateLockIcon();
+                updateLockIcon();
                 return false;
             }
         });
@@ -198,7 +198,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         super.onResume();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        LoadPreferences();
+        loadPreferences();
 
         mClinometerView.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
@@ -217,7 +217,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         isLockRequested = false;
-        UpdateLockIcon();
+        updateLockIcon();
 
         mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
     }
@@ -241,55 +241,55 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     isLockRequested = false;
                     isLocked = true;
                     mClinometerView.invalidate();
-                    UpdateLockIcon();
-                    Beep();
-                } else if ((MVAngle0.getTolerance() < prefAutoLockTolerance)
-                        && (MVAngle1.getTolerance() < prefAutoLockTolerance)
-                        && (MVAngle2.getTolerance() < prefAutoLockTolerance)
-                        && MVAngle0.isLoaded()
-                        && MVAngle1.isLoaded()
-                        && MVAngle2.isLoaded()
+                    updateLockIcon();
+                    beep();
+                } else if ((mvAngle0.getTolerance() < prefAutoLockTolerance)
+                        && (mvAngle1.getTolerance() < prefAutoLockTolerance)
+                        && (mvAngle2.getTolerance() < prefAutoLockTolerance)
+                        && mvAngle0.getLoaded()
+                        && mvAngle1.getLoaded()
+                        && mvAngle2.getLoaded()
                         && (
                         (!prefAutoLockHorizonCheck)
                                 || (Math.abs(angle[2]) >= AUTOLOCK_HORIZON_CHECK_THRESHOLD)
-                                || (prefAutoLockHorizonCheck && (Math.abs(angle[2]) < AUTOLOCK_HORIZON_CHECK_THRESHOLD) && (Math.abs(MVAngle2.getMeanValue()) < prefAutoLockTolerance)))) {
+                                || (prefAutoLockHorizonCheck && (Math.abs(angle[2]) < AUTOLOCK_HORIZON_CHECK_THRESHOLD) && (Math.abs(mvAngle2.getMeanValue()) < prefAutoLockTolerance)))) {
 
-                    angle[0] = (float) (180 / Math.PI * Math.asin((MVGravity0.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
-                    angle[1] = (float) (180 / Math.PI * Math.asin((MVGravity1.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
-                    angle[2] = (float) (180 / Math.PI * Math.asin((MVGravity2.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
+                    angle[0] = (float) (180 / Math.PI * Math.asin((mvGravity0.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
+                    angle[1] = (float) (180 / Math.PI * Math.asin((mvGravity1.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
+                    angle[2] = (float) (180 / Math.PI * Math.asin((mvGravity2.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
 
                     angleXY = 0;
                     if (gravityXY > 0) {
-                        if (MVGravity0.getMeanValue() >= 0) {
-                            if (MVGravity1.getMeanValue() < 0)
-                                angleXY = (float) Math.toDegrees(-Math.asin(MVGravity1.getMeanValue() / gravityXY));
+                        if (mvGravity0.getMeanValue() >= 0) {
+                            if (mvGravity1.getMeanValue() < 0)
+                                angleXY = (float) Math.toDegrees(-Math.asin(mvGravity1.getMeanValue() / gravityXY));
                             else
-                                angleXY = (float) Math.toDegrees(2 * Math.PI - Math.asin(MVGravity1.getMeanValue() / gravityXY));
+                                angleXY = (float) Math.toDegrees(2 * Math.PI - Math.asin(mvGravity1.getMeanValue() / gravityXY));
                         } else
-                            angleXY = (float) Math.toDegrees(Math.PI + Math.asin(MVGravity1.getMeanValue() / gravityXY));
+                            angleXY = (float) Math.toDegrees(Math.PI + Math.asin(mvGravity1.getMeanValue() / gravityXY));
                     }
 
                     angleXYZ = 0;
                     if (gravityXY > 0) {
-                        angleXYZ = (float) Math.toDegrees(Math.acos(MVGravity2.getMeanValue() / gravityXYZ));
+                        angleXYZ = (float) Math.toDegrees(Math.acos(mvGravity2.getMeanValue() / gravityXYZ));
                     }
 
                     Log.d("SpiritLevel", "------------------------------------------------------------------");
                     Log.d("SpiritLevel", String.format("Auto Locking Tolerance = %1.4f", prefAutoLockTolerance));
-                    Log.d("SpiritLevel", (String.format("Measurement locked - Angle0: Mean=%+1.4f Uncertainty=%+1.4f", MVAngle0.getMeanValue(), MVAngle0.getTolerance())));
-                    Log.d("SpiritLevel", (String.format("Measurement locked - Angle1: Mean=%+1.4f Uncertainty=%+1.4f", MVAngle1.getMeanValue(), MVAngle1.getTolerance())));
-                    Log.d("SpiritLevel", (String.format("Measurement locked - Angle2: Mean=%+1.4f Uncertainty=%+1.4f", MVAngle2.getMeanValue(), MVAngle2.getTolerance())));
+                    Log.d("SpiritLevel", (String.format("Measurement locked - Angle0: Mean=%+1.4f Uncertainty=%+1.4f", mvAngle0.getMeanValue(), mvAngle0.getTolerance())));
+                    Log.d("SpiritLevel", (String.format("Measurement locked - Angle1: Mean=%+1.4f Uncertainty=%+1.4f", mvAngle1.getMeanValue(), mvAngle1.getTolerance())));
+                    Log.d("SpiritLevel", (String.format("Measurement locked - Angle2: Mean=%+1.4f Uncertainty=%+1.4f", mvAngle2.getMeanValue(), mvAngle2.getTolerance())));
                     Log.d("SpiritLevel", "------------------------------------------------------------------");
 
                     isLockRequested = false;
                     isLocked = true;
                     mClinometerView.invalidate();
-                    UpdateLockIcon();
-                    Beep();
+                    updateLockIcon();
+                    beep();
 
-                    MVAngle0.Reset();
-                    MVAngle1.Reset();
-                    MVAngle2.Reset();
+                    mvAngle0.reset();
+                    mvAngle1.reset();
+                    mvAngle2.reset();
                 }
             }
 
@@ -311,67 +311,67 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
                 // Apply Calibration values
 
-                gravity_calibrated[0] = (float) (gravity[0] * CalibrationMatrix[0][0] + gravity[1] * CalibrationMatrix[0][1] + gravity[2] * CalibrationMatrix[0][2]);
-                gravity_calibrated[1] = (float) (gravity[0] * CalibrationMatrix[1][0] + gravity[1] * CalibrationMatrix[1][1] + gravity[2] * CalibrationMatrix[1][2]);
-                gravity_calibrated[2] = (float) (gravity[0] * CalibrationMatrix[2][0] + gravity[1] * CalibrationMatrix[2][1] + gravity[2] * CalibrationMatrix[2][2]);
+                gravity_calibrated[0] = (float) (gravity[0] * calibrationMatrix[0][0] + gravity[1] * calibrationMatrix[0][1] + gravity[2] * calibrationMatrix[0][2]);
+                gravity_calibrated[1] = (float) (gravity[0] * calibrationMatrix[1][0] + gravity[1] * calibrationMatrix[1][1] + gravity[2] * calibrationMatrix[1][2]);
+                gravity_calibrated[2] = (float) (gravity[0] * calibrationMatrix[2][0] + gravity[1] * calibrationMatrix[2][1] + gravity[2] * calibrationMatrix[2][2]);
 
-                MVGravity0.LoadSample(gravity_calibrated[0]);
-                MVGravity1.LoadSample(gravity_calibrated[1]);
-                MVGravity2.LoadSample(gravity_calibrated[2]);
+                mvGravity0.loadSample(gravity_calibrated[0]);
+                mvGravity1.loadSample(gravity_calibrated[1]);
+                mvGravity2.loadSample(gravity_calibrated[2]);
 
-                gravityXY = (float) Math.sqrt(MVGravity0.getMeanValue() * MVGravity0.getMeanValue() + MVGravity1.getMeanValue() * MVGravity1.getMeanValue());   // Vector over the screen plane
-                gravityXYZ = (float) Math.sqrt(gravityXY * gravityXY + MVGravity2.getMeanValue() * MVGravity2.getMeanValue());                                  // Spatial Vector
+                gravityXY = (float) Math.sqrt(mvGravity0.getMeanValue() * mvGravity0.getMeanValue() + mvGravity1.getMeanValue() * mvGravity1.getMeanValue());   // Vector over the screen plane
+                gravityXYZ = (float) Math.sqrt(gravityXY * gravityXY + mvGravity2.getMeanValue() * mvGravity2.getMeanValue());                                  // Spatial Vector
 
                 // Calculate Angles
 
                 angleXY = 0;
                 if (gravityXY > 0) {
-                    if (MVGravity0.getMeanValue() >= 0) {
-                        if (MVGravity1.getMeanValue() < 0)
-                            angleXY = (float) Math.toDegrees(-Math.asin(MVGravity1.getMeanValue() / gravityXY));
+                    if (mvGravity0.getMeanValue() >= 0) {
+                        if (mvGravity1.getMeanValue() < 0)
+                            angleXY = (float) Math.toDegrees(-Math.asin(mvGravity1.getMeanValue() / gravityXY));
                         else
-                            angleXY = (float) Math.toDegrees(2 * Math.PI - Math.asin(MVGravity1.getMeanValue() / gravityXY));
+                            angleXY = (float) Math.toDegrees(2 * Math.PI - Math.asin(mvGravity1.getMeanValue() / gravityXY));
                     } else
-                        angleXY = (float) Math.toDegrees(Math.PI + Math.asin(MVGravity1.getMeanValue() / gravityXY));
+                        angleXY = (float) Math.toDegrees(Math.PI + Math.asin(mvGravity1.getMeanValue() / gravityXY));
                 }
 
                 angleXYZ = 0;
                 if (gravityXY > 0) {
-                    angleXYZ = (float) Math.toDegrees(Math.acos(MVGravity2.getMeanValue() / gravityXYZ));
+                    angleXYZ = (float) Math.toDegrees(Math.acos(mvGravity2.getMeanValue() / gravityXYZ));
                 }
 
-                angle[0] = (float) (180 / Math.PI * Math.asin((MVGravity0.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
-                angle[1] = (float) (180 / Math.PI * Math.asin((MVGravity1.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
-                angle[2] = (float) (180 / Math.PI * Math.asin((MVGravity2.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
+                angle[0] = (float) (180 / Math.PI * Math.asin((mvGravity0.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
+                angle[1] = (float) (180 / Math.PI * Math.asin((mvGravity1.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
+                angle[2] = (float) (180 / Math.PI * Math.asin((mvGravity2.getMeanValue() / Math.max(gravityXYZ, 0.00001f))));
 
                 // Load angles into Auto-Locking MeanVariances
 
-                MVAngle0.LoadSample(angle[0]);
-                MVAngle1.LoadSample(angle[1]);
-                MVAngle2.LoadSample(angle[2]);
+                mvAngle0.loadSample(angle[0]);
+                mvAngle1.loadSample(angle[1]);
+                mvAngle2.loadSample(angle[2]);
 
                 // Determine Rotation, ViewMode and Text Angles
 
                 if (Math.abs(angle[2]) < 70) {
-                    if ((angleXY > 270 - 45 + ROTATION_THRESHOLD) && (angleXY < 270 + 45 - ROTATION_THRESHOLD) && (DisplayRotation != 0)) {
-                        DisplayRotation = 0;
-                        Log.w("SpiritLevel", " ROTATION = " + DisplayRotation);
-                        RotateOverlays(DisplayRotation, this.getWindowManager().getDefaultDisplay().getHeight(), this.getWindowManager().getDefaultDisplay().getWidth());
+                    if ((angleXY > 270 - 45 + ROTATION_THRESHOLD) && (angleXY < 270 + 45 - ROTATION_THRESHOLD) && (displayRotation != 0)) {
+                        displayRotation = 0;
+                        Log.w("SpiritLevel", " ROTATION = " + displayRotation);
+                        rotateOverlays(displayRotation, this.getWindowManager().getDefaultDisplay().getHeight(), this.getWindowManager().getDefaultDisplay().getWidth());
                     }
-                    if ((angleXY > 90 - 45 + ROTATION_THRESHOLD) && (angleXY < 90 + 45 - ROTATION_THRESHOLD) && (DisplayRotation != 180)) {
-                        DisplayRotation = 180;
-                        Log.w("SpiritLevel", " ROTATION = " + DisplayRotation);
-                        RotateOverlays(DisplayRotation, this.getWindowManager().getDefaultDisplay().getHeight(), this.getWindowManager().getDefaultDisplay().getWidth());
+                    if ((angleXY > 90 - 45 + ROTATION_THRESHOLD) && (angleXY < 90 + 45 - ROTATION_THRESHOLD) && (displayRotation != 180)) {
+                        displayRotation = 180;
+                        Log.w("SpiritLevel", " ROTATION = " + displayRotation);
+                        rotateOverlays(displayRotation, this.getWindowManager().getDefaultDisplay().getHeight(), this.getWindowManager().getDefaultDisplay().getWidth());
                     }
-                    if ((angleXY > 180 - 45 + ROTATION_THRESHOLD) && (angleXY < 180 + 45 - ROTATION_THRESHOLD) && (DisplayRotation != 270)) {
-                        DisplayRotation = 270;
-                        Log.w("SpiritLevel", " ROTATION = " + DisplayRotation);
-                        RotateOverlays(DisplayRotation, this.getWindowManager().getDefaultDisplay().getWidth(), this.getWindowManager().getDefaultDisplay().getHeight());
+                    if ((angleXY > 180 - 45 + ROTATION_THRESHOLD) && (angleXY < 180 + 45 - ROTATION_THRESHOLD) && (displayRotation != 270)) {
+                        displayRotation = 270;
+                        Log.w("SpiritLevel", " ROTATION = " + displayRotation);
+                        rotateOverlays(displayRotation, this.getWindowManager().getDefaultDisplay().getWidth(), this.getWindowManager().getDefaultDisplay().getHeight());
                     }
-                    if (((angleXY > 270 + 45 + ROTATION_THRESHOLD) || (angleXY < 45 - ROTATION_THRESHOLD)) && (DisplayRotation != 90)) {
-                        DisplayRotation = 90;
-                        Log.w("SpiritLevel", " ROTATION = " + DisplayRotation);
-                        RotateOverlays(DisplayRotation, this.getWindowManager().getDefaultDisplay().getWidth(), this.getWindowManager().getDefaultDisplay().getHeight());
+                    if (((angleXY > 270 + 45 + ROTATION_THRESHOLD) || (angleXY < 45 - ROTATION_THRESHOLD)) && (displayRotation != 90)) {
+                        displayRotation = 90;
+                        Log.w("SpiritLevel", " ROTATION = " + displayRotation);
+                        rotateOverlays(displayRotation, this.getWindowManager().getDefaultDisplay().getWidth(), this.getWindowManager().getDefaultDisplay().getHeight());
                     }
                 }
 
@@ -380,18 +380,18 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     angleTextLabels = (90 + angleXY) % 360;
                 }
                 if ((Math.abs(angle[2]) >= 70) && (Math.abs(angle[2]) < 75)) {
-                    if ((DisplayRotation == 0) && (angleXY < 270)) {
+                    if ((displayRotation == 0) && (angleXY < 270)) {
                         //Log.d("SpiritLevel", "ANG");
-                        angleTextLabels = DisplayRotation * (Math.abs(angle[2]) - 70) / 5
+                        angleTextLabels = displayRotation * (Math.abs(angle[2]) - 70) / 5
                                 + (((90 + angleXY) % 360) - 360) * (75 - Math.abs(angle[2])) / 5;
                     } else {
-                        angleTextLabels = DisplayRotation * (Math.abs(angle[2]) - 70) / 5
+                        angleTextLabels = displayRotation * (Math.abs(angle[2]) - 70) / 5
                                 + ((90 + angleXY) % 360) * (75 - Math.abs(angle[2])) / 5;
                     }
                 }
                 if (Math.abs(angle[2]) >= 75) {
                     if (!isFlat) isFlat = true;
-                    angleTextLabels = DisplayRotation;
+                    angleTextLabels = displayRotation;
                 }
 
                 // Apply Changes
@@ -412,7 +412,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     }
 
 
-    private void UpdateLockIcon() {
+    private void updateLockIcon() {
         if (isLocked) {
             mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_24));
             mImageViewLock.setAlpha(0.8f);
@@ -428,7 +428,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     }
 
 
-    private void LoadPreferences() {
+    private void loadPreferences() {
         prefAutoLock = preferences.getBoolean("prefAutoLock", false);
         prefAutoLockHorizonCheck = preferences.getBoolean("prefAutoLockHorizonCheck", true);
         prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt("prefAutoLockPrecision", 500) / 1000;
@@ -444,28 +444,28 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         gravity_offset[1]       = preferences.getFloat("prefCalibrationOffset1", 0);
         gravity_offset[2]       = preferences.getFloat("prefCalibrationOffset2", 0);
 
-        CalibrationMatrix[0][0] = (float) (Math.cos(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[0])) + Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
-        CalibrationMatrix[0][1] = (float) (Math.cos(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
-        CalibrationMatrix[0][2] = (float) (-Math.sin(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[0])) + Math.cos(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
+        calibrationMatrix[0][0] = (float) (Math.cos(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[0])) + Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
+        calibrationMatrix[0][1] = (float) (Math.cos(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
+        calibrationMatrix[0][2] = (float) (-Math.sin(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[0])) + Math.cos(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
 
-        CalibrationMatrix[1][0] = (float) (-Math.cos(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[0])) + Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.cos(Math.toRadians(angle_calibration[0])));
-        CalibrationMatrix[1][1] = (float) (Math.cos(Math.toRadians(angle_calibration[1])) * Math.cos(Math.toRadians(angle_calibration[0])));
-        CalibrationMatrix[1][2] = (float) (Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[0])) + Math.cos(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.cos(Math.toRadians(angle_calibration[0])));
+        calibrationMatrix[1][0] = (float) (-Math.cos(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[0])) + Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.cos(Math.toRadians(angle_calibration[0])));
+        calibrationMatrix[1][1] = (float) (Math.cos(Math.toRadians(angle_calibration[1])) * Math.cos(Math.toRadians(angle_calibration[0])));
+        calibrationMatrix[1][2] = (float) (Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[0])) + Math.cos(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.cos(Math.toRadians(angle_calibration[0])));
 
-        CalibrationMatrix[2][0] = (float) (Math.sin(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[1])));
-        CalibrationMatrix[2][1] = (float) (-Math.sin(Math.toRadians(angle_calibration[1])));
-        CalibrationMatrix[2][2] = (float) (Math.cos(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[1])));
+        calibrationMatrix[2][0] = (float) (Math.sin(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[1])));
+        calibrationMatrix[2][1] = (float) (-Math.sin(Math.toRadians(angle_calibration[1])));
+        calibrationMatrix[2][2] = (float) (Math.cos(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[1])));
     }
 
 
-    private void Beep() {
+    private void beep() {
         //toneGen1.startTone(ToneGenerator.TONE_SUP_PIP,150);
         vibrator.vibrate(250);
         toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 100);
     }
 
 
-    private void RotateOverlays(final float rotationAngle, final int newHeight, final int newWidth) {
+    private void rotateOverlays(final float rotationAngle, final int newHeight, final int newWidth) {
         if (animationR.isRunning()) animationR.cancel();
 
         animationR = ValueAnimator.ofFloat(0, 1);
