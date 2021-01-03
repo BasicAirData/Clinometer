@@ -240,13 +240,9 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
             case STEP_COMPLETED:
                 // Calculations
                 Log.d("Clinometer","-- MEAN NOT CORRECTED ----------------------------------------------------");
-                Log.d("Clinometer", String.format("Mean0  =  %+1.4f  %+1.4f  %+1.4f", mean[0][0], mean[1][0], mean[2][0]));
-                Log.d("Clinometer", String.format("Mean1  =  %+1.4f  %+1.4f  %+1.4f", mean[0][1], mean[1][1], mean[2][1]));
-                Log.d("Clinometer", String.format("Mean2  =  %+1.4f  %+1.4f  %+1.4f", mean[0][2], mean[1][2], mean[2][2]));
-                Log.d("Clinometer", String.format("Mean3  =  %+1.4f  %+1.4f  %+1.4f", mean[0][3], mean[1][3], mean[2][3]));
-                Log.d("Clinometer", String.format("Mean4  =  %+1.4f  %+1.4f  %+1.4f", mean[0][4], mean[1][4], mean[2][4]));
-                Log.d("Clinometer", String.format("Mean5  =  %+1.4f  %+1.4f  %+1.4f", mean[0][5], mean[1][5], mean[2][5]));
-                Log.d("Clinometer", String.format("Mean6  =  %+1.4f  %+1.4f  %+1.4f", mean[0][6], mean[1][6], mean[2][6]));
+                for (int i = 0; i < 7; i++) {
+                    Log.d("Clinometer", String.format("mean[ ][" + i + "]  =  %+1.4f  %+1.4f  %+1.4f", mean[0][i], mean[1][i], mean[2][i]));
+                }
 
                 // Calibration offset and Gain (https://www.digikey.it/it/articles/using-an-accelerometer-for-inclination-sensing)
 
@@ -274,45 +270,41 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                     mean[2][i] = (mean[2][i] - calibrationOffset[2]) / calibrationGain[2];
                 }
 
-                Log.d("Clinometer","-- MEAN CORRECTED --------------------------------------------------------");
-                Log.d("Clinometer", String.format("Mean0  =  %+1.4f  %+1.4f  %+1.4f", mean[0][0], mean[1][0], mean[2][0]));
-                Log.d("Clinometer", String.format("Mean1  =  %+1.4f  %+1.4f  %+1.4f", mean[0][1], mean[1][1], mean[2][1]));
-                Log.d("Clinometer", String.format("Mean2  =  %+1.4f  %+1.4f  %+1.4f", mean[0][2], mean[1][2], mean[2][2]));
-                Log.d("Clinometer", String.format("Mean3  =  %+1.4f  %+1.4f  %+1.4f", mean[0][3], mean[1][3], mean[2][3]));
-                Log.d("Clinometer", String.format("Mean4  =  %+1.4f  %+1.4f  %+1.4f", mean[0][4], mean[1][4], mean[2][4]));
-                Log.d("Clinometer", String.format("Mean5  =  %+1.4f  %+1.4f  %+1.4f", mean[0][5], mean[1][5], mean[2][5]));
-                Log.d("Clinometer", String.format("Mean6  =  %+1.4f  %+1.4f  %+1.4f", mean[0][6], mean[1][6], mean[2][6]));
+                Log.d("Clinometer","-- MEAN CORRECTED ----------------------------------------------------------");
+                for (int i = 0; i < 7; i++) {
+                    Log.d("Clinometer", String.format("mean[ ][" + i + "]  =  %+1.4f  %+1.4f  %+1.4f", mean[0][i], mean[1][i], mean[2][i]));
+                }
 
                 // Calculation of Angles
 
-                float[][] Angle = new float[3][7];
+                float[][] angle = new float[3][7];
 
-                Log.d("Clinometer","-- ANGLES ----------------------------------------------------------------------");
+                Log.d("Clinometer","-- ANGLES ------------------------------------------------------------------");
                 for (int i = 0; i < 7; i++) {
-                    Angle[0][i] = (float) (Math.toDegrees(Math.asin(mean[0][i]
+                    angle[0][i] = (float) (Math.toDegrees(Math.asin(mean[0][i]
                             / Math.sqrt(mean[0][i] * mean[0][i] + mean[1][i] * mean[1][i] + mean[2][i] * mean[2][i]))));
-                    Angle[1][i] = (float) (Math.toDegrees(Math.asin(mean[1][i]
+                    angle[1][i] = (float) (Math.toDegrees(Math.asin(mean[1][i]
                             / Math.sqrt(mean[0][i] * mean[0][i] + mean[1][i] * mean[1][i] + mean[2][i] * mean[2][i]))));
-                    Angle[2][i] = (float) (Math.toDegrees(Math.asin(mean[2][i]
+                    angle[2][i] = (float) (Math.toDegrees(Math.asin(mean[2][i]
                             / Math.sqrt(mean[0][i] * mean[0][i] + mean[1][i] * mean[1][i] + mean[2][i] * mean[2][i]))));
-                    Log.d("Clinometer", String.format("Angles =  %+1.4f°  %+1.4f°  %+1.4f°", Angle[0][i], Angle[1][i], Angle[2][i]));
+                    Log.d("Clinometer", String.format("angle[ ][" + i + "] =  %+1.4f°  %+1.4f°  %+1.4f°", angle[0][i], angle[1][i], angle[2][i]));
                 }
 
-                calibrationAngle[2] =  (Angle[0][0] + Angle[0][1])/2;       // Angle 0 = X axis
-                calibrationAngle[1] = -(Angle[1][0] + Angle[1][1])/2;       // Angle 1 = Y axis
-                calibrationAngle[0] = -(Angle[1][3] + Angle[1][2])/2;       // Angle 2 = Z axis
+                calibrationAngle[2] =  (angle[0][0] + angle[0][1])/2;       // angle 0 = X axis
+                calibrationAngle[1] = -(angle[1][0] + angle[1][1])/2;       // angle 1 = Y axis
+                calibrationAngle[0] = -(angle[1][3] + angle[1][2])/2;       // angle 2 = Z axis
 
                 Log.d("Clinometer","-- CALIBRATION ANGLES ----------------------------------------------------------");
                 Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[0], calibrationAngle[1], calibrationAngle[2]));
 
 
-//                Angle[0][i] = (float) (180 / Math.PI * Math.asin((MVGravity0.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
-//                Angle[1][i] = (float) (180 / Math.PI * Math.asin((MVGravity1.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
-//                Angle[2][i] = (float) (180 / Math.PI * Math.asin((MVGravity2.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
+//                angle[0][i] = (float) (180 / Math.PI * Math.asin((MVGravity0.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
+//                angle[1][i] = (float) (180 / Math.PI * Math.asin((MVGravity1.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
+//                angle[2][i] = (float) (180 / Math.PI * Math.asin((MVGravity2.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
 //
-//                CalibrationAngle[2] = (Angle[0][0] + Angle[0][1])/2;        // Angle 0 = X axe
-//                CalibrationAngle[1] = -(Angle[1][0] + Angle[1][1])/2;       // Angle 1 = Y axe
-//                CalibrationAngle[0] = -(Angle[1][3] + Angle[1][2])/2;       // Angle 2 = Z axe
+//                CalibrationAngle[2] = (angle[0][0] + angle[0][1])/2;        // angle 0 = X axe
+//                CalibrationAngle[1] = -(angle[1][0] + angle[1][1])/2;       // angle 1 = Y axe
+//                CalibrationAngle[0] = -(angle[1][3] + angle[1][2])/2;       // angle 2 = Z axe
 //
 //                Log.d("Clinometer", String.format("CAL   =  %+1.4f°  %+1.4f°  %+1.4f°", CalibrationAngle[0], CalibrationAngle[1], CalibrationAngle[2]));
 //                Log.d("SpiritLevel","------------------------------------------------------");
