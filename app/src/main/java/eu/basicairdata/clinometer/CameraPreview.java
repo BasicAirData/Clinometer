@@ -1,3 +1,26 @@
+/*
+ * CameraPreview - Java Class for Android
+ * Created by G.Capelli (BasicAirData) on 4/1/2021
+ *
+ * The class is based on the developer.android.com CameraPreview Class:
+ * https://developer.android.com/guide/topics/media/camera#custom-camera
+ *
+ * This file is part of BasicAirData Clinometer for Android.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package eu.basicairdata.clinometer;
 
 import android.content.Context;
@@ -10,7 +33,7 @@ import android.view.WindowManager;
 
 import java.io.IOException;
 
-/** A basic Camera preview class */
+
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
@@ -77,7 +100,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         int rotation = ((WindowManager) getContext()
                 .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
                 .getRotation();
-        int degrees = 0, result = 0;
+        int degrees = 0;
 
         switch (rotation) {
             case Surface.ROTATION_0:
@@ -94,7 +117,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 break;
         }
 
-        result = (info.orientation - degrees + 360) % 360;
-        return result;
+        return (info.orientation - degrees + 360) % 360;
     }
 }
