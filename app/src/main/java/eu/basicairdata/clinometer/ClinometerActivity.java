@@ -516,7 +516,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
 
     /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
+    private static Camera getCameraInstance(){
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
