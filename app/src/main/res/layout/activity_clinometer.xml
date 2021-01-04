@@ -28,6 +28,10 @@
     android:layout_height="match_parent"
     tools:context=".ClinometerActivity">
 
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
     <eu.basicairdata.clinometer.ClinometerView
         android:id="@+id/id_clinometerview"

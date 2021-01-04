@@ -24,6 +24,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -113,6 +114,9 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     ValueAnimator animationR = new ValueAnimator();
 
+    private Camera mCamera;
+    private CameraPreview mPreview;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +181,16 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         });
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        // Create an instance of Camera
+        mCamera = getCameraInstance();
+
+        if (mCamera != null) {
+            // Create our Preview view and set it as the content of our activity.
+            mPreview = new CameraPreview(this, mCamera);
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+        }
     }
 
 
@@ -228,6 +242,27 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         Log.w("myApp", "[#] " + this + " - onStop()");
         super.onStop();
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCamera != null) mCamera.release();
+    }
+
+
+    /** A safe way to get an instance of the Camera object. */
+    public static Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
+
 
 
     public void onSensorChanged(SensorEvent event) {
