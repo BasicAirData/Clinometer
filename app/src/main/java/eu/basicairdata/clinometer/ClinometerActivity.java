@@ -542,6 +542,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
 
         mClinometerView.invalidate();
+        mFrameLayoutPreview.setVisibility(View.VISIBLE);
     }
 
 
@@ -551,6 +552,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
 
         mClinometerView.invalidate();
+        mFrameLayoutPreview.setVisibility(View.INVISIBLE);
     }
 
 

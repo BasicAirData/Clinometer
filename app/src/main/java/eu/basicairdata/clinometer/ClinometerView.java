@@ -221,14 +221,14 @@ public class ClinometerView extends View {
         // -----------------------------------------------------------------------------------------
         // --------[ BACKGROUND ]-------------------------------------------------------------------
 
-        if (!isShaderCreated) {
-            paint_bg.setShader(new RadialGradient(xc, yc, (int) (Math.sqrt(xc * xc + yc * yc) / 2),
-                    getResources().getColor(R.color.bgpaint_dark),
-                    getResources().getColor(R.color.bgpaint_light),
-                    Shader.TileMode.MIRROR));
-        }
-        if (!svActivity.isCameraActive)
-            canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
+//        if (!isShaderCreated) {
+//            paint_bg.setShader(new RadialGradient(xc, yc, (int) (Math.sqrt(xc * xc + yc * yc) / 2),
+//                    getResources().getColor(R.color.bgpaint_dark),
+//                    getResources().getColor(R.color.bgpaint_light),
+//                    Shader.TileMode.MIRROR));
+//        }
+//        if (!svActivity.isCameraActive)
+//            canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
 
         // --------[ BACKGROUND OF SPIRIT LEVEL HORIZON ]-------------------------------------------
 
