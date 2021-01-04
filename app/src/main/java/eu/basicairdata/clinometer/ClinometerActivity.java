@@ -69,6 +69,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     public boolean isLocked = false;                    // True if the angles are locked by user
     private boolean isLockRequested = false;
     public float displayRotation = 0;                   // The rotation angle from the natural position of the device
+    public boolean isCameraActive = false;
 
     // Singleton instance
     private static ClinometerActivity singleton;
@@ -83,6 +84,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private LinearLayout mLinearLayoutAngles;
     private ImageView mImageViewLock;
     private ImageView mImageViewSettings;
+    private ImageView mImageViewCamera;
+    private FrameLayout mFrameLayoutPreview;
 
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
@@ -137,9 +140,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mTextViewAngles = findViewById(R.id.id_textview_angles);
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
+        mImageViewCamera = findViewById(R.id.id_imageview_camera);
         mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
         mLinearLayoutOverlays = findViewById(R.id.id_linearlayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
+        mFrameLayoutPreview = findViewById(R.id.camera_preview);
 
 //        for (int i = 0; i < SIZE_OF_MEANVARIANCE; i++) {
 //            MVGravity0.LoadSample(0.0f);
@@ -180,17 +185,19 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             }
         });
 
+        mImageViewCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isCameraActive = !isCameraActive;
+                if (isCameraActive) {
+                    activateCamera();
+                } else deactivateCamera();
+            }
+        });
+
+        mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
+
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        // Create an instance of Camera
-        mCamera = getCameraInstance();
-
-        if (mCamera != null) {
-            // Create our Preview view and set it as the content of our activity.
-            mPreview = new CameraPreview(this, mCamera);
-            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-            preview.addView(mPreview);
-        }
     }
 
 
@@ -204,6 +211,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+
+        releaseCamera();
     }
 
 
@@ -234,6 +243,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         updateLockIcon();
 
         mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
+
+        if (isCameraActive) {
+            activateCamera();
+        }
     }
 
 
@@ -242,27 +255,6 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         Log.w("myApp", "[#] " + this + " - onStop()");
         super.onStop();
     }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mCamera != null) mCamera.release();
-    }
-
-
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
-    }
-
 
 
     public void onSensorChanged(SensorEvent event) {
@@ -520,5 +512,50 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             }
         });
         animationR.start();
+    }
+
+
+    /** A safe way to get an instance of the Camera object. */
+    public static Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+
+    private void activateCamera() {
+        if (mCamera == null) {
+            // Create an instance of Camera
+            mCamera = getCameraInstance();
+        }
+        if (mCamera != null) {
+            // Create our Preview view and set it as the content of our activity.
+            mPreview = new CameraPreview(this, mCamera);
+            mFrameLayoutPreview.addView(mPreview);
+        }
+        isCameraActive = mCamera != null;
+        mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
+
+        mClinometerView.invalidate();
+    }
+
+
+    private void deactivateCamera() {
+        releaseCamera();
+        isCameraActive = mCamera != null;
+        mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
+
+        mClinometerView.invalidate();
+    }
+
+
+    private void releaseCamera() {
+        if (mCamera != null) mCamera.release();
+        mCamera = null;
     }
 }

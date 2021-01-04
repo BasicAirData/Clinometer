@@ -221,13 +221,14 @@ public class ClinometerView extends View {
         // -----------------------------------------------------------------------------------------
         // --------[ BACKGROUND ]-------------------------------------------------------------------
 
-//        if (!isShaderCreated) {
-//            paint_bg.setShader(new RadialGradient(xc, yc, (int) (Math.sqrt(xc * xc + yc * yc) / 2),
-//                    getResources().getColor(R.color.bgpaint_dark),
-//                    getResources().getColor(R.color.bgpaint_light),
-//                    Shader.TileMode.MIRROR));
-//        }
-//        canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
+        if (!isShaderCreated) {
+            paint_bg.setShader(new RadialGradient(xc, yc, (int) (Math.sqrt(xc * xc + yc * yc) / 2),
+                    getResources().getColor(R.color.bgpaint_dark),
+                    getResources().getColor(R.color.bgpaint_light),
+                    Shader.TileMode.MIRROR));
+        }
+        if (!svActivity.isCameraActive)
+            canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
 
         // --------[ BACKGROUND OF SPIRIT LEVEL HORIZON ]-------------------------------------------
 
@@ -240,7 +241,7 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND LINES ]-------------------------------------------------------------
 
-        for (int angle = 0; angle < 360; angle += 10) {
+        for (int angle = 0; angle < 360; angle += (svActivity.isCameraActive ? 30 : 10)) {
             canvas.drawLine(
                     xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
                     yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),
