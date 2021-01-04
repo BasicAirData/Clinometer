@@ -6,7 +6,7 @@ Offered by [BasicAirData](http://www.basicairdata.eu) - Open and free DIY air da
 
 ## Description
 
-BasicAirData Clinometer is a simple App to measure the inclination angles of your device with respect to gravity's direction.<br>
+BasicAirData Clinometer is a simple App to measure the inclination angles of your device with respect to gravity's direction using the onboard accelerometers.<br>
 It's a basic and lightweight App with geometric-inspired graphics, that can be used as Clinometer or Bubble Level.<br>
 It is intended to measure, not store data.<br>
 
