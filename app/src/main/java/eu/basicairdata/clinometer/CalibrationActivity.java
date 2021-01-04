@@ -239,7 +239,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 break;
             case STEP_COMPLETED:
                 // Calculations
-                Log.d("Clinometer","-- MEAN NOT CORRECTED ----------------------------------------------------");
+                Log.d("Clinometer","-- MEAN NOT CORRECTED ------------------------------------------------------");
                 for (int i = 0; i < 7; i++) {
                     Log.d("Clinometer", String.format("mean[ ][" + i + "]  =  %+1.4f  %+1.4f  %+1.4f", mean[0][i], mean[1][i], mean[2][i]));
                 }
@@ -294,24 +294,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 calibrationAngle[1] = -(angle[1][0] + angle[1][1])/2;       // angle 1 = Y axis
                 calibrationAngle[0] = -(angle[1][3] + angle[1][2])/2;       // angle 2 = Z axis
 
-                Log.d("Clinometer","-- CALIBRATION ANGLES ----------------------------------------------------------");
+                Log.d("Clinometer","-- CALIBRATION ANGLES ------------------------------------------------------");
                 Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[0], calibrationAngle[1], calibrationAngle[2]));
-
-
-//                angle[0][i] = (float) (180 / Math.PI * Math.asin((MVGravity0.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
-//                angle[1][i] = (float) (180 / Math.PI * Math.asin((MVGravity1.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
-//                angle[2][i] = (float) (180 / Math.PI * Math.asin((MVGravity2.getMeanValue() / Math.max(gravityXYZ, 0.01f))));
-//
-//                CalibrationAngle[2] = (angle[0][0] + angle[0][1])/2;        // angle 0 = X axe
-//                CalibrationAngle[1] = -(angle[1][0] + angle[1][1])/2;       // angle 1 = Y axe
-//                CalibrationAngle[0] = -(angle[1][3] + angle[1][2])/2;       // angle 2 = Z axe
-//
-//                Log.d("Clinometer", String.format("CAL   =  %+1.4f°  %+1.4f°  %+1.4f°", CalibrationAngle[0], CalibrationAngle[1], CalibrationAngle[2]));
-//                Log.d("SpiritLevel","------------------------------------------------------");
-//
-//                //Log.d("Clinometer", String.format("GRAVX =  %+1.4f°  %+1.4f°", GravityXp, GravityXn));
-//                Log.d("SpiritLevel","------------------------------------------------------");
-//
 
                 Log.d("Clinometer","----------------------------------------------------------------------------");
 
