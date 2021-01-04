@@ -104,12 +104,12 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private final static int ACCELEROMETER_UPDATE_INTERVAL_MICROS = 10000;
 
-    MeanVariance mvAngle0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance mvAngle1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance mvAngle2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    MeanVariance mvGravity0 = new MeanVariance(16);
-    MeanVariance mvGravity1 = new MeanVariance(16);
-    MeanVariance mvGravity2 = new MeanVariance(16);
+    final MeanVariance mvAngle0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    final MeanVariance mvAngle1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    final MeanVariance mvAngle2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    final MeanVariance mvGravity0 = new MeanVariance(16);
+    final MeanVariance mvGravity1 = new MeanVariance(16);
+    final MeanVariance mvGravity2 = new MeanVariance(16);
 
     ValueAnimator animationR = new ValueAnimator();
 
@@ -249,8 +249,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                         && mvAngle0.getLoaded()
                         && mvAngle1.getLoaded()
                         && mvAngle2.getLoaded()
-                        && (
-                        (!prefAutoLockHorizonCheck)
+                        && ((!prefAutoLockHorizonCheck)
                                 || (Math.abs(angle[2]) >= AUTOLOCK_HORIZON_CHECK_THRESHOLD)
                                 || (prefAutoLockHorizonCheck && (Math.abs(angle[2]) < AUTOLOCK_HORIZON_CHECK_THRESHOLD) && (Math.abs(mvAngle2.getMeanValue()) < prefAutoLockTolerance)))) {
 
