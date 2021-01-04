@@ -17,6 +17,8 @@ The app measures the following angles:<br>
 - **Pitch** = _White_ - The angle between the horizontal axis and the reference axis of the screen<br>
 - **Roll** = _White_ - The angle between the screen and the horizontal plane<br>
 
+![alt tag](https://github.com/BasicAirData/Clinometer/blob/master/screenshots/Image_01_with_notes.png)
+
 Please go on Settings and calibrate it before the use.<br>
 The precision of the measurement mainly depends on the accuracy of the calibration: use a good horizontal and vertical reference for calibration. 
 
