@@ -190,20 +190,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isCameraActive = !isCameraActive;
-                if (isCameraActive) {
-                    activateCamera();
-                } else deactivateCamera();
+                if (isCameraActive) deactivateCamera();
+                else activateCamera();
             }
         });
 
-        if (isCameraActive) {
-            mImageViewCamera.setAlpha(0.9f);
-            mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
-        } else {
-            mImageViewCamera.setAlpha(0.4f);
-            mLinearLayoutToolbar.setBackground(null);
-        }
+        if (isCameraActive) activateCamera();
+        else deactivateCamera();
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
@@ -220,7 +213,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         super.onPause();
         mSensorManager.unregisterListener(this);
 
-        releaseCamera();
+        if (isCameraActive) pauseCamera();
     }
 
 
@@ -252,9 +245,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
 
-        if (isCameraActive) {
-            activateCamera();
-        }
+        if (isCameraActive) resumeCamera();
     }
 
 
@@ -543,8 +534,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         }
         if (mCamera != null) {
             // Create our Preview view and set it as the content of our activity.
+            if (mPreview != null) mFrameLayoutPreview.removeView(mPreview);
             mPreview = new CameraPreview(this, mCamera);
             mFrameLayoutPreview.addView(mPreview);
+            mFrameLayoutPreview.setVisibility(View.VISIBLE);
         }
         isCameraActive = mCamera != null;
         if (isCameraActive) {
@@ -556,17 +549,17 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         }
 
         mClinometerView.invalidate();
-        mFrameLayoutPreview.setVisibility(View.VISIBLE);
     }
 
 
     private void deactivateCamera() {
-        releaseCamera();
+        pauseCamera();
         isCameraActive = mCamera != null;
         if (isCameraActive) {
             mImageViewCamera.setAlpha(0.9f);
             mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
         } else {
+            if (mPreview != null) mFrameLayoutPreview.removeView(mPreview);
             mImageViewCamera.setAlpha(0.4f);
             mLinearLayoutToolbar.setBackground(null);
         }
@@ -576,8 +569,26 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     }
 
 
-    private void releaseCamera() {
+    private void resumeCamera() {
+        if (isCameraActive) {
+            if (mCamera == null) {
+                // Create an instance of Camera
+                mCamera = getCameraInstance();
+            }
+            if (mCamera != null) {
+                // Create our Preview view and set it as the content of our activity.
+                if (mPreview != null) mFrameLayoutPreview.removeView(mPreview);
+                mPreview = new CameraPreview(this, mCamera);
+                mFrameLayoutPreview.addView(mPreview);
+            }
+        }
+        mClinometerView.invalidate();
+    }
+
+
+    private void pauseCamera() {
         if (mCamera != null) mCamera.release();
         mCamera = null;
+        mClinometerView.invalidate();
     }
 }
