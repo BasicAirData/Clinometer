@@ -82,6 +82,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private FrameLayout mFrameLayoutClinometer;
     private LinearLayout mLinearLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
+    private LinearLayout mLinearLayoutToolbar;
     private ImageView mImageViewLock;
     private ImageView mImageViewSettings;
     private ImageView mImageViewCamera;
@@ -144,6 +145,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
         mLinearLayoutOverlays = findViewById(R.id.id_linearlayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
+        mLinearLayoutToolbar = findViewById(R.id.id_linearlayout_toolbar);
         mFrameLayoutPreview = findViewById(R.id.camera_preview);
 
 //        for (int i = 0; i < SIZE_OF_MEANVARIANCE; i++) {
@@ -195,7 +197,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             }
         });
 
-        mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
+        if (isCameraActive) {
+            mImageViewCamera.setAlpha(0.9f);
+            mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
+        } else {
+            mImageViewCamera.setAlpha(0.4f);
+            mLinearLayoutToolbar.setBackground(null);
+        }
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
@@ -539,7 +547,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             mFrameLayoutPreview.addView(mPreview);
         }
         isCameraActive = mCamera != null;
-        mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
+        if (isCameraActive) {
+            mImageViewCamera.setAlpha(0.9f);
+            mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
+        } else {
+            mImageViewCamera.setAlpha(0.4f);
+            mLinearLayoutToolbar.setBackground(null);
+        }
 
         mClinometerView.invalidate();
         mFrameLayoutPreview.setVisibility(View.VISIBLE);
@@ -549,7 +563,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private void deactivateCamera() {
         releaseCamera();
         isCameraActive = mCamera != null;
-        mImageViewCamera.setAlpha(isCameraActive ? 0.8f : 0.4f);
+        if (isCameraActive) {
+            mImageViewCamera.setAlpha(0.9f);
+            mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
+        } else {
+            mImageViewCamera.setAlpha(0.4f);
+            mLinearLayoutToolbar.setBackground(null);
+        }
 
         mClinometerView.invalidate();
         mFrameLayoutPreview.setVisibility(View.INVISIBLE);

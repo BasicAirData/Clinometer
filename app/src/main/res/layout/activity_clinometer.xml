@@ -57,25 +57,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/id_imageview_lock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_marginEnd="3dp"
-            app:srcCompat="@drawable/ic_lock_open_24">
-        </androidx.appcompat.widget.AppCompatImageView>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/id_imageview_lock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginEnd="3dp"
+                app:srcCompat="@drawable/ic_lock_open_24">
+            </androidx.appcompat.widget.AppCompatImageView>
 
-        <TextView
-            android:id="@+id/id_textview_angles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:paddingStart="0dp"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="">
-        </TextView>
+            <TextView
+                android:id="@+id/id_textview_angles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:paddingStart="0dp"
+                android:textColor="@color/colorAccent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="">
+            </TextView>
+
         </LinearLayout>
 
         <View
@@ -83,19 +84,27 @@
             android:layout_height="1dp"
             android:layout_weight="1"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/id_imageview_camera"
+        <LinearLayout
+            android:id="@+id/id_linearlayout_toolbar"
+            android:background="@drawable/rounded_corner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            app:srcCompat="@drawable/ic_image_24"/>
+            android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/id_imageview_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            app:srcCompat="@drawable/ic_more_24"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/id_imageview_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_image_24"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/id_imageview_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_more_24"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
