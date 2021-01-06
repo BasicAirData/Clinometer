@@ -20,6 +20,7 @@
 
 package eu.basicairdata.clinometer;
 
+import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -172,6 +173,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 if (isLocked) {
                     isLocked = false;
                     isLockRequested = false;
+                    if ((mCamera != null) && (mPreview != null) && (isCameraActive)) mPreview.resumePreview();
                 }
                 else isLockRequested = !isLockRequested;
                 updateLockIcon();
@@ -269,6 +271,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     mClinometerView.invalidate();
                     updateLockIcon();
                     beep();
+                    if ((mCamera != null) && (mPreview != null) && (isCameraActive)) mPreview.pausePreview();
                 } else if ((mvAngle0.getTolerance() < prefAutoLockTolerance)
                         && (mvAngle1.getTolerance() < prefAutoLockTolerance)
                         && (mvAngle2.getTolerance() < prefAutoLockTolerance)
@@ -311,6 +314,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     mClinometerView.invalidate();
                     updateLockIcon();
                     beep();
+                    if ((mCamera != null) && (mPreview != null) && (isCameraActive)) mPreview.pausePreview();
 
                     mvAngle0.reset();
                     mvAngle1.reset();
@@ -439,14 +443,14 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private void updateLockIcon() {
         if (isLocked) {
-            mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_24));
-            mImageViewLock.setAlpha(0.8f);
+            mImageViewLock.setImageResource(R.drawable.ic_lock_24);
+            mImageViewLock.setAlpha(0.9f);
         } else {
             if (isLockRequested) {
-                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_24));
-                mImageViewLock.setAlpha(0.8f);
+                mImageViewLock.setImageResource(R.drawable.ic_lock_open_24);
+                mImageViewLock.setAlpha(0.9f);
             } else {
-                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_24));
+                mImageViewLock.setImageResource(R.drawable.ic_lock_open_24);
                 mImageViewLock.setAlpha(0.4f);
             }
         }
