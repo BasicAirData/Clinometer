@@ -35,8 +35,8 @@ import java.io.IOException;
 
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
-    private SurfaceHolder mHolder;
-    private Camera mCamera;
+    private final SurfaceHolder mHolder;
+    private final Camera mCamera;
 
     public CameraPreview(Context context, Camera camera) {
         super(context);
@@ -47,7 +47,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder = getHolder();
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        //mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mCamera.setDisplayOrientation(getRotationDegrees());
     }
 
@@ -120,11 +120,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return (info.orientation - degrees + 360) % 360;
     }
 
-    public void pausePreview () {
-        mCamera.stopPreview();
-    }
-
-    public void resumePreview () {
-        mCamera.startPreview();
-    }
+//    public void pausePreview () {
+//        mCamera.stopPreview();
+//    }
+//
+//    public void resumePreview () {
+//        mCamera.startPreview();
+//    }
 }
