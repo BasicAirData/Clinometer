@@ -20,10 +20,12 @@
 
 package eu.basicairdata.clinometer;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -34,7 +36,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import android.media.AudioManager;
@@ -59,6 +65,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
     private Vibrator vibrator;
 
+    private static final int MY_CAMERA_REQUEST_CODE = 100;
+
     private static final float AUTOLOCK_MIN_TOLERANCE = 0.05f;          // The minimum tolerance of the AutoLock
     private static final float AUTOLOCK_MAX_TOLERANCE = 0.5f;           // The maximum tolerance of the AutoLock
     private static final float AUTOLOCK_HORIZON_CHECK_THRESHOLD = 5.0f; // The zone of horizon check (+- 5 degrees)
@@ -76,9 +84,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     public boolean isLocked = false;                    // True if the angles are locked by user
     private boolean isLockRequested = false;
     public float displayRotation = 0;                   // The rotation angle from the natural position of the device
-    public boolean isInCameraMode = false;
-    public boolean isCameraActive = false;
-    private Bitmap cameraPreviewBitmap;
+
+    private boolean isInCameraMode = false;             // True if Camera Mode is active
+    private boolean isCameraLivePreviewActive = false;  // True if the Live Preview with Camera is active
+    private boolean hasACamera = false;                 // True if the device has a camera
+    private Bitmap cameraPreviewBitmap;                 // The image saved from Camera Preview (used by Locking and onPause/onResume)
 
     // Singleton instance
     private static ClinometerActivity singleton;
@@ -173,12 +183,17 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mvGravity1.reset(0.0f);
         mvGravity2.reset(9.80f);
 
-        // Check sensors
-        Log.d("SpiritLevel", "- ROTATION_VECTOR Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR).size());
-        Log.d("SpiritLevel", "- ACCELEROMETER Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size());
+        // ---------- Check sensors
+
+        Log.d("Clinometer", "- ROTATION_VECTOR Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR).size());
+        Log.d("Clinometer", "- ACCELEROMETER Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size());
 
         mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (mRotationSensor == null) Log.d("SpiritLevel", "NO ACCELEROMETER FOUND!");
+
+        hasACamera = checkCameraHardware();
+
+        // ---------- Button Listeners
 
         mLinearLayoutAngles.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -208,11 +223,30 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isInCameraMode = switchToCameraMode(!isInCameraMode);
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ClinometerActivity.getInstance(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+                } else {
+                    isInCameraMode = switchToCameraMode(!isInCameraMode);
+                }
             }
         });
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                isInCameraMode = switchToCameraMode(!isInCameraMode);
+                //Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+            } else {
+                // TODO: Show a feedback that informs the User that he must grant the Camera Permission in order to use the feature
+                //Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 
@@ -567,7 +601,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
 
     private boolean activateCamera() {
-        if (isCameraActive) return true;
+        if (isCameraLivePreviewActive) return true;
         if (mCamera == null) {
             // Create an instance of Camera
             mCamera = getCameraInstance();
@@ -580,7 +614,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mFrameLayoutPreview.addView(mPreview);
         mFrameLayoutPreview.setVisibility(View.VISIBLE);
 
-        isCameraActive = true;
+        isCameraLivePreviewActive = true;
         mClinometerView.invalidate();
         return true;
     }
@@ -601,6 +635,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         @Override
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             try {
+                mPreview.pausePreview();
                 Camera.Parameters parameters = camera.getParameters();
                 Log.d("Clinometer", "onPreviewFrame");
 
@@ -633,6 +668,19 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mFrameLayoutPreview.removeAllViews();
         mFrameLayoutPreview.setVisibility(View.INVISIBLE);
         mClinometerView.invalidate();
-        isCameraActive = false;
+        isCameraLivePreviewActive = false;
     }
+
+
+    /** Check if this device has a camera */
+    private boolean checkCameraHardware() {
+        if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
+
 }

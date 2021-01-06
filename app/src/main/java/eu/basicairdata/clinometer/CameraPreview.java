@@ -120,9 +120,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return (info.orientation - degrees + 360) % 360;
     }
 
-//    public void pausePreview () {
-//        mCamera.stopPreview();
-//    }
+    public void pausePreview () {
+        mCamera.stopPreview();
+    }
 //
 //    public void resumePreview () {
 //        mCamera.startPreview();
