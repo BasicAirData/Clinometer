@@ -23,6 +23,9 @@
 <resources>
     <string name="app_name">Clinometer</string>
 
+    <string name="toast_please_grant_camera_permission">Please grant the Camera Permission to enable this Feature</string>
+    <string name="toast_activation_of_the_camera">Activating Camera...</string>
+
     <!-- Preferences -->
     <string name="Settings">Settings</string>
 
