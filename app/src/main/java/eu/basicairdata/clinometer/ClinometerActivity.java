@@ -87,7 +87,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private boolean isLockRequested = false;
     public float displayRotation = 0;                   // The rotation angle from the natural position of the device
 
-    private boolean isInCameraMode = false;             // True if Camera Mode is active
+    public boolean isInCameraMode = false;             // True if Camera Mode is active
     private boolean isCameraLivePreviewActive = false;  // True if the Live Preview with Camera is active
     private boolean hasACamera = false;                 // True if the device has a camera
     private Bitmap cameraPreviewBitmap;                 // The image saved from Camera Preview (used by Locking and onPause/onResume)

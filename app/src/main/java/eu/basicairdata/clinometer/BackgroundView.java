@@ -86,16 +86,17 @@ public class BackgroundView extends View {
                     getResources().getColor(R.color.bgpaint_dark),
                     getResources().getColor(R.color.bgpaint_light),
                     Shader.TileMode.MIRROR));
+            isShaderCreated = true;
         }
         canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
 
         for (int angle = 0; angle < 360; angle += 10) {
-            canvas.drawLine(
-                    xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
-                    yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),
-                    xc - (int) ((angle % 90 == 0 ? 0 : r1) * Math.cos(Math.toRadians(angle))),
-                    yc - (int) ((angle % 90 == 0 ? 0 : r1) * Math.sin(Math.toRadians(angle))),
-                    paint_DKGray);
+            if (angle % 90 != 0) canvas.drawLine(
+                xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
+                yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),
+                xc - (int) (r1 * Math.cos(Math.toRadians(angle))),
+                yc - (int) (r1 * Math.sin(Math.toRadians(angle))),
+                paint_DKGray);
         }
     }
 }

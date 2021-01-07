@@ -31,12 +31,14 @@
     <FrameLayout
         android:id="@+id/id_animated_backgrounds"
         android:animateLayoutChanges="true"
+        android:background="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/camera_preview"
             android:visibility="gone"
+            android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
