@@ -98,7 +98,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
-    private FrameLayout mFrameLayoutClinometer;
+    //private FrameLayout mFrameLayoutClinometer;
     private LinearLayout mLinearLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
     private LinearLayout mLinearLayoutToolbar;
@@ -107,6 +107,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private ImageView mImageViewCamera;
     private ImageView mImageViewCameraImage;
     private FrameLayout mFrameLayoutPreview;
+    private BackgroundView mBackgroundView;
 
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
@@ -162,14 +163,16 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
         mImageViewCamera = findViewById(R.id.id_imageview_camera);
-        mImageViewCameraImage = findViewById(R.id.id_imageview_cameraimage);
-        mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
+        //mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
         mLinearLayoutOverlays = findViewById(R.id.id_linearlayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
         mLinearLayoutToolbar = findViewById(R.id.id_linearlayout_toolbar);
-        mFrameLayoutPreview = findViewById(R.id.camera_preview);
 
-        mImageViewCameraImage.setVisibility(View.INVISIBLE);
+        mImageViewCameraImage = findViewById(R.id.id_imageview_cameraimage);
+        mFrameLayoutPreview = findViewById(R.id.camera_preview);
+        mBackgroundView = findViewById(R.id.id_backgroundview);
+
+
         mImageViewCamera.setAlpha(0.4f);
         mLinearLayoutToolbar.setBackground(null);
 
@@ -577,9 +580,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     }
 
 
-    private boolean switchToCameraMode(boolean state) {
-        boolean result = state;
-        if (state) {
+    /** Switch on/off the Camera Mode */
+    private boolean switchToCameraMode(boolean newState) {
+        boolean result = newState;
+        if (newState) {
             // Switch ON the Camera Mode
             if (!isLocked || (cameraPreviewBitmap == null)) {
                 result = activateCamera();
@@ -588,18 +592,20 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             mImageViewCamera.setAlpha(0.9f);
             mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
             mImageViewCameraImage.setVisibility(View.VISIBLE);
+            mBackgroundView.setVisibility(View.GONE);
         } else {
             // Switch OFF the Camera Mode
             releaseCamera(false);
             mImageViewCamera.setAlpha(0.4f);
             mLinearLayoutToolbar.setBackground(null);
-            mImageViewCameraImage.setVisibility(View.INVISIBLE);
+            mBackgroundView.setVisibility(View.VISIBLE);
+            mImageViewCameraImage.setVisibility(View.GONE);
         }
-        mClinometerView.invalidate();
         return result;
     }
 
 
+    /** Activate the Camera Preview */
     private boolean activateCamera() {
         if (isCameraLivePreviewActive) return true;
         if (mCamera == null) {
@@ -613,25 +619,14 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mPreview = new CameraPreview(this, mCamera);
         mFrameLayoutPreview.addView(mPreview);
         mFrameLayoutPreview.setVisibility(View.VISIBLE);
+        mImageViewCameraImage.setVisibility(View.GONE);
 
         isCameraLivePreviewActive = true;
-        mClinometerView.invalidate();
         return true;
     }
 
 
-    private void releaseCamera(boolean saveImage) {
-        if (mCamera != null) {
-            if (saveImage) {
-                mCamera.setOneShotPreviewCallback(pc);
-            } else {
-                stopCamera();
-            }
-        }
-    }
-
-
-    Camera.PreviewCallback pc = new Camera.PreviewCallback() {
+    final Camera.PreviewCallback cameraPreviewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             try {
@@ -660,14 +655,28 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     };
 
 
+    /** Stops the Camera Preview.
+     * If saveImage is true, the method saves the last frame before stop the Preview */
+    private void releaseCamera(boolean saveImage) {
+        if (mCamera != null) {
+            if (saveImage) {
+                mCamera.setOneShotPreviewCallback(cameraPreviewCallback);
+            } else {
+                stopCamera();
+            }
+        }
+    }
+
+
+    /** Stops the Camera Preview */
     private void stopCamera() {
         if (mCamera != null) {
             mCamera.release();
             mCamera = null;
         }
+        mImageViewCameraImage.setVisibility(View.VISIBLE);
+        mFrameLayoutPreview.setVisibility(View.GONE);
         mFrameLayoutPreview.removeAllViews();
-        mFrameLayoutPreview.setVisibility(View.INVISIBLE);
-        mClinometerView.invalidate();
         isCameraLivePreviewActive = false;
     }
 
@@ -682,5 +691,4 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             return false;
         }
     }
-
 }
