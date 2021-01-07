@@ -58,8 +58,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <LinearLayout
-        android:id="@+id/id_linearlayout_overlay"
+    <FrameLayout
+        android:id="@+id/id_framelayout_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -69,6 +69,7 @@
         <LinearLayout
             android:id="@+id/id_linearlayout_angles"
             android:background="@drawable/rounded_corner"
+            android:gravity="start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -92,14 +93,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"/>
-
         <LinearLayout
             android:id="@+id/id_linearlayout_toolbar"
             android:background="@drawable/rounded_corner"
+            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -119,6 +116,6 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </FrameLayout>

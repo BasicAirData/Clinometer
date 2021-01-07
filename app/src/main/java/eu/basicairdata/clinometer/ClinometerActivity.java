@@ -99,7 +99,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
     //private FrameLayout mFrameLayoutClinometer;
-    private LinearLayout mLinearLayoutOverlays;
+    private FrameLayout mFrameLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
     private LinearLayout mLinearLayoutToolbar;
     private ImageView mImageViewLock;
@@ -164,7 +164,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
         mImageViewCamera = findViewById(R.id.id_imageview_camera);
         //mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
-        mLinearLayoutOverlays = findViewById(R.id.id_linearlayout_overlay);
+        mFrameLayoutOverlays = findViewById(R.id.id_framelayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
         mLinearLayoutToolbar = findViewById(R.id.id_linearlayout_toolbar);
 
@@ -558,12 +558,12 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 float animatedValue = (float) Math.sqrt(Math.sqrt((float) updatedAnimation.getAnimatedValue()));
                 float alpha = 2 * Math.abs(animatedValue - 0.5f);           // Transparency for Fades
                 //Log.d("SpiritLevel", "alpha = " + alpha);
-                mLinearLayoutOverlays.setAlpha(alpha);
-                if ((animatedValue >= 0.5f) && (mLinearLayoutOverlays.getRotation() != rotationAngle)) {
+                mFrameLayoutOverlays.setAlpha(alpha);
+                if ((animatedValue >= 0.5f) && (mFrameLayoutOverlays.getRotation() != rotationAngle)) {
                     //Log.d("SpiritLevel", "change parameters = " + rotationAngle + ", " + newWidth + ", " + newHeight);
-                    mLinearLayoutOverlays.getLayoutParams().height = newHeight;
-                    mLinearLayoutOverlays.getLayoutParams().width = newWidth;
-                    mLinearLayoutOverlays.setRotation(rotationAngle);
+                    mFrameLayoutOverlays.getLayoutParams().height = newHeight;
+                    mFrameLayoutOverlays.getLayoutParams().width = newWidth;
+                    mFrameLayoutOverlays.setRotation(rotationAngle);
                 }
             }
         });
