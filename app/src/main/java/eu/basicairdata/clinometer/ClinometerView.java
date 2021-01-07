@@ -24,10 +24,8 @@ package eu.basicairdata.clinometer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -49,9 +47,7 @@ public class ClinometerView extends View {
 
     ClinometerActivity svActivity = ClinometerActivity.getInstance();
 
-    private Paint paint_bg;                 // For Background Gradient
     private Paint paint_LTGray;             // For Background Lines 30° + Circles
-    private Paint paint_DKGray;             // For Background Lines != 30°
     private Paint paint_White;              // For White Angles Lines
     private Paint paint_WhiteText;          // For White Angles Text
     private Paint paint_ShadowText;         // For Shadows of Text
@@ -153,14 +149,6 @@ public class ClinometerView extends View {
         paint_Arc.setDither(true);
         paint_Arc.setAntiAlias(true);
 
-        paint_DKGray = new Paint();
-        paint_DKGray.setColor(getResources().getColor(R.color.line_dark));
-        paint_DKGray.setStyle(Paint.Style.STROKE);
-        paint_DKGray.setDither(true);
-        paint_DKGray.setAntiAlias(true);
-
-        paint_bg = new Paint();
-        paint_bg.setStyle(Paint.Style.FILL);
         isShaderCreated = false;
 
         paint_Yellow_Spirit = new Paint();
@@ -221,13 +209,14 @@ public class ClinometerView extends View {
         // -----------------------------------------------------------------------------------------
         // --------[ BACKGROUND ]-------------------------------------------------------------------
 
-        if (!isShaderCreated) {
-            paint_bg.setShader(new RadialGradient(xc, yc, (int) (Math.sqrt(xc * xc + yc * yc) / 2),
-                    getResources().getColor(R.color.bgpaint_dark),
-                    getResources().getColor(R.color.bgpaint_light),
-                    Shader.TileMode.MIRROR));
-        }
-        canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
+//        if (!isShaderCreated) {
+//            paint_bg.setShader(new RadialGradient(xc, yc, (int) (Math.sqrt(xc * xc + yc * yc) / 2),
+//                    getResources().getColor(R.color.bgpaint_dark),
+//                    getResources().getColor(R.color.bgpaint_light),
+//                    Shader.TileMode.MIRROR));
+//        }
+//        if (!svActivity.isCameraActive)
+//            canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
 
         // --------[ BACKGROUND OF SPIRIT LEVEL HORIZON ]-------------------------------------------
 
@@ -240,13 +229,13 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND LINES ]-------------------------------------------------------------
 
-        for (int angle = 0; angle < 360; angle += 10) {
+        for (int angle = 0; angle < 360; angle += 30) {
             canvas.drawLine(
                     xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
                     yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),
                     xc - (int) ((angle % 90 == 0 ? 0 : r1) * Math.cos(Math.toRadians(angle))),
                     yc - (int) ((angle % 90 == 0 ? 0 : r1) * Math.sin(Math.toRadians(angle))),
-                    angle % 30 == 0 ? paint_LTGray : paint_DKGray);
+                    paint_LTGray);
         }
 
         // --------[ HORIZONTAL AND VERTICAL AXIS ]----------------------------------------------------------------------

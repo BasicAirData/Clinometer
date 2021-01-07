@@ -28,14 +28,38 @@
     android:layout_height="match_parent"
     tools:context=".ClinometerActivity">
 
+    <FrameLayout
+        android:id="@+id/id_animated_backgrounds"
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/camera_preview"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/id_imageview_cameraimage"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <eu.basicairdata.clinometer.BackgroundView
+            android:id="@+id/id_backgroundview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
 
     <eu.basicairdata.clinometer.ClinometerView
         android:id="@+id/id_clinometerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <LinearLayout
-        android:id="@+id/id_linearlayout_overlay"
+    <FrameLayout
+        android:id="@+id/id_framelayout_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -45,43 +69,67 @@
         <LinearLayout
             android:id="@+id/id_linearlayout_angles"
             android:background="@drawable/rounded_corner"
+            android:gravity="start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/id_imageview_lock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_marginEnd="3dp"
-            app:srcCompat="@drawable/ic_lock_open_24">
-        </androidx.appcompat.widget.AppCompatImageView>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/id_imageview_lock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginEnd="3dp"
+                app:srcCompat="@drawable/ic_lock_open_24"/>
 
-        <TextView
-            android:id="@+id/id_textview_angles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:paddingStart="0dp"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="">
-        </TextView>
+            <TextView
+                android:id="@+id/id_textview_angles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:paddingStart="0dp"
+                android:textColor="@color/colorAccent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=""/>
+
         </LinearLayout>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"/>
+        <LinearLayout
+            android:id="@+id/id_linearlayout_toolbar"
+            android:background="@drawable/rounded_corner"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/id_imageview_settings"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/id_imageview_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_image_24"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/id_imageview_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_more_24"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/id_textview_toast"
+            android:layout_gravity="bottom|center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner"
             android:padding="10dp"
-            app:srcCompat="@drawable/ic_more_24">
-        </androidx.appcompat.widget.AppCompatImageView>
+            android:layout_margin="50dp"
+            android:textColor="@color/line_white"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:visibility="gone"
+            android:textAlignment="center"
+            android:text=""/>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </FrameLayout>
