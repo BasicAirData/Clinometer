@@ -223,16 +223,20 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             }
         });
 
-        mImageViewCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ClinometerActivity.getInstance(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-                } else {
-                    isInCameraMode = switchToCameraMode(!isInCameraMode);
+        if (hasACamera) {
+            mImageViewCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ClinometerActivity.getInstance(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+                    } else {
+                        isInCameraMode = switchToCameraMode(!isInCameraMode);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            mImageViewCamera.setVisibility(View.GONE);
+        }
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
