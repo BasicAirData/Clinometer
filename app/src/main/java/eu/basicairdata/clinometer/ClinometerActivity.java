@@ -46,6 +46,7 @@ import androidx.preference.PreferenceManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -66,6 +67,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private Vibrator vibrator;
 
     private static final int MY_CAMERA_REQUEST_CODE = 100;
+    private static final int TOAST_TIME = 2500;                         // The time a toast is shown
 
     private static final float AUTOLOCK_MIN_TOLERANCE = 0.05f;          // The minimum tolerance of the AutoLock
     private static final float AUTOLOCK_MAX_TOLERANCE = 0.5f;           // The maximum tolerance of the AutoLock
@@ -98,6 +100,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
+    private TextView mTextViewToast;
     //private FrameLayout mFrameLayoutClinometer;
     private FrameLayout mFrameLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
@@ -160,6 +163,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         mClinometerView = findViewById(R.id.id_clinometerview);
         mTextViewAngles = findViewById(R.id.id_textview_angles);
+        mTextViewToast = findViewById(R.id.id_textview_toast);
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
         mImageViewCamera = findViewById(R.id.id_imageview_camera);
@@ -248,10 +252,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 isInCameraMode = switchToCameraMode(!isInCameraMode);
-                //Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
             } else {
-                // TODO: Show a feedback that informs the User that he must grant the Camera Permission in order to use the feature
-                //Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+                showToast(getString(R.string.toast_please_grant_camera_permission));
             }
         }
     }
@@ -571,6 +573,38 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     }
 
 
+    // ---------------------------------------------------------------------------------------------
+    // --- TOASTS ----------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+
+
+    final Handler toastHandler = new Handler();
+    final Runnable r = new Runnable() {
+        @Override
+        public void run() {
+            hideToast();
+        }
+    };
+
+
+    private void showToast(String text) {
+        toastHandler.removeCallbacks(r);
+        mTextViewToast.setText(text);
+        mTextViewToast.setVisibility(View.VISIBLE);
+        toastHandler.postDelayed(r, TOAST_TIME);
+    }
+
+
+    private void hideToast() {
+        if (mTextViewToast != null) mTextViewToast.setVisibility(View.GONE);
+    }
+
+
+    // ---------------------------------------------------------------------------------------------
+    // --- CAMERA MANAGEMENT -----------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+
+
     /** A safe way to get an instance of the Camera object. */
     private static Camera getCameraInstance(){
         Camera c = null;
@@ -613,6 +647,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private boolean activateCamera() {
         if (isCameraLivePreviewActive) return true;
         if (mCamera == null) {
+            //showToast(getString(R.string.toast_activation_of_the_camera));
             // Create an instance of Camera
             mCamera = getCameraInstance();
         }
