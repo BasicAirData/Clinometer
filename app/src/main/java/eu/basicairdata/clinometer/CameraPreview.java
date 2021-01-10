@@ -38,7 +38,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private final SurfaceHolder mHolder;
     private final Camera mCamera;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context, Camera camera, int exposureCompensation) {
         super(context);
         mCamera = camera;
 
@@ -52,7 +52,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         if (params.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         }
-        //params.setExposureCompensation(params.getMinExposureCompensation());
+
+        if (exposureCompensation != 0) params.setExposureCompensation(exposureCompensation);
         mCamera.setParameters(params);
         mCamera.setDisplayOrientation(getRotationDegrees());
     }
@@ -122,7 +123,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 degrees = 270;
                 break;
         }
-
+        Log.d("CameraPreview", "Orientation: info.orientation = " + info.orientation + " Surface.ROTATION = " + degrees);
         return (info.orientation - degrees + 360) % 360;
     }
 

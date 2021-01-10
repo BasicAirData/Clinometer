@@ -73,6 +73,32 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/pref_category_cameramode">
+
+        <Preference
+            app:key="prefCameraPermission"
+            app:title="@string/pref_cameramode_camera_to_use"
+            app:summary="@string/pref_cameramode_no_permission_to_access"
+            app:defaultValue="false">
+        </Preference>
+
+        <ListPreference
+            app:key="prefCamera"
+            android:summary="%s"
+            app:title="@string/pref_cameramode_camera_to_use"
+            app:defaultValue="0"/>
+
+        <SeekBarPreference
+            app:key="prefExposureCompensation"
+            app:title="@string/pref_cameramode_exposure_compensation"
+            android:enabled="false"
+            android:max="200"
+            app:min="-200"
+            app:defaultValue="0"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_category_info">
 
         <Preference
