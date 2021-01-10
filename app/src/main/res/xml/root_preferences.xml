@@ -79,14 +79,15 @@
             app:key="prefCameraPermission"
             app:title="@string/pref_cameramode_camera_to_use"
             app:summary="@string/pref_cameramode_no_permission_to_access"
-            app:defaultValue="false">
-        </Preference>
+            app:defaultValue="false"
+            app:icon="@drawable/ic_photo_camera_24"/>
 
         <ListPreference
             app:key="prefCamera"
             android:summary="%s"
             app:title="@string/pref_cameramode_camera_to_use"
-            app:defaultValue="0"/>
+            app:defaultValue="0"
+            app:icon="@drawable/ic_photo_camera_24"/>
 
         <SeekBarPreference
             app:key="prefExposureCompensation"
