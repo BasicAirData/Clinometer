@@ -43,6 +43,14 @@
     <string name="pref_autolocking_horizon_summary">for vertical measurements</string>
     <string name="pref_autolocking_precision">Precision</string>
 
+    <string name="pref_category_cameramode">CAMERA MODE</string>
+    <string name="pref_cameramode_camera_to_use">Camera to use</string>
+    <string name="pref_cameramode_camera_front">Front Camera</string>
+    <string name="pref_cameramode_camera_rear">Rear Camera</string>
+    <string name="pref_cameramode_no_cameras">This Device has no Camera</string>
+    <string name="pref_cameramode_no_permission_to_access">No Permission to access Camera</string>
+    <string name="pref_cameramode_exposure_compensation">Exposure Compensation</string>
+
     <string name="pref_category_info">INFO</string>
     <string name="pref_about">Info</string>
     <string name="pref_about_summary">about the app</string>
