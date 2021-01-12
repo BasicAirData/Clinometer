@@ -78,6 +78,8 @@
     <string name="calibration_step7">Step 7 of 7\nPress next and lay face down</string>
     <string name="calibration_calibrating">Calibrating...\nDon\'t move the device</string>
 
+    <string name="calibration_abort">Do you really want to abort the calibration process and return to settings?</string>
+
     <string name="next">Next >></string>
     <string name="previous">Previous</string>
 
