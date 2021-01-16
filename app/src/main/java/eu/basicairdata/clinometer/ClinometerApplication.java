@@ -37,6 +37,28 @@ public class ClinometerApplication extends Application {
 
     public static final int CAMERA_REQUEST_CODE = 100;
 
+
+    public static final String KEY_PREF_CALIBRATION                   = "prefCalibration";
+    public static final String KEY_PREF_CALIBRATION_RESET             = "prefResetCalibration";
+    public static final String KEY_PREF_CALIBRATION_TIME              = "prefCalibrationTime";
+    public static final String KEY_PREF_AUTOLOCK                      = "prefAutoLock";
+    public static final String KEY_PREF_AUTOLOCK_HORIZON_CHECK        = "prefAutoLockHorizonCheck";
+    public static final String KEY_PREF_AUTOLOCK_PRECISION            = "prefAutoLockPrecision";
+    public static final String KEY_PREF_CAMERA_PERMISSION             = "prefCameraPermission";
+    public static final String KEY_PREF_CAMERA                        = "prefCamera";
+    public static final String KEY_PREF_CAMERA_EXPOSURE_COMPENSATION  = "prefExposureCompensation";
+    public static final String KEY_PREF_ABOUT                         = "prefAbout";
+    public static final String KEY_PREF_CALIBRATION_ANGLE_0           = "prefCalibrationAngle0";
+    public static final String KEY_PREF_CALIBRATION_ANGLE_1           = "prefCalibrationAngle1";
+    public static final String KEY_PREF_CALIBRATION_ANGLE_2           = "prefCalibrationAngle2";
+    public static final String KEY_PREF_CALIBRATION_GAIN_0            = "prefCalibrationGain0";
+    public static final String KEY_PREF_CALIBRATION_GAIN_1            = "prefCalibrationGain1";
+    public static final String KEY_PREF_CALIBRATION_GAIN_2            = "prefCalibrationGain2";
+    public static final String KEY_PREF_CALIBRATION_OFFSET_0          = "prefCalibrationOffset0";
+    public static final String KEY_PREF_CALIBRATION_OFFSET_1          = "prefCalibrationOffset1";
+    public static final String KEY_PREF_CALIBRATION_OFFSET_2          = "prefCalibrationOffset2";
+
+
     // Singleton instance
     private static ClinometerApplication singleton;
     public static ClinometerApplication getInstance(){
@@ -143,16 +165,16 @@ public class ClinometerApplication extends Application {
                 Log.d("ClinometerApplication", "Camera " + cameraInformation.id + " added to list");
             }
 
-            int prefCamera = Integer.parseInt(preferences.getString("prefCamera", "0"));
-            int prefExposureCompensation = preferences.getInt("prefExposureCompensation", 0);
+            int prefCamera = Integer.parseInt(preferences.getString(KEY_PREF_CAMERA, "0"));
+            int prefExposureCompensation = preferences.getInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, 0);
 
             // Check if the Camera Index in Preferences is out of range. In case change it to index 0
             if (prefCamera >= listOfCameraInformation.size()) {
                 prefCamera = 0;
                 prefExposureCompensation = 0;
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.remove("prefExposureCompensation");
-                editor.remove("prefCamera");
+                editor.remove(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION);
+                editor.remove(KEY_PREF_CAMERA);
                 editor.commit();
             }
             selectedCameraInformation = listOfCameraInformation.get(prefCamera);
@@ -169,7 +191,7 @@ public class ClinometerApplication extends Application {
             }
             if (isExposureCompensationModified) {
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("prefExposureCompensation", prefExposureCompensation);
+                editor.putInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, prefExposureCompensation);
                 editor.commit();
             }
         } else {

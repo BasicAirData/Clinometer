@@ -61,6 +61,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static eu.basicairdata.clinometer.ClinometerApplication.CAMERA_REQUEST_CODE;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_AUTOLOCK;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_AUTOLOCK_HORIZON_CHECK;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_AUTOLOCK_PRECISION;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
 
 
 public class ClinometerActivity extends AppCompatActivity implements SensorEventListener {
@@ -531,22 +544,22 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
 
     private void loadPreferences() {
-        prefAutoLock = preferences.getBoolean("prefAutoLock", false);
-        prefAutoLockHorizonCheck = preferences.getBoolean("prefAutoLockHorizonCheck", true);
-        prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt("prefAutoLockPrecision", 500) / 1000;
+        prefAutoLock = preferences.getBoolean(KEY_PREF_AUTOLOCK, false);
+        prefAutoLockHorizonCheck = preferences.getBoolean(KEY_PREF_AUTOLOCK_HORIZON_CHECK, true);
+        prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt(KEY_PREF_AUTOLOCK_PRECISION, 500) / 1000;
         Log.d("Clinometer", String.format("Auto Locking Tolerance = %1.3f", prefAutoLockTolerance));
 
-        prefExposureCompensation = preferences.getInt("prefExposureCompensation", 0);
+        prefExposureCompensation = preferences.getInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, 0);
 
-        angle_calibration[0]    = preferences.getFloat("prefCalibrationAngle0", 0);
-        angle_calibration[1]    = preferences.getFloat("prefCalibrationAngle1", 0);
-        angle_calibration[2]    = preferences.getFloat("prefCalibrationAngle2", 0);
-        gravity_gain[0]         = preferences.getFloat("prefCalibrationGain0", 1);
-        gravity_gain[1]         = preferences.getFloat("prefCalibrationGain1", 1);
-        gravity_gain[2]         = preferences.getFloat("prefCalibrationGain2", 1);
-        gravity_offset[0]       = preferences.getFloat("prefCalibrationOffset0", 0);
-        gravity_offset[1]       = preferences.getFloat("prefCalibrationOffset1", 0);
-        gravity_offset[2]       = preferences.getFloat("prefCalibrationOffset2", 0);
+        angle_calibration[0]    = preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0);
+        angle_calibration[1]    = preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0);
+        angle_calibration[2]    = preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0);
+        gravity_gain[0]         = preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_0, 1);
+        gravity_gain[1]         = preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_1, 1);
+        gravity_gain[2]         = preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_2, 1);
+        gravity_offset[0]       = preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_0, 0);
+        gravity_offset[1]       = preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_1, 0);
+        gravity_offset[2]       = preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_2, 0);
 
         calibrationMatrix[0][0] = (float) (Math.cos(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[0])) + Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
         calibrationMatrix[0][1] = (float) (Math.cos(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));

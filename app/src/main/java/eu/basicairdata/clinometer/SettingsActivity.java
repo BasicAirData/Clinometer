@@ -26,7 +26,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -46,6 +45,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static eu.basicairdata.clinometer.ClinometerApplication.CAMERA_REQUEST_CODE;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_ABOUT;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_RESET;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_TIME;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_PERMISSION;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -112,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity {
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
                     Log.d("SettingsActivity", "onSharedPreferenceChanged");
-                    if (key.equals("prefCamera")) {
+                    if (key.equals(KEY_PREF_CAMERA)) {
                         clinometerApplication.setSelectedCamera(Integer.parseInt(preferenceCameraToUse.getValue()));
                         setupCameraPreference();
                         setupCompensationPreference();
@@ -120,9 +135,9 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             };
 
-            preferenceCameraToUse = findPreference("prefCamera");
+            preferenceCameraToUse = findPreference(KEY_PREF_CAMERA);
 
-            preferenceCameraPermission = findPreference("prefCameraPermission");
+            preferenceCameraPermission = findPreference(KEY_PREF_CAMERA_PERMISSION);
             preferenceCameraPermission.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -136,10 +151,10 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            preferenceExposureCompensation = findPreference("prefExposureCompensation");
-            preferenceCalibration = findPreference("prefCalibration");
+            preferenceExposureCompensation = findPreference(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION);
+            preferenceCalibration = findPreference(KEY_PREF_CALIBRATION);
 
-            preferenceAbout = findPreference("prefAbout");
+            preferenceAbout = findPreference(KEY_PREF_ABOUT);
             preferenceAbout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -151,27 +166,27 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            preferenceResetCalibration = findPreference("prefResetCalibration");
+            preferenceResetCalibration = findPreference(KEY_PREF_CALIBRATION_RESET);
             preferenceResetCalibration.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    if (preferences.contains("prefCalibrationAngle0")) {
+                    if (preferences.contains(KEY_PREF_CALIBRATION_ANGLE_0)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setMessage(getResources().getString(R.string.reset_calibration_confirmation));
                         builder.setIcon(android.R.drawable.ic_menu_info_details);
                         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 SharedPreferences.Editor editor = preferences.edit();
-                                editor.remove("prefCalibrationAngle0");
-                                editor.remove("prefCalibrationAngle1");
-                                editor.remove("prefCalibrationAngle2");
-                                editor.remove("prefCalibrationGain0");
-                                editor.remove("prefCalibrationGain1");
-                                editor.remove("prefCalibrationGain2");
-                                editor.remove("prefCalibrationOffset0");
-                                editor.remove("prefCalibrationOffset1");
-                                editor.remove("prefCalibrationOffset2");
-                                editor.remove("prefCalibrationTime");
+                                editor.remove(KEY_PREF_CALIBRATION_ANGLE_0);
+                                editor.remove(KEY_PREF_CALIBRATION_ANGLE_1);
+                                editor.remove(KEY_PREF_CALIBRATION_ANGLE_2);
+                                editor.remove(KEY_PREF_CALIBRATION_GAIN_0);
+                                editor.remove(KEY_PREF_CALIBRATION_GAIN_1);
+                                editor.remove(KEY_PREF_CALIBRATION_GAIN_2);
+                                editor.remove(KEY_PREF_CALIBRATION_OFFSET_0);
+                                editor.remove(KEY_PREF_CALIBRATION_OFFSET_1);
+                                editor.remove(KEY_PREF_CALIBRATION_OFFSET_2);
+                                editor.remove(KEY_PREF_CALIBRATION_TIME);
                                 editor.commit();
 
                                 updatePreferences();
@@ -209,12 +224,9 @@ public class SettingsActivity extends AppCompatActivity {
             SimpleDateFormat dfdt = new SimpleDateFormat("dd LLL yyyy HH:mm");        // date and time formatter for timestamp
             //dfdtGPX.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-            if (preferences.contains("prefCalibrationAngle0")) {
+            if (preferences.contains(KEY_PREF_CALIBRATION_ANGLE_0)) {
                 preferenceCalibration.setSummary(getResources().getString(R.string.pref_calibration_summary_calibrated) + " ("
-                                + dfdt.format(preferences.getLong("prefCalibrationTime", 0)) + ")");
-//                preferenceCalibration.setSummary(getResources().getString(R.string.pref_calibration_summary_calibrated)
-//                        + String.format(" (%1.2f°; %1.2f°; %1.2f°)", preferences.getFloat("prefCalibrationAngle0", 0),
-//                        preferences.getFloat("prefCalibrationAngle1", 0), preferences.getFloat("prefCalibrationAngle2", 0)));
+                                + dfdt.format(preferences.getLong(KEY_PREF_CALIBRATION_TIME, 0)) + ")");
                 preferenceResetCalibration.setEnabled(true);
             } else {
                 preferenceCalibration.setSummary(getResources().getString(R.string.pref_calibration_summary_notcalibrated));
@@ -292,7 +304,7 @@ public class SettingsActivity extends AppCompatActivity {
                             preferenceExposureCompensation.setValue(selCameraInformation.minExposureCompensation);
                         if (compensation != preferenceExposureCompensation.getValue()) {
                             SharedPreferences.Editor editor = preferences.edit();
-                            editor.putInt("prefExposureCompensation", preferenceExposureCompensation.getValue());
+                            editor.putInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, preferenceExposureCompensation.getValue());
                             editor.commit();
                         }
                     } else {

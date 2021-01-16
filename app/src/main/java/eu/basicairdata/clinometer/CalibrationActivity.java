@@ -45,6 +45,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.preference.PreferenceManager;
 
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_TIME;
+
 
 public class CalibrationActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -129,16 +140,16 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (preferences.contains("prefCalibrationAngle0")) {
+        if (preferences.contains(KEY_PREF_CALIBRATION_ANGLE_0)) {
             textViewLastCalibration.setText(getString(R.string.calibration_active_calibration) + "\n"
                     + getString(R.string.calibration_active_calibration_gains)
-                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat("prefCalibrationGain0", 0), preferences.getFloat("prefCalibrationGain1", 0), preferences.getFloat("prefCalibrationGain2", 0))
+                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_2, 0))
                     + "\n"
                     + getString(R.string.calibration_active_calibration_offsets)
-                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat("prefCalibrationOffset0", 0), preferences.getFloat("prefCalibrationOffset1", 0), preferences.getFloat("prefCalibrationOffset2", 0))
+                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_2, 0))
                     + "\n"
                     + getString(R.string.calibration_active_calibration_angles)
-                    + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat("prefCalibrationAngle0", 0), preferences.getFloat("prefCalibrationAngle1", 0), preferences.getFloat("prefCalibrationAngle2", 0))
+                    + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0))
             );
         }
 
@@ -350,16 +361,16 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 // Write Calibration Angles into Preferences
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putFloat("prefCalibrationAngle0", calibrationAngle[0]);
-                editor.putFloat("prefCalibrationAngle1", calibrationAngle[1]);
-                editor.putFloat("prefCalibrationAngle2", calibrationAngle[2]);
-                editor.putFloat("prefCalibrationGain0", calibrationGain[0]);
-                editor.putFloat("prefCalibrationGain1", calibrationGain[1]);
-                editor.putFloat("prefCalibrationGain2", calibrationGain[2]);
-                editor.putFloat("prefCalibrationOffset0", calibrationOffset[0]);
-                editor.putFloat("prefCalibrationOffset1", calibrationOffset[1]);
-                editor.putFloat("prefCalibrationOffset2", calibrationOffset[2]);
-                editor.putLong("prefCalibrationTime", System.currentTimeMillis());
+                editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_0, calibrationAngle[0]);
+                editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_1, calibrationAngle[1]);
+                editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_2, calibrationAngle[2]);
+                editor.putFloat(KEY_PREF_CALIBRATION_GAIN_0, calibrationGain[0]);
+                editor.putFloat(KEY_PREF_CALIBRATION_GAIN_1, calibrationGain[1]);
+                editor.putFloat(KEY_PREF_CALIBRATION_GAIN_2, calibrationGain[2]);
+                editor.putFloat(KEY_PREF_CALIBRATION_OFFSET_0, calibrationOffset[0]);
+                editor.putFloat(KEY_PREF_CALIBRATION_OFFSET_1, calibrationOffset[1]);
+                editor.putFloat(KEY_PREF_CALIBRATION_OFFSET_2, calibrationOffset[2]);
+                editor.putLong(KEY_PREF_CALIBRATION_TIME, System.currentTimeMillis());
                 editor.commit();
 
                 finish();
