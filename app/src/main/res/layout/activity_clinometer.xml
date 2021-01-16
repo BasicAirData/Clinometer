@@ -39,6 +39,7 @@
             android:id="@+id/camera_preview"
             android:visibility="gone"
             android:background="@null"
+            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

@@ -30,8 +30,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -49,7 +51,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -696,6 +701,47 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mFrameLayoutPreview.addView(mPreview);
         mFrameLayoutPreview.setVisibility(View.VISIBLE);
         mImageViewCameraImage.setVisibility(View.GONE);
+
+        // SCALE TO FILL SCREEN WITHOUT DEFORMATION ------------------------------------------------
+
+        Display display = getWindowManager().getDefaultDisplay();
+        boolean widthIsMax = display.getWidth() > display.getHeight();
+        RectF rectDisplay = new RectF();
+        RectF rectPreview = new RectF();
+
+        // RectF of the screen, matches the size of the screen
+        rectDisplay.set(0, 0, display.getWidth(), display.getHeight());
+        Size size = mCamera.getParameters().getPreviewSize();
+
+        // RectF первью
+        if (widthIsMax) {
+            //
+            rectPreview.set(0, 0, size.width, size.height);
+        } else {
+            // vertical preview
+            rectPreview.set(0, 0, size.height, size.width);
+        }
+
+        // Transformation matrix
+        Matrix matrix = new Matrix();
+        // if the preview is "squeezed" into the screen
+        matrix.setRectToRect(rectPreview, rectDisplay, Matrix.ScaleToFit.START);
+        // transformation
+        matrix.mapRect(rectPreview);
+
+        // Find the max Scale Factor in order to scale the image and the preview
+        // to fill the whole screen (without distortion)
+        float maxScaleFactor = Math.max(rectDisplay.width()/rectPreview.width(), rectDisplay.height()/rectPreview.height());
+        Log.d("Clinometer", "Scale Factors: W=" + rectDisplay.width()/rectPreview.width() + " H=" + rectDisplay.height()/rectPreview.height());
+
+        FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(mPreview.getWidth(), mPreview.getHeight());
+        layout.gravity = Gravity.CENTER;
+        layout.height = (int) (rectPreview.bottom * maxScaleFactor);
+        layout.width = (int) (rectPreview.right * maxScaleFactor);
+        mPreview.setLayoutParams(layout);
+        mImageViewCameraImage.setLayoutParams(layout);
+
+        // -----------------------------------------------------------------------------------------
 
         isCameraLivePreviewActive = true;
         return true;
