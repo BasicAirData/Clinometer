@@ -703,37 +703,34 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewCameraImage.setVisibility(View.GONE);
 
         // SCALE TO FILL SCREEN WITHOUT DEFORMATION ------------------------------------------------
+        // Based on: https://startandroid.ru/ru/uroki/vse-uroki-spiskom/264-urok-132-kamera-vyvod-izobrazhenija-na-ekran-obrabotka-povorota.html
 
         Display display = getWindowManager().getDefaultDisplay();
-        boolean widthIsMax = display.getWidth() > display.getHeight();
-        RectF rectDisplay = new RectF();
-        RectF rectPreview = new RectF();
 
-        // RectF of the screen, matches the size of the screen
+        // RectF of the Display, it matches the size of the Window
+        RectF rectDisplay = new RectF();
         rectDisplay.set(0, 0, display.getWidth(), display.getHeight());
         Size size = mCamera.getParameters().getPreviewSize();
 
-        // RectF первью
-        if (widthIsMax) {
-            //
+        // RectF of the Camera Preview
+        RectF rectPreview = new RectF();
+        if (display.getWidth() > display.getHeight()) {
             rectPreview.set(0, 0, size.width, size.height);
         } else {
-            // vertical preview
-            rectPreview.set(0, 0, size.height, size.width);
+            rectPreview.set(0, 0, size.height, size.width);                // vertical preview
         }
 
         // Transformation matrix
         Matrix matrix = new Matrix();
-        // if the preview is "squeezed" into the screen
-        matrix.setRectToRect(rectPreview, rectDisplay, Matrix.ScaleToFit.START);
-        // transformation
-        matrix.mapRect(rectPreview);
+        matrix.setRectToRect(rectPreview, rectDisplay, Matrix.ScaleToFit.START);    // if the preview is "squeezed" into the screen
+        matrix.mapRect(rectPreview);                                                // transformation
 
         // Find the max Scale Factor in order to scale the image and the preview
-        // to fill the whole screen (without distortion)
+        // to fill the whole screen (without distortion). They will be cropped when necessary (drawn offscreen)
         float maxScaleFactor = Math.max(rectDisplay.width()/rectPreview.width(), rectDisplay.height()/rectPreview.height());
         Log.d("Clinometer", "Scale Factors: W=" + rectDisplay.width()/rectPreview.width() + " H=" + rectDisplay.height()/rectPreview.height());
 
+        // Set gravity, height and width of Camera Preview and Camera Image
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(mPreview.getWidth(), mPreview.getHeight());
         layout.gravity = Gravity.CENTER;
         layout.height = (int) (rectPreview.bottom * maxScaleFactor);
