@@ -18,7 +18,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package eu.basicairdata.clinometer;
 
 import android.content.Context;
