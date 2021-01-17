@@ -163,6 +163,7 @@ public class ClinometerApplication extends Application {
                 Log.d("ClinometerApplication", i + " = (" + cameraInformation.horizontalViewAngle + "°) " + (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "Front Camera" : "Rear Camera") +
                         " (" + cameraInformation.minExposureCompensation + " - " + cameraInformation.maxExposureCompensation + ")");
                 cam.release();
+                cam = null;
                 Log.d("ClinometerApplication", "Camera " + cameraInformation.id + " added to list");
             }
 
