@@ -64,8 +64,8 @@
     <string name="about_unable_to_rate">Unable to reach the Store</string>
     <string name="title_activity_calibration">Calibration</string>
 
-    <!-- Strings used for fragments for navigation -->
-    <string name="calibration_active_calibration">Calibration active:</string>
+    <!-- Calibration Activity -->
+    <string name="calibration_active_calibration">Active Calibration:</string>
     <string name="calibration_active_calibration_gains">Gains</string>
     <string name="calibration_active_calibration_offsets">Offsets</string>
     <string name="calibration_active_calibration_angles">Angles</string>
