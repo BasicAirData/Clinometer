@@ -32,7 +32,6 @@ import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -55,6 +54,7 @@ import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRAT
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_1;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_TIME;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
 
 
 public class CalibrationActivity extends AppCompatActivity implements SensorEventListener {
@@ -204,7 +204,9 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     @Override
     protected void onResume() {
         super.onResume();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_KEEP_SCREEN_ON, true)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if ((int) (currentStep / 2) * 2 != currentStep) currentStep--;
         Log.d("CalibrationActivity", "CurrentStep = " + currentStep);

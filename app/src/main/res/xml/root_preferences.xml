@@ -21,16 +21,23 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <SwitchPreferenceCompat
+        app:key="prefKeepScreenOn"
+        app:title="@string/pref_keep_screen_on"
+        app:summary="@string/pref_keep_screen_on_summary"
+        app:defaultValue="true"
+        app:icon="@drawable/ic_wb_incandescent_24"/>
+
     <!--<PreferenceCategory app:title="@string/messages_header">-->
     <PreferenceCategory
-        android:title="@string/pref_category_calibration">
+        android:title="@string/pref_category_calibration"
+        app:icon="@drawable/ic_calibration_24">
 
         <Preference
             app:key="prefCalibration"
             app:title="@string/pref_calibration"
             app:summary="@string/pref_calibration_summary_notcalibrated"
-            app:defaultValue="false"
-            app:icon="@drawable/ic_calibration_24">
+            app:defaultValue="false">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="eu.basicairdata.clinometer"
@@ -41,20 +48,19 @@
             app:key="prefResetCalibration"
             app:title="@string/pref_calibration_reset"
             app:summary="@string/pref_calibration_reset_summary"
-            app:defaultValue="false">
-        </Preference>
+            app:defaultValue="false"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/pref_category_autolocking">
+        android:title="@string/pref_category_autolocking"
+        app:icon="@drawable/ic_lock_24">
 
         <SwitchPreferenceCompat
             app:key="prefAutoLock"
             app:title="@string/pref_autolocking"
             app:summary="@string/pref_autolocking_summary"
-            app:defaultValue="false"
-            app:icon="@drawable/ic_lock_24"/>
+            app:defaultValue="false"/>
 
         <SwitchPreferenceCompat
             app:key="prefAutoLockHorizonCheck"
@@ -73,21 +79,20 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/pref_category_cameramode">
+        android:title="@string/pref_category_cameramode"
+        app:icon="@drawable/ic_image_24">
 
         <Preference
             app:key="prefCameraPermission"
             app:title="@string/pref_cameramode_camera_to_use"
             app:summary="@string/pref_cameramode_no_permission_to_access"
-            app:defaultValue="false"
-            app:icon="@drawable/ic_photo_camera_24"/>
+            app:defaultValue="false" />
 
         <ListPreference
             app:key="prefCamera"
             android:summary="%s"
             app:title="@string/pref_cameramode_camera_to_use"
-            app:defaultValue="0"
-            app:icon="@drawable/ic_photo_camera_24"/>
+            app:defaultValue="0"/>
 
         <SeekBarPreference
             app:key="prefExposureCompensation"
@@ -99,17 +104,15 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_category_info">
+    <Preference
+        app:key="prefAbout"
+        app:allowDividerAbove="true"
+        app:title="@string/pref_about"
+        app:summary="@string/pref_about_summary"
+        app:defaultValue="false"
+        app:icon="@drawable/ic_info_24"/>
 
-        <Preference
-            app:key="prefAbout"
-            app:title="@string/pref_about"
-            app:summary="@string/pref_about_summary"
-            app:defaultValue="false"
-            app:icon="@drawable/ic_info_24"/>
 
-    </PreferenceCategory>
     <!--</PreferenceCategory>
 
     <PreferenceCategory

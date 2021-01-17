@@ -29,6 +29,9 @@
     <!-- Preferences -->
     <string name="Settings">Settings</string>
 
+    <string name="pref_keep_screen_on">Keep Screen On</string>
+    <string name="pref_keep_screen_on_summary">Battery drains faster</string>
+
     <string name="pref_category_calibration">CALIBRATION</string>
     <string name="pref_calibration">Calibration</string>
     <string name="pref_calibration_summary_notcalibrated">Not calibrated</string>
@@ -38,9 +41,9 @@
 
     <string name="pref_category_autolocking">AUTO LOCKING</string>
     <string name="pref_autolocking">Auto Locking</string>
-    <string name="pref_autolocking_summary">locks measurement when steady</string>
+    <string name="pref_autolocking_summary">Locks measurement when steady</string>
     <string name="pref_autolocking_horizon">Horizon Alignment</string>
-    <string name="pref_autolocking_horizon_summary">for vertical measurements</string>
+    <string name="pref_autolocking_horizon_summary">For vertical measurements</string>
     <string name="pref_autolocking_precision">Precision</string>
 
     <string name="pref_category_cameramode">CAMERA MODE</string>
@@ -51,9 +54,8 @@
     <string name="pref_cameramode_no_permission_to_access">No Permission to access Camera</string>
     <string name="pref_cameramode_exposure_compensation">Exposure Compensation</string>
 
-    <string name="pref_category_info">INFO</string>
     <string name="pref_about">Info</string>
-    <string name="pref_about_summary">about the app</string>
+    <string name="pref_about_summary">About the app</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>

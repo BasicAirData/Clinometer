@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -61,6 +62,7 @@ import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRAT
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_PERMISSION;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -88,6 +90,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_KEEP_SCREEN_ON, true)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -131,6 +141,10 @@ public class SettingsActivity extends AppCompatActivity {
                         clinometerApplication.setSelectedCamera(Integer.parseInt(preferenceCameraToUse.getValue()));
                         setupCameraPreference();
                         setupCompensationPreference();
+                    }
+                    if (key.equals(KEY_PREF_KEEP_SCREEN_ON)) {
+                        if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(KEY_PREF_KEEP_SCREEN_ON, true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     }
                 }
             };
