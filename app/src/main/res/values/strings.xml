@@ -32,22 +32,19 @@
     <string name="pref_keep_screen_on">Keep Screen On</string>
     <string name="pref_keep_screen_on_summary">Battery drains faster</string>
 
-    <string name="pref_category_calibration">CALIBRATION</string>
     <string name="pref_calibration">Calibration</string>
     <string name="pref_calibration_summary_notcalibrated">Not calibrated</string>
     <string name="pref_calibration_summary_calibrated">Calibrated</string>
     <string name="pref_calibration_reset">Reset</string>
     <string name="pref_calibration_reset_summary">Clear the calibration</string>
 
-    <string name="pref_category_autolocking">AUTO LOCKING</string>
     <string name="pref_autolocking">Auto Locking</string>
     <string name="pref_autolocking_summary">Locks measurement when steady</string>
     <string name="pref_autolocking_horizon">Horizon Alignment</string>
     <string name="pref_autolocking_horizon_summary">For vertical measurements</string>
     <string name="pref_autolocking_precision">Precision</string>
 
-    <string name="pref_category_cameramode">CAMERA MODE</string>
-    <string name="pref_cameramode_camera_to_use">Camera to use</string>
+    <string name="pref_cameramode_camera_to_use">Camera</string>
     <string name="pref_cameramode_camera_front">Front Camera</string>
     <string name="pref_cameramode_camera_rear">Rear Camera</string>
     <string name="pref_cameramode_no_cameras">This Device has no Camera</string>
@@ -55,7 +52,7 @@
     <string name="pref_cameramode_exposure_compensation">Exposure Compensation</string>
 
     <string name="pref_about">Info</string>
-    <string name="pref_about_summary">About the app</string>
+    <string name="pref_about_summary">About Clinometer</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
