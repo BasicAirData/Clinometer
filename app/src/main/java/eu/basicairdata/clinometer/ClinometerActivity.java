@@ -128,7 +128,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
     private TextView mTextViewToast;
-    //private FrameLayout mFrameLayoutClinometer;
+    private FrameLayout mFrameLayoutClinometer;
     private FrameLayout mFrameLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
     private LinearLayout mLinearLayoutToolbar;
@@ -200,7 +200,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
         mImageViewCamera = findViewById(R.id.id_imageview_camera);
-        //mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
+        mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
         mFrameLayoutOverlays = findViewById(R.id.id_framelayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
         mLinearLayoutToolbar = findViewById(R.id.id_linearlayout_toolbar);
@@ -313,7 +313,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         loadPreferences();
 
-        mClinometerView.setSystemUiVisibility(
+        mFrameLayoutClinometer.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
                 // Set the content to appear under the system bars so that the
                 // content doesn't resize when the system bars hide and show.
