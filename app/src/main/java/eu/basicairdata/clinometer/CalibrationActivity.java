@@ -149,7 +149,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                     + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_2, 0))
                     + "\n"
                     + getString(R.string.calibration_active_calibration_angles)
-                    + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0))
+                    + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0))
             );
         }
 
@@ -353,10 +353,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
                 calibrationAngle[2] =  (angle[0][0] + angle[0][1])/2;       // angle 0 = X axis
                 calibrationAngle[1] = -(angle[1][0] + angle[1][1])/2;       // angle 1 = Y axis
-                calibrationAngle[0] = -(angle[1][3] + angle[1][2])/2;       // angle 2 = Z axis
+                calibrationAngle[0] = -(angle[1][3] - angle[1][2])/2;       // angle 2 = Z axis
 
                 Log.d("Clinometer","-- CALIBRATION ANGLES ------------------------------------------------------");
-                Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[0], calibrationAngle[1], calibrationAngle[2]));
+                Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[2], calibrationAngle[1], calibrationAngle[0]));
 
                 Log.d("Clinometer","----------------------------------------------------------------------------");
 
