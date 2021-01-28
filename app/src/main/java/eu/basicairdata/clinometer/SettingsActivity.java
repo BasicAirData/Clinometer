@@ -276,7 +276,7 @@ public class SettingsActivity extends AppCompatActivity {
                     List<String> ci_entries = new ArrayList<>();
                     List<String> ci_values = new ArrayList<>();
                     for (CameraInformation c : ci) {
-                        ci_entries.add(c.description + " (" + String.format("%.0f", c.horizontalViewAngle) + "°)");
+                        ci_entries.add(c.description + (c.horizontalViewAngle < 5.0f ? "" : " (" + String.format("%.0f", c.horizontalViewAngle) + "°)"));
                         ci_values.add(String.valueOf(c.id));
                     }
 
