@@ -375,7 +375,21 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 editor.putLong(KEY_PREF_CALIBRATION_TIME, System.currentTimeMillis());
                 editor.commit();
 
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getResources().getString(R.string.dialog_calibration_completed));
+                builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                });
+                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    public void onCancel(DialogInterface Interface) {
+                        finish();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                //finish();
         }
     }
 

@@ -186,7 +186,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     if (preferences.contains(KEY_PREF_CALIBRATION_ANGLE_0)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setMessage(getResources().getString(R.string.reset_calibration_confirmation));
+                        builder.setMessage(getResources().getString(R.string.dialog_reset_calibration_confirmation));
                         builder.setIcon(android.R.drawable.ic_menu_info_details);
                         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
