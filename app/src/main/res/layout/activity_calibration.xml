@@ -41,6 +41,14 @@
             android:scaleType="centerCrop"
             app:srcCompat="@mipmap/cal_01" />
 
+        <ImageView
+            android:id="@+id/id_imageViewCalibrationIcon"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_check_24" />
+
         <TextView
             android:id="@+id/id_textview_last_calibration"
             android:layout_width="match_parent"

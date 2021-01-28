@@ -79,6 +79,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private AppCompatButton buttonNext;
     private ProgressBar progressBar;
     private ImageView imageViewMain;
+    private ImageView imageViewCalibrationIcon;
     private TextView textViewStepDescription;
     private TextView textViewLastCalibration;
     private TextView textViewProgress;
@@ -99,7 +100,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private static final int STEP_6_CAL     = 11;   // Calibrating...   Don't move the device
     private static final int STEP_7         = 12;   // Step 7 of 7      Press next and lay face down
     private static final int STEP_7_CAL     = 13;   // Calibrating...   Don't move the device
-    private static final int STEP_COMPLETED = 14;   // Calibration completed (Message Box)
+    private static final int STEP_COMPLETED = 14;   // Calibration completed, perform calculations
+    private static final int STEP_CLOSE     = 15;   // Close the calibration Activity
 
     private static final float STANDARD_GRAVITY = 9.807f;
 
@@ -125,12 +127,14 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         textViewLastCalibration = findViewById(R.id.id_textview_last_calibration);
         textViewProgress = findViewById(R.id.id_textview_progress);
         imageViewMain = findViewById(R.id.id_imageViewMain);
+        imageViewCalibrationIcon = findViewById(R.id.id_imageViewCalibrationIcon);
 
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 currentStep++;
-                startStep();
+                if (currentStep < STEP_CLOSE) startStep();
+                else finish();
             }
         });
 
@@ -375,21 +379,24 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 editor.putLong(KEY_PREF_CALIBRATION_TIME, System.currentTimeMillis());
                 editor.commit();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(getResources().getString(R.string.dialog_calibration_completed));
-                builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                    }
-                });
-                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    public void onCancel(DialogInterface Interface) {
-                        finish();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                //finish();
+                progressBar.setVisibility(View.INVISIBLE);
+                textViewProgress.setVisibility(View.INVISIBLE);
+                imageViewMain.setImageBitmap(null);
+                textViewStepDescription.setText(R.string.dialog_calibration_completed);
+                textViewLastCalibration.setText(getString(R.string.calibration_active_calibration) + "\n"
+                        + getString(R.string.calibration_active_calibration_gains)
+                        + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_2, 0))
+                        + "\n"
+                        + getString(R.string.calibration_active_calibration_offsets)
+                        + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_2, 0))
+                        + "\n"
+                        + getString(R.string.calibration_active_calibration_angles)
+                        + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0))
+                );
+                textViewLastCalibration.setVisibility(View.VISIBLE);
+                buttonNext.setVisibility(View.VISIBLE);
+                buttonNext.setText(R.string.close);
+                imageViewCalibrationIcon.setVisibility(View.VISIBLE);
         }
     }
 

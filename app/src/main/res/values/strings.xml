@@ -85,7 +85,7 @@
 
     <!-- Dialogs -->
     <string name="dialog_reset_calibration_confirmation">Do you want to reset the current calibration?</string>
-    <string name="dialog_calibration_completed">Calibration completed.</string>
+    <string name="dialog_calibration_completed">Calibration completed!</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="close">Close</string>
