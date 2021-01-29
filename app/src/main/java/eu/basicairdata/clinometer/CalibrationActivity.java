@@ -100,8 +100,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private static final int STEP_6_CAL     = 11;   // Calibrating...   Don't move the device
     private static final int STEP_7         = 12;   // Step 7 of 7      Press next and lay face down
     private static final int STEP_7_CAL     = 13;   // Calibrating...   Don't move the device
-    private static final int STEP_COMPLETED = 14;   // Calibration completed, perform calculations
-    private static final int STEP_CLOSE     = 15;   // Close the calibration Activity
+    private static final int STEP_COMPLETED = 14;   // Calibration completed, performs calculations and shows results
 
     private static final float STANDARD_GRAVITY = 9.807f;
 
@@ -132,9 +131,11 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentStep++;
-                if (currentStep < STEP_CLOSE) startStep();
-                else finish();
+                if (currentStep == STEP_COMPLETED) finish();
+                else {
+                    currentStep++;
+                    startStep();
+                }
             }
         });
 
@@ -181,7 +182,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     public void onBackPressed()
     {
         Log.d("CalibrationActivity", "onBackPressed on Step " + currentStep);
-        if ((currentStep != STEP_1) && (currentStep != STEP_COMPLETED)) {
+        if ((currentStep != STEP_1) && (currentStep < STEP_COMPLETED)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.calibration_abort));
             //builder.setIcon(android.R.drawable.ic_menu_info_details);
@@ -211,13 +212,13 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_KEEP_SCREEN_ON, true)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        if ((int) (currentStep / 2) * 2 != currentStep) currentStep--;
-        Log.d("CalibrationActivity", "CurrentStep = " + currentStep);
-
-        startStep();
-
-        //mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
+        
+        if (currentStep < STEP_COMPLETED) {
+            // If the app was calibrating when the onPause is called, the app goes back 1 step (the previous screen)
+            if ((int) (currentStep / 2) * 2 != currentStep) currentStep--;
+            Log.d("CalibrationActivity", "CurrentStep = " + currentStep);
+            startStep();
+        }
     }
 
 
