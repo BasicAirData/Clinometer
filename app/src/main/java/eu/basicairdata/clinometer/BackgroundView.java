@@ -99,7 +99,7 @@ public class BackgroundView extends View {
         r1_value = 2;                                   // The scale (to how many degrees corresponds each circle)
         ncircles = (int) Math.ceil(N_CIRCLES_FULLY_VISIBLE * 2 * diag2c / min_xy);
         // The number of circles to be drawn
-        r1 = (min_xy / 2) / N_CIRCLES_FULLY_VISIBLE;    // The radius of the first circle.
+        r1 = (min_xy / 2.0f) / N_CIRCLES_FULLY_VISIBLE; // The radius of the first circle.
 
         if (!isShaderCreated) {
             paint_bg.setShader(new RadialGradient(xc, yc, (int) (Math.sqrt(xc * xc + yc * yc) / 2),
@@ -111,7 +111,7 @@ public class BackgroundView extends View {
         canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
 
         for (int angle = 0; angle < 360; angle += 10) {
-            if (angle % 90 != 0) canvas.drawLine(
+            if (angle % 30 != 0) canvas.drawLine(
                 xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
                 yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),
                 xc - (int) (r1 * Math.cos(Math.toRadians(angle))),

@@ -89,7 +89,6 @@ public class ClinometerView extends View {
 
     private boolean isAngle2LabelOnLeft = true;                 // True if the label of the Angle[2] must be placed on left instead of right
     private static final int ANGLE2LABELSWITCH_THRESHOLD = 2;   // 2 Degrees of Threshold for switching L/R the Angle[2] label
-    private boolean isShaderCreated = false;                    // True if the Background Shader has been created
 
 
     public ClinometerView(Context context, AttributeSet attrs) {
@@ -152,8 +151,6 @@ public class ClinometerView extends View {
         paint_Arc.setDither(true);
         paint_Arc.setAntiAlias(true);
 
-        isShaderCreated = false;
-
         paint_Yellow_Spirit = new Paint();
         paint_Yellow_Spirit.setStyle(Paint.Style.FILL);
         paint_Yellow_Spirit.setStrokeWidth(3);
@@ -206,7 +203,7 @@ public class ClinometerView extends View {
         r1_value = 2;                                   // The scale (to how many degrees corresponds each circle)
         ncircles = (int) Math.ceil(N_CIRCLES_FULLY_VISIBLE * 2 * diag2c / min_xy);
                                                         // The number of circles to be drawn
-        r1 = (min_xy / 2) / N_CIRCLES_FULLY_VISIBLE;    // The radius of the first circle.
+        r1 = (min_xy / 2.0f) / N_CIRCLES_FULLY_VISIBLE; // The radius of the first circle.
 
         xs = xc + svActivity.angle[0] * r1 / r1_value;  // The X coordinate of the spirit bubble center
         ys = yc - svActivity.angle[1] * r1 / r1_value;  // The X coordinate of the spirit bubble center
