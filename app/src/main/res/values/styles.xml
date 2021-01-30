@@ -22,7 +22,8 @@
 
 <resources>
 
-    <!-- Base application theme. -->
+
+    <!-- CLINOMETER ACTIVITY THEME -->
 
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/bgpaint_light</item>
@@ -33,7 +34,6 @@
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
         <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
         <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
     </style>
@@ -73,7 +73,7 @@
     </style>
 
 
-    <!-- CALIBRATION -->
+    <!-- CALIBRATION PROGRESSBAR -->
 
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:minHeight">25dp</item>
