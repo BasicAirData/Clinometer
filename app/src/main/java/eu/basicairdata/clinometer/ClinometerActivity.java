@@ -521,7 +521,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     if (Math.abs(angle[2]) > 7.5f) {
                         // The Screen is in vertical
                         mTextViewKeepScreenVertical.setVisibility(View.VISIBLE);
-                    } else {
+                    }
+                    if (Math.abs(angle[2]) < 7f) {
                         mTextViewKeepScreenVertical.setVisibility(View.GONE);
                     }
                 }
@@ -794,6 +795,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     /** Stops the Camera Preview.
      * If saveImage is true, the method saves the last frame before stop the Preview */
     private void releaseCamera(boolean saveImage) {
+        mTextViewKeepScreenVertical.setVisibility(View.GONE);
         if (mCamera != null) {
             if (saveImage) {
                 mCamera.setOneShotPreviewCallback(cameraPreviewCallback);
