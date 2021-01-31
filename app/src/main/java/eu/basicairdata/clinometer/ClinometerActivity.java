@@ -128,6 +128,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
     private TextView mTextViewToast;
+    private TextView mTextViewKeepScreenVertical;
     private FrameLayout mFrameLayoutClinometer;
     private FrameLayout mFrameLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
@@ -197,6 +198,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mClinometerView = findViewById(R.id.id_clinometerview);
         mTextViewAngles = findViewById(R.id.id_textview_angles);
         mTextViewToast = findViewById(R.id.id_textview_toast);
+        mTextViewKeepScreenVertical = findViewById(R.id.id_textview_keep_screen_vertical);
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
         mImageViewCamera = findViewById(R.id.id_imageview_camera);
@@ -512,6 +514,16 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 if (Math.abs(angle[2]) >= 75) {
                     if (!isFlat) isFlat = true;
                     angleTextLabels = displayRotation;
+                }
+
+                // Show hint in camera mode
+                if (isCameraLivePreviewActive) {
+                    if (Math.abs(angle[2]) > 7.5f) {
+                        // The Screen is in vertical
+                        mTextViewKeepScreenVertical.setVisibility(View.VISIBLE);
+                    } else {
+                        mTextViewKeepScreenVertical.setVisibility(View.GONE);
+                    }
                 }
 
                 // Apply Changes

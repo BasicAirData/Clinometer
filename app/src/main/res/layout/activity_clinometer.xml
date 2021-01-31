@@ -127,12 +127,30 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corner"
             android:padding="10dp"
-            android:layout_margin="50dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:textColor="@color/line_white"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:visibility="gone"
             android:textAlignment="center"
             android:text=""/>
+
+        <TextView
+            android:id="@+id/id_textview_keep_screen_vertical"
+            android:layout_gravity="bottom|center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner"
+            android:padding="10dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/line_white"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:visibility="gone"
+            android:textAlignment="center"
+            android:text="@string/toast_lay_vertical"/>
 
     </FrameLayout>
 
