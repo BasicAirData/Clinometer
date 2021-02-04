@@ -304,7 +304,20 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
                 break;
             case STEP_COMPLETED:
+
+                // Write raw step Values into Preferences
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editorRaw = preferences.edit();
+                for (int i = 0; i < 7; i++) {
+                    editorRaw.putFloat("prefCalibrationRawMean_0_" + i , mean[0][i]);
+                    editorRaw.putFloat("prefCalibrationRawMean_1_" + i , mean[1][i]);
+                    editorRaw.putFloat("prefCalibrationRawMean_2_" + i , mean[2][i]);
+                }
+                editorRaw.commit();
+
                 // Calculations
+
                 Log.d("Clinometer","-- MEAN NOT CORRECTED ------------------------------------------------------");
                 for (int i = 0; i < 7; i++) {
                     Log.d("Clinometer", String.format("mean[ ][" + i + "]  =  %+1.4f  %+1.4f  %+1.4f", mean[0][i], mean[1][i], mean[2][i]));
@@ -362,11 +375,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
                 Log.d("Clinometer","-- CALIBRATION ANGLES ------------------------------------------------------");
                 Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[2], calibrationAngle[1], calibrationAngle[0]));
-
                 Log.d("Clinometer","----------------------------------------------------------------------------");
 
                 // Write Calibration Angles into Preferences
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_0, calibrationAngle[0]);
                 editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_1, calibrationAngle[1]);
