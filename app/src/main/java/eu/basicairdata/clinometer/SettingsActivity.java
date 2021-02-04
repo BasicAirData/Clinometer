@@ -201,6 +201,11 @@ public class SettingsActivity extends AppCompatActivity {
                                 editor.remove(KEY_PREF_CALIBRATION_OFFSET_1);
                                 editor.remove(KEY_PREF_CALIBRATION_OFFSET_2);
                                 editor.remove(KEY_PREF_CALIBRATION_TIME);
+                                for (int i = 0; i < 7; i++) {
+                                    editor.remove("prefCalibrationRawMean_0_" + i);
+                                    editor.remove("prefCalibrationRawMean_1_" + i);
+                                    editor.remove("prefCalibrationRawMean_2_" + i);
+                                }
                                 editor.commit();
 
                                 updatePreferences();
