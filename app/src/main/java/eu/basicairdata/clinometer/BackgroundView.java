@@ -36,16 +36,18 @@ public class BackgroundView extends View {
     private Paint paint_DKGray;             // For Background Lines != 30°
     private boolean isShaderCreated = false;                    // True if the Background Shader has been created
 
-    int x;                      // The Width of Screen
-    int y;                      // The Height of Screen
-    int min_xy;                 // The minimum between Width and Height
-    int max_xy;                 // The maximum between Width and Height
-    int xc;                     // x screen center
-    int yc;                     // y screen center
-    double diag2c;              // Screen Diagonal/2 = distance between 0:0 and xc:yc
-    int ncircles;               // The number of visible circles
-    float r1_value;             // The scale (to how many degrees corresponds each circle)
-    float r1;                   // The radius of the first circle = 1 deg.
+    private int x;                      // The Width of Screen
+    private int y;                      // The Height of Screen
+    private int min_xy;                 // The minimum between Width and Height
+    private int max_xy;                 // The maximum between Width and Height
+    private int xc;                     // x screen center
+    private int yc;                     // y screen center
+    private double diag2c;              // Screen Diagonal/2 = distance between 0:0 and xc:yc
+    private int ncircles;               // The number of visible circles
+    private float r1_value;             // The scale (to how many degrees corresponds each circle)
+    private float r1;                   // The radius of the first circle = 1 deg.
+
+    private int angle;
 
 
     public BackgroundView(Context context, AttributeSet attrs) {
@@ -86,7 +88,7 @@ public class BackgroundView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        //super.onDraw(canvas);
 
         x = getWidth();
         y = getHeight();
@@ -110,7 +112,7 @@ public class BackgroundView extends View {
         }
         canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
 
-        for (int angle = 0; angle < 360; angle += 10) {
+        for (angle = 0; angle < 360; angle += 10) {
             if (angle % 30 != 0) canvas.drawLine(
                 xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
                 yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),

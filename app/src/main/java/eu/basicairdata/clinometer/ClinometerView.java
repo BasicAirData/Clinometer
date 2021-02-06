@@ -45,7 +45,7 @@ public class ClinometerView extends View {
     private static final float N_CIRCLES_FULLY_VISIBLE = 4.5f;
     private static final float CONTRAST_STROKE = 6f;
 
-    ClinometerActivity svActivity = ClinometerActivity.getInstance();
+    private final ClinometerActivity svActivity = ClinometerActivity.getInstance();
 
     private Paint paint_LTGray;             // For Background Lines 30° + Circles
     private Paint paint_White;              // For White Angles Lines
@@ -60,32 +60,36 @@ public class ClinometerView extends View {
 
     Rect textbounds = new Rect();
 
-    int x;                      // The Width of Screen
-    int y;                      // The Height of Screen
-    int min_xy;                 // The minimum between Width and Height
-    int max_xy;                 // The maximum between Width and Height
-    int xc;                     // x screen center
-    int yc;                     // y screen center
-    double diag2c;              // Screen Diagonal/2 = distance between 0:0 and xc:yc
-    int ncircles;               // The number of visible circles
-    float xs;                   // The X Coordinate of the spirit bubble
-    float ys;                   // The Y Coordinate of the spirit bubble
-    float r1_value;             // The scale (to how many degrees corresponds each circle)
-    float r1;                   // The radius of the first circle = 1 deg.
+    private int x;                      // The Width of Screen
+    private int y;                      // The Height of Screen
+    private int min_xy;                 // The minimum between Width and Height
+    private int max_xy;                 // The maximum between Width and Height
+    private int xc;                     // x screen center
+    private int yc;                     // y screen center
+    private double diag2c;              // Screen Diagonal/2 = distance between 0:0 and xc:yc
+    private int ncircles;               // The number of visible circles
+    private float xs;                   // The X Coordinate of the spirit bubble
+    private float ys;                   // The Y Coordinate of the spirit bubble
+    private float r1_value;             // The scale (to how many degrees corresponds each circle)
+    private float r1;                   // The radius of the first circle = 1 deg.
 
-    float rot_angle_rad;            // The angle of rotation between absolute 3 o'clock and the white axe
-    float horizon_angle_deg;        // Horizon angle
+    private int i;
+    private float r;
+    private int angle;
 
-    float angle1Start;         // The Arc 1 start
-    float angle2Start;         // The Arc 2 start
-    float angle1Extension;     // The Arc 1 angle (+)
-    float angle2Extension;     // The Arc 2 angle (-)
+    private float rot_angle_rad;            // The angle of rotation between absolute 3 o'clock and the white axe
+    private float horizon_angle_deg;        // Horizon angle
 
-    int refAxe = 0;             // The reference axe for white Angles
+    private float angle1Start;         // The Arc 1 start
+    private float angle2Start;         // The Arc 2 start
+    private float angle1Extension;     // The Arc 1 angle (+)
+    private float angle2Extension;     // The Arc 2 angle (-)
+
+    private int refAxe = 0;             // The reference axe for white Angles
                                 // 0  = Horizontal axe
                                 // 90 = Vertical Axe
 
-    RectF arcRectF = new RectF();
+    private RectF arcRectF = new RectF();
 
     private boolean isAngle2LabelOnLeft = true;                 // True if the label of the Angle[2] must be placed on left instead of right
     private static final int ANGLE2LABELSWITCH_THRESHOLD = 2;   // 2 Degrees of Threshold for switching L/R the Angle[2] label
@@ -189,7 +193,7 @@ public class ClinometerView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        //super.onDraw(canvas);
 
         // --------[ CALCULATIONS ]-----------------------------------------------------------------
 
@@ -225,8 +229,6 @@ public class ClinometerView extends View {
             angle2Extension = -(180 - ((horizon_angle_deg + 90) % 180));
         }
 
-        float r;
-
         // -----------------------------------------------------------------------------------------
         // --------[ BACKGROUND ]-------------------------------------------------------------------
 
@@ -250,7 +252,7 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND LINES ]-------------------------------------------------------------
 
-        for (int angle = 0; angle < 360; angle += 30) {
+        for (angle = 0; angle < 360; angle += 30) {
             canvas.drawLine(
                     xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
                     yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),
@@ -310,7 +312,7 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND CIRCLES ]-----------------------------------------------------------
 
-        for (int i = 1; i <= ncircles; i=i+1) canvas.drawCircle(xc, yc, Math.round(r1*i), paint_LTGray);
+        for (i = 1; i <= ncircles; i=i+1) canvas.drawCircle(xc, yc, Math.round(r1*i), paint_LTGray);
         //for (int i = 2; i <= ncircles*2; i=i+2) canvas.drawCircle(xc, yc, Math.round(r1*i), paint);
         //for (int i = 3; i <= ncircles*2; i=i+2) canvas.drawCircle(xc, yc, Math.round(r1*i), paint_secondary);
 
@@ -490,10 +492,13 @@ public class ClinometerView extends View {
     }
 
 
+    private int tHeight = 0;
+    private int tWidth = 0;
+
     private void drawTextWithShadow(Canvas canvas, String text, int x, int y, float horizontal_alignment, float vertical_alignment, float rotation, Paint paint) {
         paint_Yellow_Spirit.getTextBounds(text, 0, text.length(), textbounds);
-        int tHeight = textbounds.height();
-        int tWidth = textbounds.width();
+        tHeight = textbounds.height();
+        tWidth = textbounds.width();
 
         canvas.save();
         canvas.rotate(rotation, x, y);
