@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ root_preferences.xml
   ~ Created by G.Capelli (BasicAirData) on 2/6/2020
@@ -21,68 +23,96 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<PreferenceCategory app:title="@string/messages_header">-->
-    <PreferenceCategory
-        android:title="@string/pref_category_calibration">
+    <SwitchPreferenceCompat
+        app:key="prefKeepScreenOn"
+        app:title="@string/pref_keep_screen_on"
+        app:summary="@string/pref_keep_screen_on_summary"
+        app:defaultValue="true"
+        app:icon="@drawable/ic_wb_incandescent_24"/>
 
-        <Preference
-            app:key="prefCalibration"
-            app:title="@string/pref_calibration"
-            app:summary="@string/pref_calibration_summary_notcalibrated"
-            app:defaultValue="false"
-            app:icon="@drawable/ic_calibration_24">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetPackage="eu.basicairdata.clinometer"
-                android:targetClass="eu.basicairdata.clinometer.CalibrationActivity" />
-        </Preference>
 
-        <Preference
-            app:key="prefResetCalibration"
-            app:title="@string/pref_calibration_reset"
-            app:summary="@string/pref_calibration_reset_summary"
-            app:defaultValue="false">
-        </Preference>
 
-    </PreferenceCategory>
+    <Preference
+        app:key="prefCalibration"
+        app:title="@string/pref_calibration"
+        app:summary="@string/pref_calibration_summary_notcalibrated"
+        app:allowDividerAbove="true"
+        app:icon="@drawable/ic_calibration_24"
+        app:defaultValue="false">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="eu.basicairdata.clinometer"
+            android:targetClass="eu.basicairdata.clinometer.CalibrationActivity" />
+    </Preference>
 
-    <PreferenceCategory
-        android:title="@string/pref_category_autolocking">
+    <Preference
+        app:key="prefResetCalibration"
+        app:title="@string/pref_calibration_reset"
+        app:summary="@string/pref_calibration_reset_summary"
+        app:defaultValue="false"/>
 
-        <SwitchPreferenceCompat
-            app:key="prefAutoLock"
-            app:title="@string/pref_autolocking"
-            app:summary="@string/pref_autolocking_summary"
-            app:defaultValue="false"
-            app:icon="@drawable/ic_lock_24"/>
 
-        <SwitchPreferenceCompat
-            app:key="prefAutoLockHorizonCheck"
-            app:dependency="prefAutoLock"
-            app:title="@string/pref_autolocking_horizon"
-            app:summary="@string/pref_autolocking_horizon_summary"
-            app:defaultValue="true"/>
 
-        <SeekBarPreference
-            app:key="prefAutoLockPrecision"
-            app:dependency="prefAutoLock"
-            app:title="@string/pref_autolocking_precision"
-            android:max="1000"
-            app:defaultValue="500"/>
+    <SwitchPreferenceCompat
+        app:key="prefAutoLock"
+        app:allowDividerAbove="true"
+        app:icon="@drawable/ic_lock_24"
+        app:title="@string/pref_autolocking"
+        app:summary="@string/pref_autolocking_summary"
+        app:defaultValue="false"/>
 
-    </PreferenceCategory>
+    <SwitchPreferenceCompat
+        app:key="prefAutoLockHorizonCheck"
+        app:icon="@drawable/ic_vertical_align_center_24"
+        app:dependency="prefAutoLock"
+        app:title="@string/pref_autolocking_horizon"
+        app:summary="@string/pref_autolocking_horizon_summary"
+        app:defaultValue="true"/>
 
-    <PreferenceCategory
-        android:title="@string/pref_category_info">
+    <SeekBarPreference
+        app:key="prefAutoLockPrecision"
+        app:dependency="prefAutoLock"
+        app:title="@string/pref_autolocking_precision"
+        android:max="1000"
+        app:defaultValue="500"/>
 
-        <Preference
-            app:key="prefAbout"
-            app:title="@string/pref_about"
-            app:summary="@string/pref_about_summary"
-            app:defaultValue="false"
-            app:icon="@drawable/ic_info_24"/>
 
-    </PreferenceCategory>
+
+    <Preference
+        app:key="prefCameraPermission"
+        app:allowDividerAbove="true"
+        app:icon="@drawable/ic_image_24"
+        app:title="@string/pref_cameramode_camera_to_use"
+        app:summary="@string/pref_cameramode_no_permission_to_access"
+        app:defaultValue="false" />
+
+    <ListPreference
+        app:key="prefCamera"
+        app:allowDividerAbove="true"
+        app:icon="@drawable/ic_image_24"
+        android:summary="%s"
+        app:title="@string/pref_cameramode_camera_to_use"
+        app:defaultValue="0"/>
+
+    <SeekBarPreference
+        app:key="prefExposureCompensation"
+        app:title="@string/pref_cameramode_exposure_compensation"
+        android:enabled="false"
+        android:max="200"
+        app:min="-200"
+        app:defaultValue="0"/>
+
+
+
+    <Preference
+        app:key="prefAbout"
+        app:allowDividerAbove="true"
+        app:title="@string/pref_about"
+        app:summary="@string/pref_about_summary"
+        app:defaultValue="false"
+        app:icon="@drawable/ic_info_24"/>
+
+
     <!--</PreferenceCategory>
 
     <PreferenceCategory

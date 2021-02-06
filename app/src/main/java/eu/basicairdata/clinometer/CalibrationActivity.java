@@ -21,6 +21,7 @@
 package eu.basicairdata.clinometer;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -31,15 +32,29 @@ import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.preference.PreferenceManager;
+
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_TIME;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
 
 
 public class CalibrationActivity extends AppCompatActivity implements SensorEventListener {
@@ -64,6 +79,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private AppCompatButton buttonNext;
     private ProgressBar progressBar;
     private ImageView imageViewMain;
+    private ImageView imageViewCalibrationIcon;
     private TextView textViewStepDescription;
     private TextView textViewLastCalibration;
     private TextView textViewProgress;
@@ -84,7 +100,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private static final int STEP_6_CAL     = 11;   // Calibrating...   Don't move the device
     private static final int STEP_7         = 12;   // Step 7 of 7      Press next and lay face down
     private static final int STEP_7_CAL     = 13;   // Calibrating...   Don't move the device
-    private static final int STEP_COMPLETED = 14;   // Calibration completed (Message Box)
+    private static final int STEP_COMPLETED = 14;   // Calibration completed, performs calculations and shows results
 
     private static final float STANDARD_GRAVITY = 9.807f;
 
@@ -110,12 +126,16 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         textViewLastCalibration = findViewById(R.id.id_textview_last_calibration);
         textViewProgress = findViewById(R.id.id_textview_progress);
         imageViewMain = findViewById(R.id.id_imageViewMain);
+        imageViewCalibrationIcon = findViewById(R.id.id_imageViewCalibrationIcon);
 
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentStep++;
-                startStep();
+                if (currentStep == STEP_COMPLETED) finish();
+                else {
+                    currentStep++;
+                    startStep();
+                }
             }
         });
 
@@ -125,16 +145,16 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (preferences.contains("prefCalibrationAngle0")) {
+        if (preferences.contains(KEY_PREF_CALIBRATION_ANGLE_0)) {
             textViewLastCalibration.setText(getString(R.string.calibration_active_calibration) + "\n"
                     + getString(R.string.calibration_active_calibration_gains)
-                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat("prefCalibrationGain0", 0), preferences.getFloat("prefCalibrationGain1", 0), preferences.getFloat("prefCalibrationGain2", 0))
+                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_2, 0))
                     + "\n"
                     + getString(R.string.calibration_active_calibration_offsets)
-                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat("prefCalibrationOffset0", 0), preferences.getFloat("prefCalibrationOffset1", 0), preferences.getFloat("prefCalibrationOffset2", 0))
+                    + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_2, 0))
                     + "\n"
                     + getString(R.string.calibration_active_calibration_angles)
-                    + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat("prefCalibrationAngle0", 0), preferences.getFloat("prefCalibrationAngle1", 0), preferences.getFloat("prefCalibrationAngle2", 0))
+                    + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0))
             );
         }
 
@@ -143,16 +163,62 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    @Override
+    public void onBackPressed()
+    {
+        Log.d("CalibrationActivity", "onBackPressed on Step " + currentStep);
+        if ((currentStep != STEP_1) && (currentStep < STEP_COMPLETED)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getResources().getString(R.string.calibration_abort));
+            //builder.setIcon(android.R.drawable.ic_menu_info_details);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            finish();
+            //super.onBackPressed();  // optional depending on your needs
+        }
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if ((int) (currentStep / 2) * 2 != currentStep) currentStep--;
-        Log.d("CalibrationActivity", "CurrentStep = " + currentStep);
-
-        startStep();
-
-        //mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_KEEP_SCREEN_ON, true)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        
+        if (currentStep < STEP_COMPLETED) {
+            // If the app was calibrating when the onPause is called, the app goes back 1 step (the previous screen)
+            if ((int) (currentStep / 2) * 2 != currentStep) currentStep--;
+            Log.d("CalibrationActivity", "CurrentStep = " + currentStep);
+            startStep();
+        }
     }
 
 
@@ -238,7 +304,20 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
                 break;
             case STEP_COMPLETED:
+
+                // Write raw step Values into Preferences
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editorRaw = preferences.edit();
+                for (int i = 0; i < 7; i++) {
+                    editorRaw.putFloat("prefCalibrationRawMean_0_" + i , mean[0][i]);
+                    editorRaw.putFloat("prefCalibrationRawMean_1_" + i , mean[1][i]);
+                    editorRaw.putFloat("prefCalibrationRawMean_2_" + i , mean[2][i]);
+                }
+                editorRaw.commit();
+
                 // Calculations
+
                 Log.d("Clinometer","-- MEAN NOT CORRECTED ------------------------------------------------------");
                 for (int i = 0; i < 7; i++) {
                     Log.d("Clinometer", String.format("mean[ ][" + i + "]  =  %+1.4f  %+1.4f  %+1.4f", mean[0][i], mean[1][i], mean[2][i]));
@@ -292,29 +371,45 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
                 calibrationAngle[2] =  (angle[0][0] + angle[0][1])/2;       // angle 0 = X axis
                 calibrationAngle[1] = -(angle[1][0] + angle[1][1])/2;       // angle 1 = Y axis
-                calibrationAngle[0] = -(angle[1][3] + angle[1][2])/2;       // angle 2 = Z axis
+                calibrationAngle[0] = -(angle[1][3] - angle[1][2])/2;       // angle 2 = Z axis
 
                 Log.d("Clinometer","-- CALIBRATION ANGLES ------------------------------------------------------");
-                Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[0], calibrationAngle[1], calibrationAngle[2]));
-
+                Log.d("Clinometer", String.format("Cal.Angles =  %+1.4f°  %+1.4f°  %+1.4f°", calibrationAngle[2], calibrationAngle[1], calibrationAngle[0]));
                 Log.d("Clinometer","----------------------------------------------------------------------------");
 
                 // Write Calibration Angles into Preferences
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putFloat("prefCalibrationAngle0", calibrationAngle[0]);
-                editor.putFloat("prefCalibrationAngle1", calibrationAngle[1]);
-                editor.putFloat("prefCalibrationAngle2", calibrationAngle[2]);
-                editor.putFloat("prefCalibrationGain0", calibrationGain[0]);
-                editor.putFloat("prefCalibrationGain1", calibrationGain[1]);
-                editor.putFloat("prefCalibrationGain2", calibrationGain[2]);
-                editor.putFloat("prefCalibrationOffset0", calibrationOffset[0]);
-                editor.putFloat("prefCalibrationOffset1", calibrationOffset[1]);
-                editor.putFloat("prefCalibrationOffset2", calibrationOffset[2]);
-                editor.putLong("prefCalibrationTime", System.currentTimeMillis());
+                editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_0, calibrationAngle[0]);
+                editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_1, calibrationAngle[1]);
+                editor.putFloat(KEY_PREF_CALIBRATION_ANGLE_2, calibrationAngle[2]);
+                editor.putFloat(KEY_PREF_CALIBRATION_GAIN_0, calibrationGain[0]);
+                editor.putFloat(KEY_PREF_CALIBRATION_GAIN_1, calibrationGain[1]);
+                editor.putFloat(KEY_PREF_CALIBRATION_GAIN_2, calibrationGain[2]);
+                editor.putFloat(KEY_PREF_CALIBRATION_OFFSET_0, calibrationOffset[0]);
+                editor.putFloat(KEY_PREF_CALIBRATION_OFFSET_1, calibrationOffset[1]);
+                editor.putFloat(KEY_PREF_CALIBRATION_OFFSET_2, calibrationOffset[2]);
+                editor.putLong(KEY_PREF_CALIBRATION_TIME, System.currentTimeMillis());
                 editor.commit();
 
-                finish();
+                progressBar.setVisibility(View.INVISIBLE);
+                textViewProgress.setVisibility(View.INVISIBLE);
+                imageViewMain.setImageBitmap(null);
+                textViewStepDescription.setText(R.string.dialog_calibration_completed);
+                textViewLastCalibration.setText(getString(R.string.calibration_active_calibration) + "\n"
+                        + getString(R.string.calibration_active_calibration_gains)
+                        + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_2, 0))
+                        + "\n"
+                        + getString(R.string.calibration_active_calibration_offsets)
+                        + String.format(" = %1.3f; %1.3f; %1.3f", preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_0, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_2, 0))
+                        + "\n"
+                        + getString(R.string.calibration_active_calibration_angles)
+                        + String.format(" = %1.2f°; %1.2f°; %1.2f°", preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0), preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0))
+                );
+                textViewLastCalibration.setVisibility(View.VISIBLE);
+                buttonNext.setVisibility(View.VISIBLE);
+                buttonNext.setText(R.string.close);
+                imageViewCalibrationIcon.setVisibility(View.VISIBLE);
         }
     }
 

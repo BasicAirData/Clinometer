@@ -23,38 +23,48 @@
 <resources>
     <string name="app_name">Clinometer</string>
 
+    <string name="toast_please_grant_camera_permission">Please grant the Camera Permission to enable this Feature</string>
+    <string name="toast_lay_vertical">Keep the Screen vertical and tilt the Device </string>
+
     <!-- Preferences -->
     <string name="Settings">Settings</string>
 
-    <string name="pref_category_calibration">CALIBRATION</string>
+    <string name="pref_keep_screen_on">Keep Screen On</string>
+    <string name="pref_keep_screen_on_summary">Battery drains faster</string>
+
     <string name="pref_calibration">Calibration</string>
     <string name="pref_calibration_summary_notcalibrated">Not calibrated</string>
     <string name="pref_calibration_summary_calibrated">Calibrated</string>
     <string name="pref_calibration_reset">Reset</string>
     <string name="pref_calibration_reset_summary">Clear the calibration</string>
 
-    <string name="pref_category_autolocking">AUTO LOCKING</string>
     <string name="pref_autolocking">Auto Locking</string>
-    <string name="pref_autolocking_summary">locks measurement when steady</string>
+    <string name="pref_autolocking_summary">Locks measurement when steady</string>
     <string name="pref_autolocking_horizon">Horizon Alignment</string>
-    <string name="pref_autolocking_horizon_summary">for vertical measurements</string>
+    <string name="pref_autolocking_horizon_summary">For vertical measurements</string>
     <string name="pref_autolocking_precision">Precision</string>
 
-    <string name="pref_category_info">INFO</string>
+    <string name="pref_cameramode_camera_to_use">Camera</string>
+    <string name="pref_cameramode_camera_front">Front Camera</string>
+    <string name="pref_cameramode_camera_rear">Rear Camera</string>
+    <string name="pref_cameramode_no_cameras">This Device has no Camera</string>
+    <string name="pref_cameramode_no_permission_to_access">No Permission to access Camera</string>
+    <string name="pref_cameramode_exposure_compensation">Exposure Compensation</string>
+
     <string name="pref_about">Info</string>
-    <string name="pref_about_summary">about the app</string>
+    <string name="pref_about_summary">About Clinometer</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2020 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData Clinometer measures the inclination angles with respect to gravity\'s direction using the onboard Accelerometers.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description">Copyright (C) 2020 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData Clinometer measures the inclination angles of your device with respect to gravity\'s direction using the onboard Accelerometers.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">If You enjoy using this app, please take a moment to rate Clinometer in the Google Store.</string>
     <string name="about_ok">Close</string>
     <string name="about_rate_this_app">Rate this App</string>
     <string name="about_unable_to_rate">Unable to reach the Store</string>
     <string name="title_activity_calibration">Calibration</string>
 
-    <!-- Strings used for fragments for navigation -->
-    <string name="calibration_active_calibration">Calibration active:</string>
+    <!-- Calibration Activity -->
+    <string name="calibration_active_calibration">Active Calibration:</string>
     <string name="calibration_active_calibration_gains">Gains</string>
     <string name="calibration_active_calibration_offsets">Offsets</string>
     <string name="calibration_active_calibration_angles">Angles</string>
@@ -67,13 +77,17 @@
     <string name="calibration_step7">Step 7 of 7\nPress next and lay face down</string>
     <string name="calibration_calibrating">Calibrating...\nDon\'t move the device</string>
 
+    <string name="calibration_abort">Do you really want to abort the calibration process and return to settings?</string>
+
     <string name="next">Next >></string>
     <string name="previous">Previous</string>
 
 
     <!-- Dialogs -->
-    <string name="reset_calibration_confirmation">Do you want to reset the current calibration?</string>
+    <string name="dialog_reset_calibration_confirmation">Do you want to reset the current calibration?</string>
+    <string name="dialog_calibration_completed">Calibration completed!</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="close">Close</string>
 
 </resources>

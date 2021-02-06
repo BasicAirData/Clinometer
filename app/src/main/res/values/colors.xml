@@ -28,6 +28,7 @@
     <color name="bghorizon">#1AFFDD11</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="black_contrast">#44000000</color>
 
     <color name="bgpaint_light">#3a3a3a</color>
     <color name="bgpaint_dark">#070707</color>

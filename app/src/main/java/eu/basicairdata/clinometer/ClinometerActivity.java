@@ -20,22 +20,39 @@
 
 package eu.basicairdata.clinometer;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.YuvImage;
+import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,44 +61,84 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import static eu.basicairdata.clinometer.ClinometerApplication.CAMERA_REQUEST_CODE;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_AUTOLOCK;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_AUTOLOCK_HORIZON_CHECK;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_AUTOLOCK_PRECISION;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_ANGLE_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_GAIN_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_0;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_1;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
 
 
 public class ClinometerActivity extends AppCompatActivity implements SensorEventListener {
 
+    // Singleton instance
+    private static ClinometerActivity singleton;
+
+    public static ClinometerActivity getInstance(){
+        return singleton;
+    }
+
     ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
     private Vibrator vibrator;
+
+    private static final int TOAST_TIME = 2500;                         // The time a toast is shown
 
     private static final float AUTOLOCK_MIN_TOLERANCE = 0.05f;          // The minimum tolerance of the AutoLock
     private static final float AUTOLOCK_MAX_TOLERANCE = 0.5f;           // The maximum tolerance of the AutoLock
     private static final float AUTOLOCK_HORIZON_CHECK_THRESHOLD = 5.0f; // The zone of horizon check (+- 5 degrees)
     private static final float ROTATION_THRESHOLD = 5;                  // The threshold of the boundaries for DisplayRotation (in degrees)
-    private static final int SIZE_OF_MEANVARIANCE = 200;                // 2 seconds
-
+    private static final int   SIZE_OF_MEANVARIANCE = 200;              // 2 seconds
     private static final float ALPHA = 0.04f;                           // Weight of the new sensor reading
 
+    private ClinometerApplication clinometerApplication;
     private SharedPreferences preferences;
+
     private boolean prefAutoLock = false;
     private boolean prefAutoLockHorizonCheck = true;
     private float prefAutoLockTolerance;
+    private int prefExposureCompensation = 0;
 
     public boolean isFlat = true;                       // True if the device is oriented flat (for example on a table)
     public boolean isLocked = false;                    // True if the angles are locked by user
     private boolean isLockRequested = false;
     public float displayRotation = 0;                   // The rotation angle from the natural position of the device
 
+    public boolean isInCameraMode = false;              // True if Camera Mode is active
+    private boolean isCameraLivePreviewActive = false;  // True if the Live Preview with Camera is active
+    private Bitmap cameraPreviewBitmap;                 // The image saved from Camera Preview (used by Locking and onPause/onResume)
+
     // Singleton instance
-    private static ClinometerActivity singleton;
-    public static ClinometerActivity getInstance(){
-        return singleton;
-    }
+//    private static ClinometerActivity singleton;
+//    public static ClinometerActivity getInstance(){
+//        return singleton;
+//    }
 
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
+    private TextView mTextViewToast;
+    private TextView mTextViewKeepScreenVertical;
     private FrameLayout mFrameLayoutClinometer;
-    private LinearLayout mLinearLayoutOverlays;
+    private FrameLayout mFrameLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
+    private LinearLayout mLinearLayoutToolbar;
     private ImageView mImageViewLock;
     private ImageView mImageViewSettings;
+    private ImageView mImageViewCamera;
+    private ImageView mImageViewCameraImage;
+    private FrameLayout mFrameLayoutPreview;
+    private BackgroundView mBackgroundView;
 
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
@@ -113,29 +170,50 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     ValueAnimator animationR = new ValueAnimator();
 
+    private Camera mCamera;
+    private CameraPreview mPreview;
+
+
+    // --------------------------------------------------------------------------------------------------------------------------
+    // --- CLASS METHODS --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------------
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        singleton = this;
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+
+        singleton = this;
+
+        clinometerApplication = ClinometerApplication.getInstance();
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         setContentView(R.layout.activity_clinometer);
 
         mClinometerView = findViewById(R.id.id_clinometerview);
         mTextViewAngles = findViewById(R.id.id_textview_angles);
+        mTextViewToast = findViewById(R.id.id_textview_toast);
+        mTextViewKeepScreenVertical = findViewById(R.id.id_textview_keep_screen_vertical);
         mImageViewLock = findViewById(R.id.id_imageview_lock);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
+        mImageViewCamera = findViewById(R.id.id_imageview_camera);
         mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
-        mLinearLayoutOverlays = findViewById(R.id.id_linearlayout_overlay);
+        mFrameLayoutOverlays = findViewById(R.id.id_framelayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
+        mLinearLayoutToolbar = findViewById(R.id.id_linearlayout_toolbar);
+
+        mImageViewCameraImage = findViewById(R.id.id_imageview_cameraimage);
+        mFrameLayoutPreview = findViewById(R.id.camera_preview);
+        mBackgroundView = findViewById(R.id.id_backgroundview);
+
+
+        mImageViewCamera.setAlpha(0.4f);
+        mLinearLayoutToolbar.setBackground(null);
 
 //        for (int i = 0; i < SIZE_OF_MEANVARIANCE; i++) {
 //            MVGravity0.LoadSample(0.0f);
@@ -147,12 +225,15 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mvGravity1.reset(0.0f);
         mvGravity2.reset(9.80f);
 
-        // Check sensors
-        Log.d("SpiritLevel", "- ROTATION_VECTOR Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR).size());
-        Log.d("SpiritLevel", "- ACCELEROMETER Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size());
+        // ---------- Check sensors
+
+        Log.d("Clinometer", "- ROTATION_VECTOR Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR).size());
+        Log.d("Clinometer", "- ACCELEROMETER Sensors = " + mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size());
 
         mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if (mRotationSensor == null) Log.d("SpiritLevel", "NO ACCELEROMETER FOUND!");
+        if (mRotationSensor == null) Log.d("Clinometer", "NO ACCELEROMETER FOUND!");
+
+        // ---------- Button Listeners
 
         mLinearLayoutAngles.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -161,6 +242,9 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 if (isLocked) {
                     isLocked = false;
                     isLockRequested = false;
+                    if (isInCameraMode) activateCamera();
+                    mImageViewCameraImage.setImageBitmap(null);
+                    cameraPreviewBitmap = null;
                 }
                 else isLockRequested = !isLockRequested;
                 updateLockIcon();
@@ -176,7 +260,37 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             }
         });
 
+        if (clinometerApplication.hasCamera()) {
+            mImageViewCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ClinometerActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+                    } else {
+                        isInCameraMode = switchToCameraMode(!isInCameraMode);
+                    }
+                }
+            });
+        } else {
+            mImageViewCamera.setVisibility(View.GONE);
+        }
+
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            Log.w("ClinometerActivity", "onRequestPermissionsResult()");
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                clinometerApplication.scanCameras();
+                isInCameraMode = switchToCameraMode(!isInCameraMode);
+            } else {
+                showToast(getString(R.string.toast_please_grant_camera_permission));
+            }
+        }
     }
 
 
@@ -190,26 +304,27 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+        if (isInCameraMode) releaseCamera(true);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         loadPreferences();
 
-        mClinometerView.setSystemUiVisibility(
+        mFrameLayoutClinometer.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
                 // Set the content to appear under the system bars so that the
                 // content doesn't resize when the system bars hide and show.
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN //|
+                //View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                 // Hide the nav bar and status bar
                 //View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                //View.SYSTEM_UI_FLAG_FULLSCREEN
+                View.SYSTEM_UI_FLAG_FULLSCREEN
         );
 
         this.getWindow().setFlags(
@@ -220,6 +335,12 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         updateLockIcon();
 
         mSensorManager.registerListener(this, mRotationSensor, ACCELEROMETER_UPDATE_INTERVAL_MICROS);
+
+        if (isInCameraMode && !isLocked){
+            cameraPreviewBitmap = null;
+            mImageViewCameraImage.setImageBitmap(null);
+            activateCamera();
+        }
     }
 
 
@@ -243,6 +364,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     mClinometerView.invalidate();
                     updateLockIcon();
                     beep();
+                    if (isInCameraMode) releaseCamera(true);
                 } else if ((mvAngle0.getTolerance() < prefAutoLockTolerance)
                         && (mvAngle1.getTolerance() < prefAutoLockTolerance)
                         && (mvAngle2.getTolerance() < prefAutoLockTolerance)
@@ -285,6 +407,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     mClinometerView.invalidate();
                     updateLockIcon();
                     beep();
+                    if (isInCameraMode) releaseCamera(true);
 
                     mvAngle0.reset();
                     mvAngle1.reset();
@@ -393,6 +516,17 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     angleTextLabels = displayRotation;
                 }
 
+                // Show hint in camera mode
+                if (isCameraLivePreviewActive) {
+                    if (Math.abs(angle[2]) > 7.5f) {
+                        // The Screen is in vertical
+                        mTextViewKeepScreenVertical.setVisibility(View.VISIBLE);
+                    }
+                    if (Math.abs(angle[2]) < 7f) {
+                        mTextViewKeepScreenVertical.setVisibility(View.GONE);
+                    }
+                }
+
                 // Apply Changes
 
                 mClinometerView.invalidate();
@@ -413,14 +547,14 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private void updateLockIcon() {
         if (isLocked) {
-            mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_24));
-            mImageViewLock.setAlpha(0.8f);
+            mImageViewLock.setImageResource(R.drawable.ic_lock_24);
+            mImageViewLock.setAlpha(0.9f);
         } else {
             if (isLockRequested) {
-                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_24));
-                mImageViewLock.setAlpha(0.8f);
+                mImageViewLock.setImageResource(R.drawable.ic_lock_open_24);
+                mImageViewLock.setAlpha(0.9f);
             } else {
-                mImageViewLock.setImageDrawable(getResources().getDrawable(R.drawable.ic_lock_open_24));
+                mImageViewLock.setImageResource(R.drawable.ic_lock_open_24);
                 mImageViewLock.setAlpha(0.4f);
             }
         }
@@ -428,20 +562,25 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
 
     private void loadPreferences() {
-        prefAutoLock = preferences.getBoolean("prefAutoLock", false);
-        prefAutoLockHorizonCheck = preferences.getBoolean("prefAutoLockHorizonCheck", true);
-        prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt("prefAutoLockPrecision", 500) / 1000;
-        Log.d("SpiritLevel", String.format("Auto Locking Tolerance = %1.3f", prefAutoLockTolerance));
+        if (preferences.getBoolean(KEY_PREF_KEEP_SCREEN_ON, true)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        angle_calibration[0]    = preferences.getFloat("prefCalibrationAngle0", 0);
-        angle_calibration[1]    = preferences.getFloat("prefCalibrationAngle1", 0);
-        angle_calibration[2]    = preferences.getFloat("prefCalibrationAngle2", 0);
-        gravity_gain[0]         = preferences.getFloat("prefCalibrationGain0", 1);
-        gravity_gain[1]         = preferences.getFloat("prefCalibrationGain1", 1);
-        gravity_gain[2]         = preferences.getFloat("prefCalibrationGain2", 1);
-        gravity_offset[0]       = preferences.getFloat("prefCalibrationOffset0", 0);
-        gravity_offset[1]       = preferences.getFloat("prefCalibrationOffset1", 0);
-        gravity_offset[2]       = preferences.getFloat("prefCalibrationOffset2", 0);
+        prefAutoLock = preferences.getBoolean(KEY_PREF_AUTOLOCK, false);
+        prefAutoLockHorizonCheck = preferences.getBoolean(KEY_PREF_AUTOLOCK_HORIZON_CHECK, true);
+        prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt(KEY_PREF_AUTOLOCK_PRECISION, 500) / 1000;
+        Log.d("Clinometer", String.format("Auto Locking Tolerance = %1.3f", prefAutoLockTolerance));
+
+        prefExposureCompensation = preferences.getInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, 0);
+
+        angle_calibration[0]    = preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_0, 0);
+        angle_calibration[1]    = preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_1, 0);
+        angle_calibration[2]    = preferences.getFloat(KEY_PREF_CALIBRATION_ANGLE_2, 0);
+        gravity_gain[0]         = preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_0, 1);
+        gravity_gain[1]         = preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_1, 1);
+        gravity_gain[2]         = preferences.getFloat(KEY_PREF_CALIBRATION_GAIN_2, 1);
+        gravity_offset[0]       = preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_0, 0);
+        gravity_offset[1]       = preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_1, 0);
+        gravity_offset[2]       = preferences.getFloat(KEY_PREF_CALIBRATION_OFFSET_2, 0);
 
         calibrationMatrix[0][0] = (float) (Math.cos(Math.toRadians(angle_calibration[2])) * Math.cos(Math.toRadians(angle_calibration[0])) + Math.sin(Math.toRadians(angle_calibration[2])) * Math.sin(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
         calibrationMatrix[0][1] = (float) (Math.cos(Math.toRadians(angle_calibration[1])) * Math.sin(Math.toRadians(angle_calibration[0])));
@@ -475,15 +614,207 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 float animatedValue = (float) Math.sqrt(Math.sqrt((float) updatedAnimation.getAnimatedValue()));
                 float alpha = 2 * Math.abs(animatedValue - 0.5f);           // Transparency for Fades
                 //Log.d("SpiritLevel", "alpha = " + alpha);
-                mLinearLayoutOverlays.setAlpha(alpha);
-                if ((animatedValue >= 0.5f) && (mLinearLayoutOverlays.getRotation() != rotationAngle)) {
+                mFrameLayoutOverlays.setAlpha(alpha);
+                if ((animatedValue >= 0.5f) && (mFrameLayoutOverlays.getRotation() != rotationAngle)) {
                     //Log.d("SpiritLevel", "change parameters = " + rotationAngle + ", " + newWidth + ", " + newHeight);
-                    mLinearLayoutOverlays.getLayoutParams().height = newHeight;
-                    mLinearLayoutOverlays.getLayoutParams().width = newWidth;
-                    mLinearLayoutOverlays.setRotation(rotationAngle);
+                    mFrameLayoutOverlays.getLayoutParams().height = newHeight;
+                    mFrameLayoutOverlays.getLayoutParams().width = newWidth;
+                    mFrameLayoutOverlays.setRotation(rotationAngle);
                 }
             }
         });
         animationR.start();
+    }
+
+
+    // --------------------------------------------------------------------------------------------------------------------------
+    // --- TOASTS ---------------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------------
+
+
+    final Handler toastHandler = new Handler();
+    final Runnable r = new Runnable() {
+        @Override
+        public void run() {
+            hideToast();
+        }
+    };
+
+
+    private void showToast(String text) {
+        toastHandler.removeCallbacks(r);
+        mTextViewToast.setText(text);
+        mTextViewToast.setVisibility(View.VISIBLE);
+        toastHandler.postDelayed(r, TOAST_TIME);
+    }
+
+
+    private void hideToast() {
+        if (mTextViewToast != null) mTextViewToast.setVisibility(View.GONE);
+    }
+
+
+    // --------------------------------------------------------------------------------------------------------------------------
+    // --- CAMERA MANAGEMENT ----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------------
+
+
+    /** A safe way to get an instance of the Camera object. */
+    private Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open(clinometerApplication.getSelectedCameraInformation().id); // attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+
+    /** Switch on/off the Camera Mode */
+    private boolean switchToCameraMode(boolean newState) {
+        Log.d("Clinometer", "switchToCameraMode(" + newState + ")");
+        boolean result = newState;
+        if (newState) {
+            // Switch ON the Camera Mode
+            if (!isLocked || (cameraPreviewBitmap == null)) {
+                result = activateCamera();
+                Log.d("Clinometer", "switchToCameraMode result = " + result);
+                if (!result) return false;
+                mImageViewCameraImage.setVisibility(View.GONE);
+            } else {
+                mImageViewCameraImage.setVisibility(View.VISIBLE);
+            }
+            mImageViewCamera.setAlpha(0.9f);
+            mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
+            mBackgroundView.setVisibility(View.GONE);
+        } else {
+            // Switch OFF the Camera Mode
+            releaseCamera(false);
+            mImageViewCamera.setAlpha(0.4f);
+            mLinearLayoutToolbar.setBackground(null);
+            mBackgroundView.setVisibility(View.VISIBLE);
+            mImageViewCameraImage.setVisibility(View.GONE);
+        }
+        return result;
+    }
+
+
+    /** Activate the Camera Preview */
+    private boolean activateCamera() {
+        if (isCameraLivePreviewActive) return true;
+        if (mCamera == null) {
+            //showToast(getString(R.string.toast_activation_of_the_camera));
+            // Create an instance of Camera
+            mCamera = getCameraInstance();
+        }
+        if (mCamera == null) return false;
+
+        // Create our Preview view and set it as the content of our activity.
+        mFrameLayoutPreview.removeAllViews();
+        mPreview = new CameraPreview(this, mCamera, prefExposureCompensation);
+        mFrameLayoutPreview.addView(mPreview);
+        mFrameLayoutPreview.setVisibility(View.VISIBLE);
+        mImageViewCameraImage.setVisibility(View.GONE);
+
+        // SCALE TO FILL SCREEN WITHOUT DEFORMATION ------------------------------------------------
+        // Based on: https://startandroid.ru/ru/uroki/vse-uroki-spiskom/264-urok-132-kamera-vyvod-izobrazhenija-na-ekran-obrabotka-povorota.html
+
+        Display display = getWindowManager().getDefaultDisplay();
+
+        // RectF of the Display, it matches the size of the Window
+        RectF rectDisplay = new RectF();
+        rectDisplay.set(0, 0, display.getWidth(), display.getHeight());
+        Size size = mCamera.getParameters().getPreviewSize();
+
+        // RectF of the Camera Preview
+        RectF rectPreview = new RectF();
+        if (display.getWidth() > display.getHeight()) {
+            rectPreview.set(0, 0, size.width, size.height);
+        } else {
+            rectPreview.set(0, 0, size.height, size.width);                // vertical preview
+        }
+
+        // Transformation matrix
+        Matrix matrix = new Matrix();
+        matrix.setRectToRect(rectPreview, rectDisplay, Matrix.ScaleToFit.START);    // if the preview is "squeezed" into the screen
+        matrix.mapRect(rectPreview);                                                // transformation
+
+        // Find the max Scale Factor in order to scale the image and the preview
+        // to fill the whole screen (without distortion). They will be cropped when necessary (drawn offscreen)
+        float maxScaleFactor = Math.max(rectDisplay.width()/rectPreview.width(), rectDisplay.height()/rectPreview.height());
+        Log.d("Clinometer", "Scale Factors: W=" + rectDisplay.width()/rectPreview.width() + " H=" + rectDisplay.height()/rectPreview.height());
+
+        // Set gravity, height and width of Camera Preview and Camera Image
+        FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(mPreview.getWidth(), mPreview.getHeight());
+        layout.gravity = Gravity.CENTER;
+        layout.height = (int) (rectPreview.bottom * maxScaleFactor);
+        layout.width = (int) (rectPreview.right * maxScaleFactor);
+        mPreview.setLayoutParams(layout);
+        mImageViewCameraImage.setLayoutParams(layout);
+
+        // -----------------------------------------------------------------------------------------
+
+        isCameraLivePreviewActive = true;
+        return true;
+    }
+
+
+    final Camera.PreviewCallback cameraPreviewCallback = new Camera.PreviewCallback() {
+        @Override
+        public void onPreviewFrame(byte[] bytes, Camera camera) {
+            try {
+                mPreview.pausePreview();
+                Camera.Parameters parameters = camera.getParameters();
+                Log.d("Clinometer", "onPreviewFrame");
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                YuvImage yuvImage = new YuvImage(bytes, parameters.getPreviewFormat(), parameters.getPreviewSize().width, parameters.getPreviewSize().height, null);
+                yuvImage.compressToJpeg(new Rect(0, 0, parameters.getPreviewSize().width, parameters.getPreviewSize().height), 90, out);
+                byte[] imageBytes = out.toByteArray();
+                cameraPreviewBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                Log.d("Clinometer", "IOException: " + e);
+            }
+            Matrix matrix = new Matrix();
+            //this will prevent mirror effect
+            if (clinometerApplication.getSelectedCameraInformation().type == CameraInformation.FRONT_CAMERA) matrix.preScale(-1.0f, 1.0f);
+            matrix.postRotate(mPreview.getRotationDegrees());
+            mImageViewCameraImage.setImageBitmap(Bitmap.createBitmap(cameraPreviewBitmap, 0, 0,
+                    cameraPreviewBitmap.getWidth(),
+                    cameraPreviewBitmap.getHeight(), matrix, true));
+            stopCamera();
+        }
+    };
+
+
+    /** Stops the Camera Preview.
+     * If saveImage is true, the method saves the last frame before stop the Preview */
+    private void releaseCamera(boolean saveImage) {
+        mTextViewKeepScreenVertical.setVisibility(View.GONE);
+        if (mCamera != null) {
+            if (saveImage) {
+                mCamera.setOneShotPreviewCallback(cameraPreviewCallback);
+            } else {
+                stopCamera();
+            }
+        }
+    }
+
+
+    /** Stops the Camera Preview */
+    private void stopCamera() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+        mImageViewCameraImage.setVisibility(View.VISIBLE);
+        mFrameLayoutPreview.setVisibility(View.GONE);
+        mFrameLayoutPreview.removeAllViews();
+        isCameraLivePreviewActive = false;
     }
 }
