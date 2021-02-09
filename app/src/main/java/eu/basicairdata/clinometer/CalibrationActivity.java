@@ -434,7 +434,11 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 mvGravity1.loadSample(event.values[1]);
                 mvGravity2.loadSample(event.values[2]);
 
-                textViewProgress.setText(String.format("Progress %1.0f%%   Tolerance %1.3f", mvGravity0.percentLoaded(), mvGravity0.getTolerance()));
+                textViewProgress.setText(String.format("%s %1.0f%%   %s %1.3f",
+                        getString(R.string.calibration_progress),
+                        mvGravity0.percentLoaded(),
+                        getString(R.string.calibration_tolerance),
+                        mvGravity0.getTolerance()));
                 int progress1 = (int) (10 * mvGravity0.percentLoaded());
                 int progress2 = (int) (Math.min(1000, Math.max(0, 1000 - 1000 *(mvGravity0.getTolerance() / MIN_CALIBRATION_PRECISION))));
                 progressBar.setSecondaryProgress(Math.max(progress1, progress2));
