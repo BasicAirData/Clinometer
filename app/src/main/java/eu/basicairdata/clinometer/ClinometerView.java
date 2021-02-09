@@ -22,6 +22,7 @@ package eu.basicairdata.clinometer;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -49,8 +50,10 @@ public class ClinometerView extends View {
 
     private Paint paint_LTGray;             // For Background Lines 30° + Circles
     private Paint paint_White;              // For White Angles Lines
+    private Paint paint_WhiteDashed;        // For Reference Axis Line
     private Paint paint_Black00;            // For Black Contrast Lines stroke=0
     private Paint paint_Black15;            // For Black Contrast Lines stroke=1.5
+    private Paint paint_Black15Dashed;      // For Black Contrast Reference Line stroke=1.5
     private Paint paint_Black30;            // For Black Contrast Lines stroke=3.0
     private Paint paint_WhiteText;          // For White Angles Text
     private Paint paint_ShadowText;         // For Shadows of Text
@@ -86,8 +89,8 @@ public class ClinometerView extends View {
     private float angle2Extension;     // The Arc 2 angle (-)
 
     private int refAxe = 0;             // The reference axe for white Angles
-                                // 0  = Horizontal axe
-                                // 90 = Vertical Axe
+    // 0  = Horizontal axe
+    // 90 = Vertical Axe
 
     private RectF arcRectF = new RectF();
 
@@ -117,6 +120,8 @@ public class ClinometerView extends View {
 
 
     private void createPaints() {
+        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{100,10,20,10},0);
+
         // create the Paint and set its color
         paint_LTGray = new Paint();
         paint_LTGray.setColor(getResources().getColor(R.color.line_light));
@@ -130,6 +135,14 @@ public class ClinometerView extends View {
         paint_White.setStrokeWidth(1.5f);
         paint_White.setDither(true);
         paint_White.setAntiAlias(true);
+
+        paint_WhiteDashed = new Paint();
+        paint_WhiteDashed.setColor(getResources().getColor(R.color.line_white));
+        paint_WhiteDashed.setStyle(Paint.Style.STROKE);
+        paint_WhiteDashed.setStrokeWidth(1.5f);
+        paint_WhiteDashed.setDither(true);
+        paint_WhiteDashed.setAntiAlias(true);
+        paint_WhiteDashed.setPathEffect(dashPathEffect);
 
         paint_WhiteText = new Paint();
         paint_WhiteText.setColor(getResources().getColor(R.color.line_white));
@@ -182,6 +195,14 @@ public class ClinometerView extends View {
         paint_Black15.setDither(true);
         paint_Black15.setAntiAlias(true);
 
+        paint_Black15Dashed = new Paint();
+        paint_Black15Dashed.setColor(getResources().getColor(R.color.black_contrast));
+        paint_Black15Dashed.setStyle(Paint.Style.STROKE);
+        paint_Black15Dashed.setStrokeWidth(1.5f + CONTRAST_STROKE);
+        paint_Black15Dashed.setDither(true);
+        paint_Black15Dashed.setAntiAlias(true);
+        paint_Black15Dashed.setPathEffect(dashPathEffect);
+
         paint_Black30 = new Paint();
         paint_Black30.setColor(getResources().getColor(R.color.black_contrast));
         paint_Black30.setStyle(Paint.Style.STROKE);
@@ -206,14 +227,14 @@ public class ClinometerView extends View {
         diag2c = Math.sqrt(xc * xc + yc * yc);          // Screen Diagonal/2 = distance between 0:0 and xc:yc
         r1_value = 2;                                   // The scale (to how many degrees corresponds each circle)
         ncircles = (int) Math.ceil(N_CIRCLES_FULLY_VISIBLE * 2 * diag2c / min_xy);
-                                                        // The number of circles to be drawn
+        // The number of circles to be drawn
         r1 = (min_xy / 2.0f) / N_CIRCLES_FULLY_VISIBLE; // The radius of the first circle.
 
         xs = xc + svActivity.angle[0] * r1 / r1_value;  // The X coordinate of the spirit bubble center
         ys = yc - svActivity.angle[1] * r1 / r1_value;  // The X coordinate of the spirit bubble center
 
         rot_angle_rad = (float) Math.toRadians(svActivity.angleXY);
-                                                        // The angle of rotation between absolute 3 o'clock and the white axe
+        // The angle of rotation between absolute 3 o'clock and the white axe
         horizon_angle_deg = svActivity.angleXY + 90;    // The angle of rotation between absolute 3 o'clock and the white axe
 
         if (refAxe == 0) {
@@ -264,51 +285,51 @@ public class ClinometerView extends View {
         // --------[ CONTRAST SHADOWS ]----------------------------------------------------------------------
 
         //if (svActivity.isInCameraMode) {
-            // Horizontal and Vertical Axes
-            if (refAxe == 0) canvas.drawLine(0, yc, x, yc, paint_Black15);
-            if (refAxe == 90) canvas.drawLine(xc, 0, xc, y, paint_Black15);
-            // Cross
-            canvas.drawLine(0, ys, x, ys, paint_Black30);
-            canvas.drawLine(xs, 0, xs, y, paint_Black30);
-            // Bubble
-            canvas.drawCircle(xs, ys, r1 / 4, paint_Black00);
-            // Angle Arcs
-            r = 1.9f * r1;
-            arcRectF.left = xc - r;           // The RectF for the Arc
-            arcRectF.right = xc + r;
-            arcRectF.top = yc - r;
-            arcRectF.bottom = yc + r;
-            canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_Black15);
-            r = 2.1f * r1;
-            arcRectF.left = xc - r;           // The RectF for the Arc
-            arcRectF.right = xc + r;
-            arcRectF.top = yc - r;
-            arcRectF.bottom = yc + r;
-            canvas.drawArc(arcRectF, angle2Start - 2, angle2Extension + 4, false, paint_Black15);
-            // Spirit level Horizon
-            if (!svActivity.isFlat) {
-                canvas.save();
-                canvas.rotate(svActivity.angleXY + 90, xc, yc);
-                //canvas.translate(0, (int) ((90 - SVActivity.angleXYZ) * r1 / r1_value));
-                canvas.drawLine((int) (xc - diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value),
-                        (int) (xc + diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value), paint_Black30);
-                canvas.restore();
-            }
-            // Horizon and max gradient
+        // Horizontal and Vertical Axes
+        if (refAxe == 0) canvas.drawLine(0, yc, x, yc, paint_Black15Dashed);
+        if (refAxe == 90) canvas.drawLine(xc, 0, xc, y, paint_Black15Dashed);
+        // Cross
+        canvas.drawLine(0, ys, x, ys, paint_Black30);
+        canvas.drawLine(xs, 0, xs, y, paint_Black30);
+        // Bubble
+        canvas.drawCircle(xs, ys, r1 / 4, paint_Black00);
+        // Angle Arcs
+        r = 1.9f * r1;
+        arcRectF.left = xc - r;           // The RectF for the Arc
+        arcRectF.right = xc + r;
+        arcRectF.top = yc - r;
+        arcRectF.bottom = yc + r;
+        canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_Black15);
+        r = 2.1f * r1;
+        arcRectF.left = xc - r;           // The RectF for the Arc
+        arcRectF.right = xc + r;
+        arcRectF.top = yc - r;
+        arcRectF.bottom = yc + r;
+        canvas.drawArc(arcRectF, angle2Start - 2, angle2Extension + 4, false, paint_Black15);
+        // Spirit level Horizon
+        if (!svActivity.isFlat) {
             canvas.save();
-            canvas.rotate((float) Math.toDegrees(rot_angle_rad), xc, yc);
-            //canvas.drawLine(xc - (xc + yc), yc, xc + (xc + yc), yc, paint_LTGray);    // Max Gradient
-            canvas.drawLine(xc - min_xy / 2 + r1 / 2, yc, (float) -diag2c, yc, paint_Black15);                 // Max Gradient
-            //canvas.drawLine(xc - min_xy/2 + r1, yc, xc, yc, paint_LTGray);                 // Max Gradient
-            canvas.rotate(90, xc, yc);
-            canvas.drawLine(xc - (xc + yc), yc, xc + (xc + yc), yc, paint_Black15);       // Horizon
+            canvas.rotate(svActivity.angleXY + 90, xc, yc);
+            //canvas.translate(0, (int) ((90 - SVActivity.angleXYZ) * r1 / r1_value));
+            canvas.drawLine((int) (xc - diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value),
+                    (int) (xc + diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value), paint_Black30);
             canvas.restore();
+        }
+        // Horizon and max gradient
+        canvas.save();
+        canvas.rotate((float) Math.toDegrees(rot_angle_rad), xc, yc);
+        //canvas.drawLine(xc - (xc + yc), yc, xc + (xc + yc), yc, paint_LTGray);    // Max Gradient
+        canvas.drawLine(xc - min_xy / 2 + r1 / 2, yc, (float) -diag2c, yc, paint_Black15);                 // Max Gradient
+        //canvas.drawLine(xc - min_xy/2 + r1, yc, xc, yc, paint_LTGray);                 // Max Gradient
+        canvas.rotate(90, xc, yc);
+        canvas.drawLine(xc - (xc + yc), yc, xc + (xc + yc), yc, paint_Black15);       // Horizon
+        canvas.restore();
         //}
 
         // --------[ HORIZONTAL AND VERTICAL AXIS ]----------------------------------------------------------------------
 
-        if (refAxe == 0) canvas.drawLine(0, yc, x, yc, paint_White);
-        if (refAxe == 90) canvas.drawLine(xc, 0, xc, y, paint_White);
+        if (refAxe == 0) canvas.drawLine(0, yc, x, yc, paint_WhiteDashed);
+        if (refAxe == 90) canvas.drawLine(xc, 0, xc, y, paint_WhiteDashed);
 
         // --------[ BACKGROUND CIRCLES ]-----------------------------------------------------------
 
