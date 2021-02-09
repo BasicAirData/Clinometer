@@ -120,7 +120,7 @@ public class ClinometerView extends View {
 
 
     private void createPaints() {
-        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{100,10,20,10},0);
+        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{200,10,20,10},0);
 
         // create the Paint and set its color
         paint_LTGray = new Paint();
@@ -237,18 +237,10 @@ public class ClinometerView extends View {
         // The angle of rotation between absolute 3 o'clock and the white axe
         horizon_angle_deg = svActivity.angleXY + 90;    // The angle of rotation between absolute 3 o'clock and the white axe
 
-        if (refAxe == 0) {
-            angle1Start = 0;
-            angle1Extension = horizon_angle_deg % 180;
-            angle2Start = 180;
-            angle2Extension = -(180 - (horizon_angle_deg % 180));
-        }
-        if (refAxe == 90) {
-            angle1Start = 90;
-            angle1Extension = (horizon_angle_deg + 90) % 180;
-            angle2Start = 270;
-            angle2Extension = -(180 - ((horizon_angle_deg + 90) % 180));
-        }
+        angle1Start = refAxe;
+        angle1Extension = (horizon_angle_deg + refAxe) % 180;
+        angle2Start = 180 + refAxe;
+        angle2Extension = -(180 - ((horizon_angle_deg + refAxe) % 180));
 
         // -----------------------------------------------------------------------------------------
         // --------[ BACKGROUND ]-------------------------------------------------------------------
@@ -286,8 +278,11 @@ public class ClinometerView extends View {
 
         //if (svActivity.isInCameraMode) {
         // Horizontal and Vertical Axes
-        if (refAxe == 0) canvas.drawLine(0, yc, x, yc, paint_Black15Dashed);
-        if (refAxe == 90) canvas.drawLine(xc, 0, xc, y, paint_Black15Dashed);
+        canvas.save();
+        canvas.rotate(refAxe, xc, yc);
+        canvas.drawLine(xc, yc, xc - max_xy/2, yc, paint_Black15Dashed);
+        canvas.drawLine(xc, yc, max_xy, yc, paint_Black15Dashed);
+        canvas.restore();
         // Cross
         canvas.drawLine(0, ys, x, ys, paint_Black30);
         canvas.drawLine(xs, 0, xs, y, paint_Black30);
@@ -328,8 +323,11 @@ public class ClinometerView extends View {
 
         // --------[ HORIZONTAL AND VERTICAL AXIS ]----------------------------------------------------------------------
 
-        if (refAxe == 0) canvas.drawLine(0, yc, x, yc, paint_WhiteDashed);
-        if (refAxe == 90) canvas.drawLine(xc, 0, xc, y, paint_WhiteDashed);
+        canvas.save();
+        canvas.rotate(refAxe, xc, yc);
+        canvas.drawLine(xc, yc, xc - max_xy/2, yc, paint_WhiteDashed);
+        canvas.drawLine(xc, yc, max_xy, yc, paint_WhiteDashed);
+        canvas.restore();
 
         // --------[ BACKGROUND CIRCLES ]-----------------------------------------------------------
 
