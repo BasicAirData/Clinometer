@@ -21,7 +21,7 @@
 -->
 
 <resources>
-    <string name="app_name">Clinometer</string>
+    <string name="app_name" translatable="false">Clinometer</string>
 
     <string name="toast_please_grant_camera_permission">Please grant the Camera Permission to enable this Feature</string>
     <string name="toast_lay_vertical">Keep the Screen vertical and tilt the Device </string>
