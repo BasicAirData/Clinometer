@@ -238,9 +238,9 @@ public class ClinometerView extends View {
         horizon_angle_deg = svActivity.angleXY + 90;    // The angle of rotation between absolute 3 o'clock and the white axe
 
         angle1Start = refAxe;
-        angle1Extension = (horizon_angle_deg + refAxe) % 180;
+        angle1Extension = (360 + (horizon_angle_deg % 180) - refAxe) % 180;
         angle2Start = 180 + refAxe;
-        angle2Extension = -(180 - ((horizon_angle_deg + refAxe) % 180));
+        angle2Extension = - 180 - (- 360 + refAxe - horizon_angle_deg) % 180;
 
         // -----------------------------------------------------------------------------------------
         // --------[ BACKGROUND ]-------------------------------------------------------------------
@@ -325,7 +325,7 @@ public class ClinometerView extends View {
 
         canvas.save();
         canvas.rotate(refAxe, xc, yc);
-        canvas.drawLine(xc, yc, xc - max_xy/2, yc, paint_WhiteDashed);
+        canvas.drawLine(xc, yc, xc - max_xy, yc, paint_WhiteDashed);
         canvas.drawLine(xc, yc, max_xy, yc, paint_WhiteDashed);
         canvas.restore();
 
