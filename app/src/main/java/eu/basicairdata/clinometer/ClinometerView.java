@@ -496,8 +496,8 @@ public class ClinometerView extends View {
 
                 // Change Ref Axis
                 if (Math.sqrt((xc-event.getX())*(xc-event.getX()) + (yc-event.getY())*(yc-event.getY())) > 2*r1) {
-                    if (Math.abs(xc - event.getX()) < 1 * r1) refAxe = 90;
-                    if (Math.abs(yc - event.getY()) < 1 * r1) refAxe = 0;
+                    if (Math.abs(xc - event.getX()) < 1 * r1) refAxe = (yc < event.getY() ? 90 : 270);
+                    if (Math.abs(yc - event.getY()) < 1 * r1) refAxe = (xc < event.getX() ? 0 : 180);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
