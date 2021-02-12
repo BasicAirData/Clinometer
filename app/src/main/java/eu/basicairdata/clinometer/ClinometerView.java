@@ -80,7 +80,7 @@ public class ClinometerView extends View {
     private float r;
     private int angle;
 
-    private float rot_angle_rad;            // The angle of rotation between absolute 3 o'clock and the white axe
+    private float rot_angle_rad;            // The angle of rotation between absolute 3 o'clock and the white axis
     private float horizon_angle_deg;        // Horizon angle
 
     private float angle1Start;         // The Arc 1 start
@@ -88,9 +88,9 @@ public class ClinometerView extends View {
     private float angle1Extension;     // The Arc 1 angle (+)
     private float angle2Extension;     // The Arc 2 angle (-)
 
-    private int refAxe = 0;             // The reference axe for white Angles
-    // 0  = Horizontal axe
-    // 90 = Vertical Axe
+    private int refAxis = 0;             // The reference axis for white Angles
+    // 0  = Horizontal axis
+    // 90 = Vertical axis
 
     private RectF arcRectF = new RectF();
 
@@ -234,13 +234,17 @@ public class ClinometerView extends View {
         ys = yc - svActivity.angle[1] * r1 / r1_value;  // The X coordinate of the spirit bubble center
 
         rot_angle_rad = (float) Math.toRadians(svActivity.angleXY);
-        // The angle of rotation between absolute 3 o'clock and the white axe
-        horizon_angle_deg = svActivity.angleXY + 90;    // The angle of rotation between absolute 3 o'clock and the white axe
+        // The angle of rotation between absolute 3 o'clock and the white axis
+        horizon_angle_deg = svActivity.angleXY + 90;    // The angle of rotation between absolute 3 o'clock and the white axis
 
-        angle1Start = refAxe;
-        angle1Extension = (360 + (horizon_angle_deg % 180) - refAxe) % 180;
-        angle2Start = 180 + refAxe;
-        angle2Extension = - 180 - (- 360 + refAxe - horizon_angle_deg) % 180;
+        angle1Start = refAxis;
+        angle1Extension = (360 + (horizon_angle_deg % 180) - refAxis) % 180;
+        angle2Start = 180 + refAxis;
+        angle2Extension = - 180 - (- 360 + refAxis - horizon_angle_deg) % 180;
+
+        // For angle starting from reference axis
+//        angle2Start = refAxis;
+//        angle2Extension = - 180 + angle1Extension;
 
         // -----------------------------------------------------------------------------------------
         // --------[ BACKGROUND ]-------------------------------------------------------------------
@@ -277,9 +281,9 @@ public class ClinometerView extends View {
         // --------[ CONTRAST SHADOWS ]----------------------------------------------------------------------
 
         //if (svActivity.isInCameraMode) {
-        // Horizontal and Vertical Axes
+        // Horizontal and Vertical Axis
         canvas.save();
-        canvas.rotate(refAxe, xc, yc);
+        canvas.rotate(refAxis, xc, yc);
         canvas.drawLine(xc, yc, xc - max_xy/2, yc, paint_Black15Dashed);
         canvas.drawLine(xc, yc, max_xy, yc, paint_Black15Dashed);
         canvas.restore();
@@ -324,7 +328,7 @@ public class ClinometerView extends View {
         // --------[ HORIZONTAL AND VERTICAL AXIS ]----------------------------------------------------------------------
 
         canvas.save();
-        canvas.rotate(refAxe, xc, yc);
+        canvas.rotate(refAxis, xc, yc);
         canvas.drawLine(xc, yc, xc - max_xy, yc, paint_WhiteDashed);
         canvas.drawLine(xc, yc, max_xy, yc, paint_WhiteDashed);
         canvas.restore();
@@ -477,12 +481,18 @@ public class ClinometerView extends View {
         drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle1Extension)),
                 (int) (xc + (r1 * 2) + 30 + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
-                -angle1Extension /2 - refAxe + svActivity.angleTextLabels , paint_WhiteText);
+                -angle1Extension /2 - refAxis + svActivity.angleTextLabels , paint_WhiteText);
         canvas.rotate( 90 , xc, yc);
         drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle2Extension)),
                 (int) (xc + (r1 * 2.1) + 30 + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
-                -angle1Extension /2 - 90 - refAxe + svActivity.angleTextLabels, paint_WhiteText);
+                -angle1Extension /2 - 90 - refAxis + svActivity.angleTextLabels, paint_WhiteText);
+        // For angle starting from reference axis
+//        canvas.rotate( -90 , xc, yc);
+//        drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle2Extension)),
+//                (int) (xc + (r1 * 2.1) + 30 + paint_White.measureText("100.0°") / 2), yc,
+//                TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
+//                -angle1Extension /2 + 90 - refAxis + svActivity.angleTextLabels, paint_WhiteText);
         canvas.restore();
     }
 
@@ -496,8 +506,8 @@ public class ClinometerView extends View {
 
                 // Change Ref Axis
                 if (Math.sqrt((xc-event.getX())*(xc-event.getX()) + (yc-event.getY())*(yc-event.getY())) > 2*r1) {
-                    if (Math.abs(xc - event.getX()) < 1 * r1) refAxe = (yc < event.getY() ? 90 : 270);
-                    if (Math.abs(yc - event.getY()) < 1 * r1) refAxe = (xc < event.getX() ? 0 : 180);
+                    if (Math.abs(xc - event.getX()) < 1 * r1) refAxis = (yc < event.getY() ? 90 : 270);
+                    if (Math.abs(yc - event.getY()) < 1 * r1) refAxis = (xc < event.getX() ? 0 : 180);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
