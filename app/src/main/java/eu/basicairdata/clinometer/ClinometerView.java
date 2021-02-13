@@ -63,6 +63,8 @@ public class ClinometerView extends View {
 
     Rect textbounds = new Rect();
 
+    PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
+
     private int x;                      // The Width of Screen
     private int y;                      // The Height of Screen
     private int min_xy;                 // The minimum between Width and Height
@@ -88,7 +90,7 @@ public class ClinometerView extends View {
     private float angle1Extension;     // The Arc 1 angle (+)
     private float angle2Extension;     // The Arc 2 angle (-)
 
-    private int refAxis = 0;             // The reference axis for white Angles
+    private float refAxis = 0;             // The reference axis for white Angles
     // 0  = Horizontal axis
     // 90 = Vertical axis
 
@@ -215,6 +217,8 @@ public class ClinometerView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         //super.onDraw(canvas);
+
+        refAxis = pid.getValue();
 
         // --------[ CALCULATIONS ]-----------------------------------------------------------------
 
@@ -506,8 +510,8 @@ public class ClinometerView extends View {
 
                 // Change Ref Axis
                 if (Math.sqrt((xc-event.getX())*(xc-event.getX()) + (yc-event.getY())*(yc-event.getY())) > 2*r1) {
-                    if (Math.abs(xc - event.getX()) < 1 * r1) refAxis = (yc < event.getY() ? 90 : 270);
-                    if (Math.abs(yc - event.getY()) < 1 * r1) refAxis = (xc < event.getX() ? 0 : 180);
+                    if (Math.abs(xc - event.getX()) < 1 * r1) pid.setTargetValue(yc < event.getY() ? 90 : 270);
+                    if (Math.abs(yc - event.getY()) < 1 * r1) pid.setTargetValue(xc < event.getX() ? 0 : 180);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:

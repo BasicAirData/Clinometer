@@ -526,11 +526,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                         mTextViewKeepScreenVertical.setVisibility(View.GONE);
                     }
                 }
-
-                // Apply Changes
-
-                mClinometerView.invalidate();
             }
+
+            // Apply Changes
+
+            mClinometerView.invalidate();
 
             // You must put this setText here in order to force the re-layout also during the rotations.
             // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
