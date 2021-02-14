@@ -63,8 +63,6 @@ public class ClinometerView extends View {
 
     Rect textbounds = new Rect();
 
-    PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
-
     private int x;                      // The Width of Screen
     private int y;                      // The Height of Screen
     private int min_xy;                 // The minimum between Width and Height
@@ -218,7 +216,7 @@ public class ClinometerView extends View {
     protected void onDraw(Canvas canvas) {
         //super.onDraw(canvas);
 
-        refAxis = pid.getValue();
+        refAxis = svActivity.getPIDValue();
 
         // --------[ CALCULATIONS ]-----------------------------------------------------------------
 
@@ -510,17 +508,17 @@ public class ClinometerView extends View {
 
                 // Change Ref Axis
                 if (Math.sqrt((xc-event.getX())*(xc-event.getX()) + (yc-event.getY())*(yc-event.getY())) > 2*r1) {
-                    if (Math.abs(xc - event.getX()) < 1 * r1) pid.setTargetValue(yc < event.getY() ? 90 : 270);
-                    if (Math.abs(yc - event.getY()) < 1 * r1) pid.setTargetValue(xc < event.getX() ? 0 : 180);
+                    if (Math.abs(xc - event.getX()) < 1 * r1) svActivity.setPIDTargetValue(yc < event.getY() ? 90 : 270);
+                    if (Math.abs(yc - event.getY()) < 1 * r1) svActivity.setPIDTargetValue(xc < event.getX() ? 0 : 180);
                 }
+                // Invalidate the whole view. If the view is visible.
+                //invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             default:
                 break;
         }
-        // Invalidate the whole view. If the view is visible.
-        invalidate();
         return true;
     }
 

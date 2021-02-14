@@ -93,6 +93,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
     private Vibrator vibrator;
 
+    // RefAxis Animator
+    PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
+    private float old_PIDValue = 0.0f;
+
     private static final int TOAST_TIME = 2500;                         // The time a toast is shown
 
     private static final float AUTOLOCK_MIN_TOLERANCE = 0.05f;          // The minimum tolerance of the AutoLock
@@ -172,6 +176,21 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private Camera mCamera;
     private CameraPreview mPreview;
+
+
+    // --------------------------------------------------------------------------------------------------------------------------
+    // --- GETTERS AND SETTERS --------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------------
+
+
+    public void setPIDTargetValue(float newValue) {
+        pid.setTargetValue(newValue);
+    }
+
+
+    public float getPIDValue() {
+        return pid.getValue();
+    }
 
 
     // --------------------------------------------------------------------------------------------------------------------------
@@ -526,15 +545,18 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                         mTextViewKeepScreenVertical.setVisibility(View.GONE);
                     }
                 }
+                // Apply Changes
+                mClinometerView.invalidate();
+
+                // You must put this setText here in order to force the re-layout also during the rotations.
+                // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
+                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
 
-            // Apply Changes
-
-            mClinometerView.invalidate();
-
-            // You must put this setText here in order to force the re-layout also during the rotations.
-            // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-            mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
+            if (Math.abs(pid.getValue() - old_PIDValue) > 0.001) {
+                old_PIDValue = pid.getValue();
+                mClinometerView.invalidate();
+            }
         }
     }
 
@@ -621,6 +643,9 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     mFrameLayoutOverlays.getLayoutParams().width = newWidth;
                     mFrameLayoutOverlays.setRotation(rotationAngle);
                 }
+                // You must put this setText here in order to force the re-layout also during the rotations.
+                // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
+                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
         });
         animationR.start();
