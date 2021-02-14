@@ -61,7 +61,8 @@ public class ClinometerView extends View {
     private Paint paint_Yellow_Spirit;      // For Lines and Spirit Bubbles
     private Paint paint_bg_horizon;         // For Horizon Background
 
-    Rect textbounds = new Rect();
+    private final Rect textbounds = new Rect();
+    private final RectF arcRectF = new RectF();
 
     private int x;                      // The Width of Screen
     private int y;                      // The Height of Screen
@@ -80,6 +81,14 @@ public class ClinometerView extends View {
     private float r;
     private int angle;
 
+    private float angles[] = {0, 0, 0};
+    private boolean isFlat;
+    private float displayRotation = 0;
+    private float angleXY;
+    private float angleXYZ;
+    private float angleTextLabels;
+
+
     private float rot_angle_rad;            // The angle of rotation between absolute 3 o'clock and the white axis
     private float horizon_angle_deg;        // Horizon angle
 
@@ -91,8 +100,6 @@ public class ClinometerView extends View {
     private float refAxis = 0;             // The reference axis for white Angles
     // 0  = Horizontal axis
     // 90 = Vertical axis
-
-    private RectF arcRectF = new RectF();
 
     private boolean isAngle2LabelOnLeft = true;                 // True if the label of the Angle[2] must be placed on left instead of right
     private static final int ANGLE2LABELSWITCH_THRESHOLD = 2;   // 2 Degrees of Threshold for switching L/R the Angle[2] label
@@ -216,6 +223,12 @@ public class ClinometerView extends View {
     protected void onDraw(Canvas canvas) {
         //super.onDraw(canvas);
 
+        angles = svActivity.getAngles();
+        angleXY = svActivity.getAngleXY();
+        angleXYZ = svActivity.getAngleXYZ();
+        angleTextLabels = svActivity.getAngleTextLabels();
+        isFlat = svActivity.isFlat();
+        displayRotation = svActivity.getDisplayRotation();
         refAxis = svActivity.getPIDValue();
 
         // --------[ CALCULATIONS ]-----------------------------------------------------------------
@@ -232,12 +245,12 @@ public class ClinometerView extends View {
         // The number of circles to be drawn
         r1 = (min_xy / 2.0f) / N_CIRCLES_FULLY_VISIBLE; // The radius of the first circle.
 
-        xs = xc + svActivity.angle[0] * r1 / r1_value;  // The X coordinate of the spirit bubble center
-        ys = yc - svActivity.angle[1] * r1 / r1_value;  // The X coordinate of the spirit bubble center
+        xs = xc + angles[0] * r1 / r1_value;  // The X coordinate of the spirit bubble center
+        ys = yc - angles[1] * r1 / r1_value;  // The X coordinate of the spirit bubble center
 
-        rot_angle_rad = (float) Math.toRadians(svActivity.angleXY);
+        rot_angle_rad = (float) Math.toRadians(angleXY);
         // The angle of rotation between absolute 3 o'clock and the white axis
-        horizon_angle_deg = svActivity.angleXY + 90;    // The angle of rotation between absolute 3 o'clock and the white axis
+        horizon_angle_deg = angleXY + 90;    // The angle of rotation between absolute 3 o'clock and the white axis
 
         angle1Start = refAxis;
         angle1Extension = (360 + (horizon_angle_deg % 180) - refAxis) % 180;
@@ -263,9 +276,9 @@ public class ClinometerView extends View {
         // --------[ BACKGROUND OF SPIRIT LEVEL HORIZON ]-------------------------------------------
 
         canvas.save();
-        canvas.rotate(svActivity.angleXY + 90, xc, yc);
-        //canvas.translate(0, (int) ((90 - Math.toDegrees(SVActivity.angleXYZ)) * r1 / r1_value));
-        canvas.drawRect((int) (xc - diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value),
+        canvas.rotate(angleXY + 90, xc, yc);
+        //canvas.translate(0, (int) ((90 - Math.toDegrees(angleXYZ)) * r1 / r1_value));
+        canvas.drawRect((int) (xc - diag2c), yc + (int) ((90 - angleXYZ) * r1 / r1_value),
                 (int)(xc + diag2c), (int)(yc + diag2c), paint_bg_horizon);
         canvas.restore();
 
@@ -282,7 +295,6 @@ public class ClinometerView extends View {
 
         // --------[ CONTRAST SHADOWS ]----------------------------------------------------------------------
 
-        //if (svActivity.isInCameraMode) {
         // Horizontal and Vertical Axis
         canvas.save();
         canvas.rotate(refAxis, xc, yc);
@@ -308,12 +320,12 @@ public class ClinometerView extends View {
         arcRectF.bottom = yc + r;
         canvas.drawArc(arcRectF, angle2Start - 2, angle2Extension + 4, false, paint_Black15);
         // Spirit level Horizon
-        if (!svActivity.isFlat) {
+        if (!isFlat) {
             canvas.save();
-            canvas.rotate(svActivity.angleXY + 90, xc, yc);
-            //canvas.translate(0, (int) ((90 - SVActivity.angleXYZ) * r1 / r1_value));
-            canvas.drawLine((int) (xc - diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value),
-                    (int) (xc + diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value), paint_Black30);
+            canvas.rotate(angleXY + 90, xc, yc);
+            //canvas.translate(0, (int) ((90 - angleXYZ) * r1 / r1_value));
+            canvas.drawLine((int) (xc - diag2c), yc + (int) ((90 - angleXYZ) * r1 / r1_value),
+                    (int) (xc + diag2c), yc + (int) ((90 - angleXYZ) * r1 / r1_value), paint_Black30);
             canvas.restore();
         }
         // Horizon and max gradient
@@ -325,7 +337,6 @@ public class ClinometerView extends View {
         canvas.rotate(90, xc, yc);
         canvas.drawLine(xc - (xc + yc), yc, xc + (xc + yc), yc, paint_Black15);       // Horizon
         canvas.restore();
-        //}
 
         // --------[ HORIZONTAL AND VERTICAL AXIS ]----------------------------------------------------------------------
 
@@ -380,12 +391,12 @@ public class ClinometerView extends View {
         canvas.drawCircle(xs, ys,r1/4, paint_Yellow_Spirit);
 
         // Spirit level Horizon
-        if (!svActivity.isFlat) {
+        if (!isFlat) {
             canvas.save();
-            canvas.rotate(svActivity.angleXY + 90, xc, yc);
-            //canvas.translate(0, (int) ((90 - SVActivity.angleXYZ) * r1 / r1_value));
-            canvas.drawLine((int) (xc - diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value),
-                    (int)(xc + diag2c), yc + (int) ((90 - svActivity.angleXYZ) * r1 / r1_value), paint_Yellow_Spirit);
+            canvas.rotate(angleXY + 90, xc, yc);
+            //canvas.translate(0, (int) ((90 - angleXYZ) * r1 / r1_value));
+            canvas.drawLine((int) (xc - diag2c), yc + (int) ((90 - angleXYZ) * r1 / r1_value),
+                    (int)(xc + diag2c), yc + (int) ((90 - angleXYZ) * r1 / r1_value), paint_Yellow_Spirit);
             canvas.restore();
 
             //canvas.drawLine(x_horizon[0], y_horizon[0], x_horizon[1], y_horizon[1], paint_Yellow_Spirit);
@@ -400,77 +411,77 @@ public class ClinometerView extends View {
         // Angle Z
         canvas.save();
         canvas.rotate( (float) Math.toDegrees(rot_angle_rad) + 180, xc, yc);
-        drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(90 - svActivity.angle[2])),
+        drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(90 - angles[2])),
                 (int) (min_xy - (r1)), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
-                (svActivity.angleTextLabels - (float) Math.toDegrees(rot_angle_rad) - 180) , paint_WhiteText);
+                (angleTextLabels - (float) Math.toDegrees(rot_angle_rad) - 180) , paint_WhiteText);
         canvas.restore();
 
         // Angle 0 + 1
-        if (svActivity.displayRotation == 0) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[0]), (int)xs - 20, y - 20,
+        if (displayRotation == 0f) {
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs - 20, y - 20,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[1]), 20, (int)ys - 20,
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), 20, (int)ys - 20,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
         }
-        if (svActivity.displayRotation == 90) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[0]), (int)xs + 20, 20,
+        if (displayRotation == 90f) {
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs + 20, 20,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_90, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[1]), 20, (int)ys - 20,
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), 20, (int)ys - 20,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_90, paint_Yellow_Spirit);
         }
-        if (svActivity.displayRotation == 180) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[0]), (int)xs + 20, 20,
+        if (displayRotation == 180f) {
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs + 20, 20,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_180, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[1]), x - 20, (int)ys + 20,
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), x - 20, (int)ys + 20,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_180, paint_Yellow_Spirit);
         }
-        if (svActivity.displayRotation == 270) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[0]), (int)xs - 20, y - 20,
+        if (displayRotation == 270f) {
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs - 20, y - 20,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_270, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[1]), x - 20, (int)ys + 20,
+            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), x - 20, (int)ys + 20,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_270, paint_Yellow_Spirit);
         }
 
         // Angle 2
-        if (!svActivity.isFlat) {
-            if ((Math.abs(svActivity.angle[2]) > ANGLE2LABELSWITCH_THRESHOLD)
-                    && (Math.abs(svActivity.angle[0]) > ANGLE2LABELSWITCH_THRESHOLD)
-                    && (Math.abs(svActivity.angle[1]) > ANGLE2LABELSWITCH_THRESHOLD)) {
+        if (!isFlat) {
+            if ((Math.abs(angles[2]) > ANGLE2LABELSWITCH_THRESHOLD)
+                    && (Math.abs(angles[0]) > ANGLE2LABELSWITCH_THRESHOLD)
+                    && (Math.abs(angles[1]) > ANGLE2LABELSWITCH_THRESHOLD)) {
                 // Switch evaluation
                 isAngle2LabelOnLeft = false;
-                if (((svActivity.displayRotation == 0) || (svActivity.displayRotation == 180)) &&
-                        (svActivity.angle[2] * svActivity.angle[0] < 0)) isAngle2LabelOnLeft = true;
-                if (((svActivity.displayRotation == 90) || (svActivity.displayRotation == 270)) &&
-                        (svActivity.angle[2] * svActivity.angle[1] < 0)) isAngle2LabelOnLeft = true;
-                if ((svActivity.displayRotation == 180) || (svActivity.displayRotation == 270)) isAngle2LabelOnLeft = !isAngle2LabelOnLeft;
+                if (((displayRotation == 0f) || (displayRotation == 180f)) &&
+                        (angles[2] * angles[0] < 0)) isAngle2LabelOnLeft = true;
+                if (((displayRotation == 90f) || (displayRotation == 270f)) &&
+                        (angles[2] * angles[1] < 0)) isAngle2LabelOnLeft = true;
+                if ((displayRotation == 180f) || (displayRotation == 270f)) isAngle2LabelOnLeft = !isAngle2LabelOnLeft;
             }
 
             canvas.save();
 
-            if (svActivity.displayRotation == 0) {
-                canvas.rotate(svActivity.angle[0], xc, yc);
+            if (displayRotation == 0f) {
+                canvas.rotate(angles[0], xc, yc);
             }
-            if (svActivity.displayRotation == 90) {
-                canvas.rotate(- 270 - svActivity.angle[1], xc, yc);
+            if (displayRotation == 90f) {
+                canvas.rotate(- 270 - angles[1], xc, yc);
             }
-            if (svActivity.displayRotation == 180) {
-                canvas.rotate(180 - svActivity.angle[0], xc, yc);
+            if (displayRotation == 180f) {
+                canvas.rotate(180 - angles[0], xc, yc);
             }
-            if (svActivity.displayRotation == 270) {
-                canvas.rotate(+ 270 + svActivity.angle[1], xc, yc);
+            if (displayRotation == 270f) {
+                canvas.rotate(+ 270 + angles[1], xc, yc);
             }
 
             //canvas.drawLine(xc-(xc+yc), yc, xc+(xc+yc), yc, paint_White);
-            canvas.translate(0, svActivity.angle[2] * r1 / r1_value);
+            canvas.translate(0, angles[2] * r1 / r1_value);
 
             if (isAngle2LabelOnLeft) {
                 // SX
-                drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[2]), 20, yc - 20,
+                drawTextWithShadow(canvas, String.format("%1.1f°", angles[2]), 20, yc - 20,
                         TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
             } else {
                 // DX
-                drawTextWithShadow(canvas, String.format("%1.1f°", svActivity.angle[2]), x - 20 , yc - 20,
+                drawTextWithShadow(canvas, String.format("%1.1f°", angles[2]), x - 20 , yc - 20,
                         TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
             }
             canvas.restore();
@@ -483,12 +494,12 @@ public class ClinometerView extends View {
         drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle1Extension)),
                 (int) (xc + (r1 * 2) + 30 + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
-                -angle1Extension /2 - refAxis + svActivity.angleTextLabels , paint_WhiteText);
+                -angle1Extension /2 - refAxis + angleTextLabels , paint_WhiteText);
         canvas.rotate( 90 , xc, yc);
         drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle2Extension)),
                 (int) (xc + (r1 * 2.1) + 30 + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
-                -angle1Extension /2 - 90 - refAxis + svActivity.angleTextLabels, paint_WhiteText);
+                -angle1Extension /2 - 90 - refAxis + angleTextLabels, paint_WhiteText);
         // For angle starting from reference axis
 //        canvas.rotate( -90 , xc, yc);
 //        drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle2Extension)),

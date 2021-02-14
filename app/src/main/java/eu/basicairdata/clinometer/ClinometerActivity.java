@@ -90,11 +90,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         return singleton;
     }
 
-    ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
+    private ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
     private Vibrator vibrator;
 
     // RefAxis Animator
-    PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
+    private PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
     private float old_PIDValue = 0.0f;
 
     private static final int TOAST_TIME = 2500;                         // The time a toast is shown
@@ -114,12 +114,12 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private float prefAutoLockTolerance;
     private int prefExposureCompensation = 0;
 
-    public boolean isFlat = true;                       // True if the device is oriented flat (for example on a table)
-    public boolean isLocked = false;                    // True if the angles are locked by user
+    private boolean isFlat = true;                       // True if the device is oriented flat (for example on a table)
+    private boolean isLocked = false;                    // True if the angles are locked by user
     private boolean isLockRequested = false;
-    public float displayRotation = 0;                   // The rotation angle from the natural position of the device
+    private float displayRotation = 0;                   // The rotation angle from the natural position of the device
 
-    public boolean isInCameraMode = false;              // True if Camera Mode is active
+    private boolean isInCameraMode = false;              // True if Camera Mode is active
     private boolean isCameraLivePreviewActive = false;  // True if the Live Preview with Camera is active
     private Bitmap cameraPreviewBitmap;                 // The image saved from Camera Preview (used by Locking and onPause/onResume)
 
@@ -147,32 +147,32 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
 
-    public float[] gravity              = {0, 0, 0};    // The (filtered) current accelerometers values
-    public float[] gravity_gain         = {0, 0, 0};
-    public float[] gravity_offset       = {0, 0, 0};
-    public float[] gravity_calibrated   = {0, 0, 0};    // The (filtered) current calibrated accelerometers values
+    private float[] gravity              = {0, 0, 0};    // The (filtered) current accelerometers values
+    private float[] gravity_gain         = {0, 0, 0};
+    private float[] gravity_offset       = {0, 0, 0};
+    private float[] gravity_calibrated   = {0, 0, 0};    // The (filtered) current calibrated accelerometers values
 
-    public float[] angle_calibration    = {0, 0, 0};    // The angles for calibration: alpha, beta, gamma (in degrees)
-    public float[] angle                = {0, 0, 0};    // The (filtered) current angles (in degrees)
+    private float[] angle_calibration    = {0, 0, 0};    // The angles for calibration: alpha, beta, gamma (in degrees)
+    private float[] angle                = {0, 0, 0};    // The (filtered) current angles (in degrees)
 
     private final float[][] calibrationMatrix = new float[3][3];
 
-    public float gravityXY = 0;
-    public float gravityXYZ = 0;
-    public float angleXY = 0;                           // The angle on the horizontal plane (in degrees)
-    public float angleXYZ = 0;                          // The angle between XY vector and the vertical (in degrees)
-    public float angleTextLabels = 0;                   // The rotation angle for the text labels
+    private float gravityXY = 0;
+    private float gravityXYZ = 0;
+    private float angleXY = 0;                          // The angle on the horizontal plane (in degrees)
+    private float angleXYZ = 0;                         // The angle between XY vector and the vertical (in degrees)
+    private float angleTextLabels = 0;                   // The rotation angle for the text labels
 
     private final static int ACCELEROMETER_UPDATE_INTERVAL_MICROS = 10000;
 
-    final MeanVariance mvAngle0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    final MeanVariance mvAngle1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    final MeanVariance mvAngle2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
-    final MeanVariance mvGravity0 = new MeanVariance(16);
-    final MeanVariance mvGravity1 = new MeanVariance(16);
-    final MeanVariance mvGravity2 = new MeanVariance(16);
+    private final MeanVariance mvAngle0 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    private final MeanVariance mvAngle1 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    private final MeanVariance mvAngle2 = new MeanVariance(SIZE_OF_MEANVARIANCE);
+    private final MeanVariance mvGravity0 = new MeanVariance(16);
+    private final MeanVariance mvGravity1 = new MeanVariance(16);
+    private final MeanVariance mvGravity2 = new MeanVariance(16);
 
-    ValueAnimator animationR = new ValueAnimator();
+    private ValueAnimator animationR = new ValueAnimator();
 
     private Camera mCamera;
     private CameraPreview mPreview;
@@ -190,6 +190,35 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     public float getPIDValue() {
         return pid.getValue();
+    }
+
+
+    public float getDisplayRotation() {
+        return displayRotation;
+    }
+
+    public boolean isFlat() {
+        return isFlat;
+    }
+
+
+    public float[] getAngles() {
+        return angle;
+    }
+
+
+    public float getAngleXY() {
+        return angleXY;
+    }
+
+
+    public float getAngleXYZ() {
+        return angleXYZ;
+    }
+
+
+    public float getAngleTextLabels() {
+        return angleTextLabels;
     }
 
 
