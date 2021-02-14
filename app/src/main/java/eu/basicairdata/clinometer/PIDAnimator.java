@@ -22,7 +22,12 @@ package eu.basicairdata.clinometer;
 
 import android.os.Handler;
 
-public class PIDAnimator extends Thread {
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class PIDAnimator extends TimerTask {
+
+    Handler handler = new Handler();
 
     float r = 0;            // Setpoint
     float y = 0;
@@ -43,6 +48,8 @@ public class PIDAnimator extends Thread {
     float I = 0;
     float D = 0;
 
+    Timer mTimer = new Timer();
+
     public PIDAnimator(float initialValue, float Kp, float Ki, float Kd, long t_millis) {
         u = initialValue;
         y = initialValue;
@@ -54,59 +61,56 @@ public class PIDAnimator extends Thread {
         kd = Kd;
         ki = Ki;
 
-        P = kp * (r - y);
-        D = kd * (y - y_old) / t;
+        mTimer.scheduleAtFixedRate(this, 0, t_millis);
+    }
+
+
+    public void run() {
+        handler.post(new Runnable() {
+             @Override
+             public void run() {
+                 //Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+                 calculate();
+
+                  // DEBUG LOG
+//                long now = System.currentTimeMillis();
+//                if (now - prevtime > 100) {
+//                    Log.i("PIDAnimator", "UPDATE: u = " + u + " y = " + y + " r = " + r + " P = " + P + " I = " + I + " D = " + D);
+//                    prevtime = now;
+//                }
+             }
+        });
+    }
+
+    /**
+     * Makes a step of the discrete time PID.
+     */
+    private void calculate() {
+        P = kp * (r - y);                               // Proportional Action
+        D = kd * (y - y_old) / t;                       // Derivative Action
 
         v = P + I + D;
-        u = Math.min(3600.0f, Math.max(v, -3600.0f));
+        u = Math.min(3600.0f, Math.max(v, -3600.0f));   // Simulate the saturation of the sensor
         y_old = y;
         y = y + 0.3f *u;
 
-        I = I + ki * (r - y) * t + kt * (u - v) * t;
-
-        start();
+        I = I + ki * (r - y) * t + kt * (u - v) * t;    // Integral Action
     }
 
-    public void run() {
-        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-        //handler.postDelayed(periodicUpdate, t - SystemClock.elapsedRealtime()%1000);
-        handler.postDelayed(periodicUpdate, t_ms);
-    }
-
-
+    /**
+     * Changes the final value of the Animation to a new value.
+     * @param setPoint The new set Point
+     */
     public void setTargetValue(float setPoint) {
         r = setPoint;
     }
 
-
+    /**
+     * Returns the current value of the Animation.
+     * @return The current value
+     */
     public float getValue() {
         return y;
     }
-
-
-    Handler handler = new Handler();
-    private final Runnable periodicUpdate = new Runnable() {
-        @Override
-        public void run() {
-            //handler.postDelayed(periodicUpdate, t - SystemClock.elapsedRealtime()%1000);
-            handler.postDelayed(periodicUpdate, t_ms);
-
-            P = kp * (r - y);
-            D = kd * (y - y_old) / t;
-
-            v = P + I + D;
-            u = Math.min(3600.0f, Math.max(v, -3600.0f));
-            y_old = y;
-            y = y + 0.3f *u;
-
-            I = I + ki * (r - y) * t + kt * (u - v) * t;
-
-            // DEBUG LOG
-//            long now = System.currentTimeMillis();
-//            if (now - prevtime > 100) {
-//                Log.i("PIDAnimator", "UPDATE: u = " + u + " y = " + y + " r = " + r + " P = " + P + " I = " + I + " D = " + D);
-//                prevtime = now;
-//            }
-        }
-    };
 }
