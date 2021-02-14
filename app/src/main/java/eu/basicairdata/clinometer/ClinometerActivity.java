@@ -324,6 +324,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         }
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (!preferences.contains(KEY_PREF_CALIBRATION_ANGLE_0)) {
+            // Not Calibrated!
+            showToast(getString(R.string.toast_calibrate_before_use));
+        }
     }
 
 

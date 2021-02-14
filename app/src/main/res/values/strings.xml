@@ -24,7 +24,8 @@
     <string name="app_name" translatable="false">Clinometer</string>
 
     <string name="toast_please_grant_camera_permission">Please grant the Camera Permission to enable this Feature</string>
-    <string name="toast_lay_vertical">Keep the Screen vertical and tilt the Device </string>
+    <string name="toast_lay_vertical">Keep the Screen vertical and tilt the Device</string>
+    <string name="toast_calibrate_before_use">Please go to Settings\nand calibrate the App before use</string>
 
     <!-- Preferences -->
     <string name="Settings">Settings</string>
@@ -82,8 +83,6 @@
     <string name="calibration_abort">Do you really want to abort the calibration process and return to settings?</string>
 
     <string name="next">Next >></string>
-    <string name="previous">Previous</string>
-
 
     <!-- Dialogs -->
     <string name="dialog_reset_calibration_confirmation">Do you want to reset the current calibration?</string>
