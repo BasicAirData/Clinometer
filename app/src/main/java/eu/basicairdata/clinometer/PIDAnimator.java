@@ -27,28 +27,27 @@ import java.util.TimerTask;
 
 public class PIDAnimator extends TimerTask {
 
-    Handler handler = new Handler();
+    private final Handler handler = new Handler();
+    private final Timer mTimer = new Timer();
 
-    float r = 0;            // Setpoint
-    float y = 0;
-    float y_old = 0;
-    float u = 0;            // Output Value
-    float v = 0;
-    float e = 0;        // Error
+    private float r = 0;            // Set-point
+    private float y = 0;
+    private float y_old = 0;
+    private float u = 0;            // Output Value
+    private float v = 0;
 
-    float t;
-    long t_ms;
+    private float t;
+    private long t_ms;
 
-    float kp;
-    float ki;
-    float kd;
-    float kt = 0.3f;    // Desaturation gain
+    private float kp;
+    private float ki;
+    private float kd;
+    private float kt = 0.3f;        // De-saturation gain
 
-    float P = 0;
-    float I = 0;
-    float D = 0;
+    private float P = 0;            // Proportional Action
+    private float I = 0;            // Integral Action
+    private float D = 0;            // Derivative Action
 
-    Timer mTimer = new Timer();
 
     public PIDAnimator(float initialValue, float Kp, float Ki, float Kd, long t_millis) {
         u = initialValue;
@@ -83,8 +82,9 @@ public class PIDAnimator extends TimerTask {
         });
     }
 
+
     /**
-     * Makes a step of the discrete time PID.
+     * Performs a step of the discrete time PID.
      */
     private void calculate() {
         P = kp * (r - y);                               // Proportional Action
@@ -97,6 +97,7 @@ public class PIDAnimator extends TimerTask {
 
         I = I + ki * (r - y) * t + kt * (u - v) * t;    // Integral Action
     }
+
 
     /**
      * Changes the final value of the Animation to a new value.
