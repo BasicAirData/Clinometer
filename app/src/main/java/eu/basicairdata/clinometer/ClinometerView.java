@@ -22,7 +22,6 @@ package eu.basicairdata.clinometer;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -50,10 +49,8 @@ public class ClinometerView extends View {
 
     private Paint paint_LTGray;             // For Background Lines 30° + Circles
     private Paint paint_White;              // For White Angles Lines
-    private Paint paint_WhiteDashed;        // For Reference Axis Line
     private Paint paint_Black00;            // For Black Contrast Lines stroke=0
     private Paint paint_Black15;            // For Black Contrast Lines stroke=1.5
-    private Paint paint_Black15Dashed;      // For Black Contrast Reference Line stroke=1.5
     private Paint paint_Black30;            // For Black Contrast Lines stroke=3.0
     private Paint paint_WhiteText;          // For White Angles Text
     private Paint paint_ShadowText;         // For Shadows of Text
@@ -77,7 +74,11 @@ public class ClinometerView extends View {
     private float r1_value;             // The scale (to how many degrees corresponds each circle)
     private float r1;                   // The radius of the first circle = 1 deg.
 
-    private int i;
+    private float dash[] = new float[20];   // The Array of Lines for Dashed Line
+    private float j;                        // the space between lines for Dashed Line
+    private float ll, ls;                   // Long Line and Short Line length
+
+    private int i;                      // A counter for onDraw();
     private float r;
     private int angle;
 
@@ -127,8 +128,6 @@ public class ClinometerView extends View {
 
 
     private void createPaints() {
-        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{200,10,20,10},0);
-
         // create the Paint and set its color
         paint_LTGray = new Paint();
         paint_LTGray.setColor(getResources().getColor(R.color.line_light));
@@ -142,14 +141,6 @@ public class ClinometerView extends View {
         paint_White.setStrokeWidth(1.5f);
         paint_White.setDither(true);
         paint_White.setAntiAlias(true);
-
-        paint_WhiteDashed = new Paint();
-        paint_WhiteDashed.setColor(getResources().getColor(R.color.line_white));
-        paint_WhiteDashed.setStyle(Paint.Style.STROKE);
-        paint_WhiteDashed.setStrokeWidth(1.5f);
-        paint_WhiteDashed.setDither(true);
-        paint_WhiteDashed.setAntiAlias(true);
-        paint_WhiteDashed.setPathEffect(dashPathEffect);
 
         paint_WhiteText = new Paint();
         paint_WhiteText.setColor(getResources().getColor(R.color.line_white));
@@ -202,14 +193,6 @@ public class ClinometerView extends View {
         paint_Black15.setDither(true);
         paint_Black15.setAntiAlias(true);
 
-        paint_Black15Dashed = new Paint();
-        paint_Black15Dashed.setColor(getResources().getColor(R.color.black_contrast));
-        paint_Black15Dashed.setStyle(Paint.Style.STROKE);
-        paint_Black15Dashed.setStrokeWidth(1.5f + CONTRAST_STROKE);
-        paint_Black15Dashed.setDither(true);
-        paint_Black15Dashed.setAntiAlias(true);
-        paint_Black15Dashed.setPathEffect(dashPathEffect);
-
         paint_Black30 = new Paint();
         paint_Black30.setColor(getResources().getColor(R.color.black_contrast));
         paint_Black30.setStyle(Paint.Style.STROKE);
@@ -257,6 +240,39 @@ public class ClinometerView extends View {
         angle2Start = 180 + refAxis;
         angle2Extension = - 180 - (- 360 + refAxis - horizon_angle_deg) % 180;
 
+        // Dashed line drawn as Array of Lines
+        // because DashPathEffect is not supported by some devices
+
+        j  = max_xy * 0.0078125f;
+        ll = max_xy * 0.15625f;
+        ls = max_xy * 0.015625f;
+
+        dash[0] = xc;
+        dash[1] = yc;
+        dash[2] = dash[0] - ll;
+        dash[3] = yc;
+
+        dash[4] = dash[2] - j;
+        dash[5] = yc;
+        dash[6] = dash[4] - ls;
+        dash[7] = yc;
+
+        dash[8] = dash[6] - j;
+        dash[9] = yc;
+        dash[10] = dash[8] - ll;
+        dash[11] = yc;
+
+        dash[12] = dash[10] - j;
+        dash[13] = yc;
+        dash[14] = dash[12] - ls;
+        dash[15] = yc;
+
+        dash[16] = dash[14] - j;
+        dash[17] = yc;
+        dash[18] = xc - (float) diag2c;
+        dash[19] = yc;
+
+
         // For angle starting from reference axis
 //        angle2Start = refAxis;
 //        angle2Extension = - 180 + angle1Extension;
@@ -298,8 +314,9 @@ public class ClinometerView extends View {
         // Horizontal and Vertical Axis
         canvas.save();
         canvas.rotate(refAxis, xc, yc);
-        canvas.drawLine(xc, yc, xc - max_xy/2, yc, paint_Black15Dashed);
-        canvas.drawLine(xc, yc, max_xy, yc, paint_Black15Dashed);
+        canvas.drawLines(dash, 0,20, paint_Black15);
+        canvas.rotate(180, xc, yc);
+        canvas.drawLines(dash, 0,20, paint_Black15);
         canvas.restore();
         // Cross
         canvas.drawLine(0, ys, x, ys, paint_Black30);
@@ -342,8 +359,9 @@ public class ClinometerView extends View {
 
         canvas.save();
         canvas.rotate(refAxis, xc, yc);
-        canvas.drawLine(xc, yc, xc - max_xy, yc, paint_WhiteDashed);
-        canvas.drawLine(xc, yc, max_xy, yc, paint_WhiteDashed);
+        canvas.drawLines(dash, 0,20, paint_White);
+        canvas.rotate(180, xc, yc);
+        canvas.drawLines(dash, 0,20, paint_White);
         canvas.restore();
 
         // --------[ BACKGROUND CIRCLES ]-----------------------------------------------------------
