@@ -77,6 +77,7 @@ public class BackgroundView extends View {
         paint_DKGray = new Paint();
         paint_DKGray.setColor(getResources().getColor(R.color.line_dark));
         paint_DKGray.setStyle(Paint.Style.STROKE);
+        paint_DKGray.setStrokeWidth(1.0f);
         paint_DKGray.setDither(true);
         paint_DKGray.setAntiAlias(true);
 

@@ -132,6 +132,7 @@ public class ClinometerView extends View {
         paint_LTGray = new Paint();
         paint_LTGray.setColor(getResources().getColor(R.color.line_light));
         paint_LTGray.setStyle(Paint.Style.STROKE);
+        paint_LTGray.setStrokeWidth(1.0f);
         paint_LTGray.setDither(true);
         paint_LTGray.setAntiAlias(true);
 
@@ -154,6 +155,7 @@ public class ClinometerView extends View {
         paint_ShadowText.setColor(getResources().getColor(R.color.black_overlay));
         paint_ShadowText.setStyle(Paint.Style.STROKE);
         paint_ShadowText.setStrokeWidth(5);
+        paint_ShadowText.setStrokeJoin(Paint.Join.ROUND);
         paint_ShadowText.setDither(true);
         paint_ShadowText.setAntiAlias(true);
         paint_ShadowText.setTextSize(getResources().getDimensionPixelSize(R.dimen.myFontSize));
@@ -192,6 +194,7 @@ public class ClinometerView extends View {
         paint_Black15.setStrokeWidth(1.5f + CONTRAST_STROKE);
         paint_Black15.setDither(true);
         paint_Black15.setAntiAlias(true);
+        //paint_Black15.setStrokeCap(Paint.Cap.ROUND);
 
         paint_Black30 = new Paint();
         paint_Black30.setColor(getResources().getColor(R.color.black_contrast));
@@ -243,7 +246,7 @@ public class ClinometerView extends View {
         // Dashed line drawn as Array of Lines
         // because DashPathEffect is not supported by some devices
 
-        j  = max_xy * 0.0078125f;
+        j  = max_xy * 0.011f;
         ll = max_xy * 0.15625f;
         ls = max_xy * 0.015625f;
 
