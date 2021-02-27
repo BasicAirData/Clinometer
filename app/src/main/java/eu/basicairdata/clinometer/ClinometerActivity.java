@@ -174,7 +174,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private ValueAnimator animationR = new ValueAnimator();
 
-    private Camera mCamera;
+    private static Camera mCamera = null;
     private CameraPreview mPreview;
 
 

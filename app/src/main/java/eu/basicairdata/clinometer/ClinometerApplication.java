@@ -71,6 +71,7 @@ public class ClinometerApplication extends Application {
     private boolean hasACamera = false;                                                 // True if the device has at least a camera
     private final ArrayList<CameraInformation> listOfCameraInformation = new ArrayList<>();   // The list of Cameras of the device
     private CameraInformation selectedCameraInformation;                                // The Selected Camera
+    static Camera camera = null;
 
 
     // ----------------------------------------------------------------------------------------------------------------------
@@ -130,8 +131,8 @@ public class ClinometerApplication extends Application {
             Log.d("ClinometerApplication", "Adding Cameras to list:");
             int numberOfCameras = Camera.getNumberOfCameras();
             for (int i = 0; i < numberOfCameras; i++) {
-                Camera cam = Camera.open(i);
-                Camera.Parameters params = cam.getParameters();
+                camera = Camera.open(i);
+                Camera.Parameters params = camera.getParameters();
                 if (params.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
                 }
@@ -162,8 +163,8 @@ public class ClinometerApplication extends Application {
 
                 Log.d("ClinometerApplication", i + " = (" + cameraInformation.horizontalViewAngle + "°) " + (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "Front Camera" : "Rear Camera") +
                         " (" + cameraInformation.minExposureCompensation + " - " + cameraInformation.maxExposureCompensation + ")");
-                cam.release();
-                cam = null;
+                camera.release();
+                camera = null;
                 Log.d("ClinometerApplication", "Camera " + cameraInformation.id + " added to list");
             }
 
