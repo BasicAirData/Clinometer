@@ -114,6 +114,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private float prefAutoLockTolerance;
     private int prefExposureCompensation = 0;
 
+    private boolean isSettingsClicked = false;           // True when the Three-dots button has been clicked
+
     private boolean isFlat = true;                       // True if the device is oriented flat (for example on a table)
     private boolean isLocked = false;                    // True if the angles are locked by user
     private boolean isLockRequested = false;
@@ -303,8 +305,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), SettingsActivity.class);
-                startActivity(intent);
+                if (!isSettingsClicked) {
+                    isSettingsClicked = true;
+                    Intent intent = new Intent(getBaseContext(), SettingsActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -384,6 +389,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        isSettingsClicked = false;
         isLockRequested = false;
         updateLockIcon();
 
