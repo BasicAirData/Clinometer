@@ -69,6 +69,7 @@ public class ClinometerApplication extends Application {
     private SharedPreferences preferences;
 
     private boolean hasACamera = false;                                                 // True if the device has at least a camera
+    private boolean isCameraScanned = false;
     private final ArrayList<CameraInformation> listOfCameraInformation = new ArrayList<>();   // The list of Cameras of the device
     private CameraInformation selectedCameraInformation;                                // The Selected Camera
     static Camera camera = null;
@@ -106,7 +107,8 @@ public class ClinometerApplication extends Application {
         super.onCreate();
         singleton = this;
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        scanCameras();
+        hasACamera = checkCameraHardware();         // checkCameraHardware() does NOT require CAMERA Permission
+        //scanCameras();
     }
 
 
@@ -124,81 +126,85 @@ public class ClinometerApplication extends Application {
 
     /** Scan all the Cameras of the Device and populate the List of CameraInformation */
     public void scanCameras() {
-        Log.d("ClinometerApplication", "Scan Cameras");
-        listOfCameraInformation.clear();
-        hasACamera = checkCameraHardware();         // checkCameraHardware() does NOT require CAMERA Permission
-        if (hasACamera && (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)) {
-            Log.d("ClinometerApplication", "Adding Cameras to list:");
-            int numberOfCameras = Camera.getNumberOfCameras();
-            for (int i = 0; i < numberOfCameras; i++) {
-                camera = Camera.open(i);
-                Camera.Parameters params = camera.getParameters();
-                if (params.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-                }
+        Log.d("ClinometerApplication", "Scan Cameras (" + isCameraScanned + ")");
+        if (!isCameraScanned) {
+            listOfCameraInformation.clear();
+            hasACamera = checkCameraHardware();         // checkCameraHardware() does NOT require CAMERA Permission
+            if (hasACamera && (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)) {
+                Log.d("ClinometerApplication", "Adding Cameras to list:");
+                int numberOfCameras = Camera.getNumberOfCameras();
+                for (int i = 0; i < numberOfCameras; i++) {
+                    camera = Camera.open(i);
+                    Camera.Parameters params = camera.getParameters();
+                    if (params.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+                    }
 
-                Camera.CameraInfo info = new Camera.CameraInfo();
-                Camera.getCameraInfo(i, info);
+                    Camera.CameraInfo info = new Camera.CameraInfo();
+                    Camera.getCameraInfo(i, info);
 
-                CameraInformation cameraInformation = new CameraInformation();
-                cameraInformation.id = i;
-                cameraInformation.type = info.facing;
-                cameraInformation.description = getString(info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? R.string.pref_cameramode_camera_front : R.string.pref_cameramode_camera_rear);
-                cameraInformation.minExposureCompensation = params.getMinExposureCompensation();
-                cameraInformation.maxExposureCompensation = params.getMaxExposureCompensation();
+                    CameraInformation cameraInformation = new CameraInformation();
+                    cameraInformation.id = i;
+                    cameraInformation.type = info.facing;
+                    cameraInformation.description = getString(info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? R.string.pref_cameramode_camera_front : R.string.pref_cameramode_camera_rear);
+                    cameraInformation.minExposureCompensation = params.getMinExposureCompensation();
+                    cameraInformation.maxExposureCompensation = params.getMaxExposureCompensation();
 
-                // TEST EXPOSURE COMPENSATION IN SETTINGS
+                    // TEST EXPOSURE COMPENSATION IN SETTINGS
 //                if (i == 1) {
 //                    cameraInformation.minExposureCompensation = -10;
 //                    cameraInformation.maxExposureCompensation = 10;
 //                }
 
-                cameraInformation.horizontalViewAngle = params.getHorizontalViewAngle();
-                listOfCameraInformation.add(cameraInformation);
+                    cameraInformation.horizontalViewAngle = params.getHorizontalViewAngle();
+                    listOfCameraInformation.add(cameraInformation);
 
 //                if ((selectedCameraInformation == null) && (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK)) {
 //                    selectedCameraInformation = cameraInformation;
 //                    Log.d("ClinometerApplication", "Using Camera " + selectedCameraInformation.id);
 //                }
 
-                Log.d("ClinometerApplication", i + " = (" + cameraInformation.horizontalViewAngle + "°) " + (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "Front Camera" : "Rear Camera") +
-                        " (" + cameraInformation.minExposureCompensation + " - " + cameraInformation.maxExposureCompensation + ")");
-                camera.release();
-                camera = null;
-                Log.d("ClinometerApplication", "Camera " + cameraInformation.id + " added to list");
-            }
+                    Log.d("ClinometerApplication", i + " = (" + cameraInformation.horizontalViewAngle + "°) " + (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "Front Camera" : "Rear Camera") +
+                            " (" + cameraInformation.minExposureCompensation + " - " + cameraInformation.maxExposureCompensation + ")");
+                    camera.release();
+                    camera = null;
+                    Log.d("ClinometerApplication", "Camera " + cameraInformation.id + " added to list");
+                }
 
-            int prefCamera = Integer.parseInt(preferences.getString(KEY_PREF_CAMERA, "0"));
-            int prefExposureCompensation = preferences.getInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, 0);
+                int prefCamera = Integer.parseInt(preferences.getString(KEY_PREF_CAMERA, "0"));
+                int prefExposureCompensation = preferences.getInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, 0);
 
-            // Check if the Camera Index in Preferences is out of range. In case change it to index 0
-            if (prefCamera >= listOfCameraInformation.size()) {
-                prefCamera = 0;
-                prefExposureCompensation = 0;
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.remove(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION);
-                editor.remove(KEY_PREF_CAMERA);
-                editor.commit();
-            }
-            selectedCameraInformation = listOfCameraInformation.get(prefCamera);
+                // Check if the Camera Index in Preferences is out of range. In case change it to index 0
+                if (prefCamera >= listOfCameraInformation.size()) {
+                    prefCamera = 0;
+                    prefExposureCompensation = 0;
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.remove(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION);
+                    editor.remove(KEY_PREF_CAMERA);
+                    editor.commit();
+                }
+                selectedCameraInformation = listOfCameraInformation.get(prefCamera);
 
-            // Check if the Exposure Compensation in Preferences is out of range. In case modify it
-            boolean isExposureCompensationModified = false;
-            if (prefExposureCompensation > selectedCameraInformation.maxExposureCompensation) {
-                prefExposureCompensation = selectedCameraInformation.maxExposureCompensation;
-                isExposureCompensationModified = true;
+                // Check if the Exposure Compensation in Preferences is out of range. In case modify it
+                boolean isExposureCompensationModified = false;
+                if (prefExposureCompensation > selectedCameraInformation.maxExposureCompensation) {
+                    prefExposureCompensation = selectedCameraInformation.maxExposureCompensation;
+                    isExposureCompensationModified = true;
+                }
+                if (prefExposureCompensation < selectedCameraInformation.minExposureCompensation) {
+                    prefExposureCompensation = selectedCameraInformation.minExposureCompensation;
+                    isExposureCompensationModified = true;
+                }
+                if (isExposureCompensationModified) {
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, prefExposureCompensation);
+                    editor.commit();
+                }
+                isCameraScanned = true;
+            } else {
+                isCameraScanned = false;
+                selectedCameraInformation = null;
             }
-            if (prefExposureCompensation < selectedCameraInformation.minExposureCompensation) {
-                prefExposureCompensation = selectedCameraInformation.minExposureCompensation;
-                isExposureCompensationModified = true;
-            }
-            if (isExposureCompensationModified) {
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt(KEY_PREF_CAMERA_EXPOSURE_COMPENSATION, prefExposureCompensation);
-                editor.commit();
-            }
-        } else {
-            selectedCameraInformation = null;
         }
     }
 }
