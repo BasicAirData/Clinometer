@@ -114,6 +114,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private float prefAutoLockTolerance;
     private int prefExposureCompensation = 0;
 
+    private boolean isSettingsClicked = false;           // True when the Three-dots button has been clicked
+
     private boolean isFlat = true;                       // True if the device is oriented flat (for example on a table)
     private boolean isLocked = false;                    // True if the angles are locked by user
     private boolean isLockRequested = false;
@@ -174,7 +176,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private ValueAnimator animationR = new ValueAnimator();
 
-    private Camera mCamera;
+    private static Camera mCamera = null;
     private CameraPreview mPreview;
 
 
@@ -303,8 +305,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mImageViewSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), SettingsActivity.class);
-                startActivity(intent);
+                if (!isSettingsClicked) {
+                    isSettingsClicked = true;
+                    Intent intent = new Intent(getBaseContext(), SettingsActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -338,7 +343,6 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         if (requestCode == CAMERA_REQUEST_CODE) {
             Log.w("ClinometerActivity", "onRequestPermissionsResult()");
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                clinometerApplication.scanCameras();
                 isInCameraMode = switchToCameraMode(!isInCameraMode);
             } else {
                 showToast(getString(R.string.toast_please_grant_camera_permission));
@@ -384,6 +388,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        isSettingsClicked = false;
         isLockRequested = false;
         updateLockIcon();
 
@@ -722,6 +727,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private Camera getCameraInstance(){
         Camera c = null;
         try {
+            clinometerApplication.scanCameras();
             c = Camera.open(clinometerApplication.getSelectedCameraInformation().id); // attempt to get a Camera instance
         }
         catch (Exception e){
