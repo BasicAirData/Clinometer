@@ -1,8 +1,9 @@
 /*
  * ClinometerView - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 21/5/2020
+ * Created by G.Capelli on 21/5/2020
+ * This file is part of BasicAirData Clinometer
  *
- * This file is part of BasicAirData Clinometer for Android.
+ * Copyright (C) 2020 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
