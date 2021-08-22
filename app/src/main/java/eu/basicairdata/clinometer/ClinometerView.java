@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -85,6 +84,8 @@ public class ClinometerView extends View {
     private int i;                      // A counter for onDraw();
     private float r;
     private int angle;
+    private float angle1OffsetFromR = -0.1f;
+    private float angle2OffsetFromR = 0.1f;
 
     private float angles[] = {0, 0, 0};
     private boolean isFlat;
@@ -129,6 +130,7 @@ public class ClinometerView extends View {
         createPaints();
     }
 
+
     // Based on code posted in https://stackoverflow.com/questions/4605527/converting-pixels-to-dp
     /**
      * This method converts dp unit to equivalent pixels, depending on device density.
@@ -139,6 +141,7 @@ public class ClinometerView extends View {
     public static float dpToPx(float dp){
         return dp * ((float) ClinometerApplication.getInstance().getApplicationContext().getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
+
 
     // Based on code posted in https://stackoverflow.com/questions/4605527/converting-pixels-to-dp
     /**
@@ -270,6 +273,15 @@ public class ClinometerView extends View {
         angle2Start = 180 + refAxis;
         angle2Extension = - 180 - (- 360 + refAxis - horizon_angle_deg) % 180;
 
+        // Set the position of the arcs in order to avoid to switch from internal to the external one
+        if (((angleXY - angle1Start + 360) % 360 < 270) && ((angleXY - angle1Start + 360) % 360 >= 90)) {
+            angle1OffsetFromR = 0.1f;
+            angle2OffsetFromR = -0.1f;
+        } else {
+            angle1OffsetFromR = -0.1f;
+            angle2OffsetFromR = 0.1f;
+        }
+
         // Dashed line drawn as Array of Lines
         // because DashPathEffect is not supported by some devices
 
@@ -354,13 +366,13 @@ public class ClinometerView extends View {
         // Bubble
         canvas.drawCircle(xs, ys, r1 / 4, paint_Black00);
         // Angle Arcs
-        r = 1.9f * r1;
+        r = (2.0f + angle1OffsetFromR) * r1;
         arcRectF.left = xc - r;           // The RectF for the Arc
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
         canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_Black15);
-        r = 2.1f * r1;
+        r = (2.0f + angle2OffsetFromR) * r1;
         arcRectF.left = xc - r;           // The RectF for the Arc
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
@@ -421,14 +433,14 @@ public class ClinometerView extends View {
 
         // White angles
 
-        r = 1.9f * r1;
+        r = (2.0f + angle1OffsetFromR) * r1;
         arcRectF.left = xc - r;           // The RectF for the Arc
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
         canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_White);
 
-        r = 2.1f * r1;
+        r = (2.0f + angle2OffsetFromR) * r1;
         arcRectF.left = xc - r;           // The RectF for the Arc
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
@@ -540,12 +552,12 @@ public class ClinometerView extends View {
         canvas.save();
         canvas.rotate( angle1Start + angle1Extension /2, xc, yc);
         drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle1Extension)),
-                (int) (xc + (r1 * 2) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
+                (int) (xc + (r1 * (2.1f + angle1OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 -angle1Extension /2 - refAxis + angleTextLabels , paint_WhiteText);
         canvas.rotate( 90 , xc, yc);
         drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle2Extension)),
-                (int) (xc + (r1 * 2.1) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
+                (int) (xc + (r1 * (2.1f + angle2OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 -angle1Extension /2 - 90 - refAxis + angleTextLabels, paint_WhiteText);
         // For angle starting from reference axis
@@ -562,8 +574,8 @@ public class ClinometerView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.d("SpiritLevel", "Center Screen " + xc + " " + yc);
-                Log.d("SpiritLevel", String.format("TouchEvent %1.0f %1.0f", event.getX(), event.getY()));
+//                Log.d("SpiritLevel", "Center Screen " + xc + " " + yc);
+//                Log.d("SpiritLevel", String.format("TouchEvent %1.0f %1.0f", event.getX(), event.getY()));
 
                 // Change Ref Axis
                 if (Math.sqrt((xc-event.getX())*(xc-event.getX()) + (yc-event.getY())*(yc-event.getY())) > 2*r1) {
