@@ -105,6 +105,17 @@ public class PIDAnimator extends TimerTask {
      * @param setPoint The new set Point
      */
     public void setTargetValue(float setPoint) {
+        float deltar = r - setPoint;
+        //Log.i("PIDAnimator", "UPDATE: r = " + r + "    setPoint = " + setPoint);
+        if (Math.abs(deltar) > 180.0f) {
+            if (deltar < 0.0f) {
+                y += 360.0f;
+                y_old += 360.0f;
+            } else {
+                y -= 360.0f;
+                y_old -= 360.0f;
+            }
+        }
         r = setPoint;
     }
 
@@ -113,6 +124,6 @@ public class PIDAnimator extends TimerTask {
      * @return The current value
      */
     public float getValue() {
-        return y;
+        return y % 360.0f;
     }
 }
