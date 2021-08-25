@@ -113,6 +113,13 @@
         app:defaultValue="false"
         app:icon="@drawable/ic_info_24"/>
 
+    <Preference
+        app:key="prefOnlineHelp"
+        app:title="@string/pref_online_help"
+        app:summary="@string/pref_online_help_summary"
+        app:defaultValue="false"
+        app:icon="@drawable/ic_language_24"/>
+
 
     <!--</PreferenceCategory>
 
