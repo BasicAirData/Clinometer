@@ -343,7 +343,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_REQUEST_CODE) {
             Log.w("ClinometerActivity", "onRequestPermissionsResult()");
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 isInCameraMode = switchToCameraMode(!isInCameraMode);
             } else {
                 showToast(getString(R.string.toast_please_grant_camera_permission));

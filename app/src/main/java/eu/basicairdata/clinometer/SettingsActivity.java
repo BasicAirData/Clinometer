@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_REQUEST_CODE) {
             Log.w("SettingsActivity", "onRequestPermissionsResult()");
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 clinometerApplication.scanCameras();
                 settingsFragment.updatePreferences();
             }
