@@ -109,7 +109,7 @@ public class FragmentAboutDialog extends DialogFragment {
                 break;
         }
 
-        createAboutAlert.setView(view).setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
+        createAboutAlert.setView(view).setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {}
         });
