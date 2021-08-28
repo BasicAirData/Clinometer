@@ -35,7 +35,7 @@
 
     <Preference
         app:key="prefCalibration"
-        app:title="@string/pref_calibration"
+        app:title="@string/title_activity_calibration"
         app:summary="@string/pref_calibration_summary_notcalibrated"
         app:allowDividerAbove="true"
         app:icon="@drawable/ic_calibration_24"
