@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 21/5/2020
+  ~ Created by G.Capelli on 21/5/2020
+  ~ This file is part of BasicAirData Clinometer
   ~
-  ~ This file is part of BasicAirData Clinometer for Android.
+  ~ Copyright (C) 2020 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,11 +23,12 @@
     <string name="toast_please_grant_camera_permission">Habilite el permiso de la cámara para utilizar esta función</string>
     <string name="toast_lay_vertical">Mantener la pantalla vertical e inclinar el dispositivo</string>
     <string name="toast_calibrate_before_use">Ve a Ajustes\ny calibrar la aplicación antes de usarla</string>
+    <string name="toast_no_browser_installed">Ningún navegador web instalado</string>
     <!-- Preferences -->
     <string name="Settings">Ajustes</string>
     <string name="pref_keep_screen_on">Mantener la pantalla encendida</string>
     <string name="pref_keep_screen_on_summary">Menor autonomía de la batería</string>
-    <string name="pref_calibration">Calibrar</string>
+    <string name="title_activity_calibration">Calibración</string>
     <string name="pref_calibration_summary_notcalibrated">No calibrado</string>
     <string name="pref_calibration_summary_calibrated">Calibrado</string>
     <string name="pref_calibration_reset">Reiniciar</string>
@@ -44,14 +46,14 @@
     <string name="pref_cameramode_exposure_compensation">Compensación de exposición</string>
     <string name="pref_about">Info</string>
     <string name="pref_about_summary">Acerca de Clinómetro</string>
+    <string name="pref_online_help">Ayuda en línea</string>
+    <string name="pref_online_help_summary">Explorar uso y ajustes</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright (C) 2020 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData Clinómetro mide los ángulos de inclinación de su dispositivo con respecto a la dirección de la gravedad usando los acelerómetros incorporados.\n\nEste programa es software libre, publicado bajo los términos de la Licencia Pública General GNU.\nPara más detalles vea: http://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">Si te gusta esta aplicación, por favor toma un momento para calificarla. ¡Gracias por tu tiempo!</string>
-    <string name="about_ok">Cerrar</string>
     <string name="about_rate_this_app">Califica aplicación</string>
     <string name="about_unable_to_rate">Imposible conectar con el Store</string>
-    <string name="title_activity_calibration">Calibración</string>
     <!-- Calibration Activity -->
     <string name="calibration_active_calibration">Calibración activa:</string>
     <string name="calibration_active_calibration_gains">Ganancias</string>

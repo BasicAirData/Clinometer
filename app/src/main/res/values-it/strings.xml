@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli on 21/5/2020
+  ~ This file is part of BasicAirData Clinometer
+  ~
+  ~ Copyright (C) 2020 BasicAirData
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="toast_please_grant_camera_permission">Per usare questa funzionalità è necessaria l\'autorizzazione all\'utilizzo della fotocamera</string>
+    <string name="toast_lay_vertical">Mantieni lo schermo verticale e inclina il dispositivo</string>
+    <string name="toast_calibrate_before_use">Vai nelle impostazioni\ne calibra l\'app prima dell\'utilizzo</string>
+    <string name="toast_no_browser_installed">Nessun browser web installato</string>
+    <!-- Preferences -->
+    <string name="Settings">Impostazioni</string>
+    <string name="pref_keep_screen_on">Mantieni lo schermo attivo</string>
+    <string name="pref_keep_screen_on_summary">La batteria si scarica più velocemente</string>
+    <string name="title_activity_calibration">Calibrazione</string>
+    <string name="pref_calibration_summary_notcalibrated">Non calibrato</string>
+    <string name="pref_calibration_summary_calibrated">Calibrato</string>
+    <string name="pref_calibration_reset">Reset</string>
+    <string name="pref_calibration_reset_summary">Azzera la calibrazione</string>
+    <string name="pref_autolocking">Bloccaggio Automatico</string>
+    <string name="pref_autolocking_summary">Blocca la misura quando stazionaria</string>
+    <string name="pref_autolocking_horizon">Allineamento Orizzonte</string>
+    <string name="pref_autolocking_horizon_summary">Per misurazioni verticali</string>
+    <string name="pref_autolocking_precision">Precisione</string>
+    <string name="pref_cameramode_camera_to_use">Fotocamera</string>
+    <string name="pref_cameramode_camera_front">Fotocamera anteriore</string>
+    <string name="pref_cameramode_camera_rear">Fotocamera posteriore</string>
+    <string name="pref_cameramode_no_cameras">Questo dispositivo non ha una fotocamera</string>
+    <string name="pref_cameramode_no_permission_to_access">Non è stato autorizzato l\'accesso alla fotocamera</string>
+    <string name="pref_cameramode_exposure_compensation">Compensazione dell\'Esposizione</string>
+    <string name="pref_about">Info</string>
+    <string name="pref_about_summary">Informazioni su Clinometer</string>
+    <string name="pref_online_help">Guida in linea</string>
+    <string name="pref_online_help_summary">Esplora utilizzo e impostazioni</string>
+    <!-- About Dialog -->
+    <string name="about_version">ver.</string>
+    <string name="about_description">Copyright (C) 2020 BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData Clinometer misura gli angoli di inclinazione del dispositivo rispetto alla direzione della gravità utilizzando gli accelerometri di bordo.\n\nQuesto programma è software libero, rilasciato secondo i termini della GNU General Public License.\nPer maggiori dettagli consultare https://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Se ti piace utilizzare questa applicazione, prenditi un momento per valutare Clinometer nel Google Play Store.</string>
+    <string name="about_rate_this_app">Valuta questa app</string>
+    <string name="about_unable_to_rate">Impossibile accedere allo Store</string>
+    <!-- Calibration Activity -->
+    <string name="calibration_active_calibration">Calibrazione attiva:</string>
+    <string name="calibration_active_calibration_gains">Guadagni</string>
+    <string name="calibration_active_calibration_offsets">Offset</string>
+    <string name="calibration_active_calibration_angles">Angoli</string>
+    <string name="calibration_step1">Step 1 di 7\nDisponi orizzontale e premi Successivo</string>
+    <string name="calibration_step2">Step 2 di 7\nRuota di 180° e premi Successivo</string>
+    <string name="calibration_step3">Step 3 di 7\nPosiziona sul lato sinistro e premi Successivo</string>
+    <string name="calibration_step4">Step 4 di 7\nRuota di 180° e premi Successivo</string>
+    <string name="calibration_step5">Step 5 di 7\nPosiziona in verticale e premi Successivo</string>
+    <string name="calibration_step6">Step 6 di 7\nCapovolgi di 180° e premi Successivo</string>
+    <string name="calibration_step7">Step 7 di 7\nPremi Successivo e posiziona a faccia in giù</string>
+    <string name="calibration_calibrating">Calibrazione...\nNon muovere il dispositivo</string>
+    <string name="calibration_progress">Avanzamento</string>
+    <string name="calibration_tolerance">Tolleranza</string>
+    <string name="calibration_abort">Vuoi veramente interrompere il processo di calibrazione e tornare alle impostazioni?</string>
+    <string name="next">Successivo &gt;&gt;</string>
+    <!-- Dialogs -->
+    <string name="dialog_reset_calibration_confirmation">Vuoi resettare la calibrazione corrente?</string>
+    <string name="dialog_calibration_completed">Calibrazione completata!</string>
+    <string name="yes">Sì</string>
+    <string name="no">No</string>
+    <string name="close">Chiudi</string>
+</resources>

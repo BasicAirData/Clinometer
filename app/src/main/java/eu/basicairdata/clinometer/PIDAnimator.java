@@ -1,8 +1,9 @@
 /*
  * PIDAnimator - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 13/2/2021
+ * Created by G.Capelli on 13/2/2021
+ * This file is part of BasicAirData Clinometer
  *
- * This file is part of BasicAirData Clinometer for Android.
+ * Copyright (C) 2020 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,6 +105,17 @@ public class PIDAnimator extends TimerTask {
      * @param setPoint The new set Point
      */
     public void setTargetValue(float setPoint) {
+        float deltar = r - setPoint;
+        //Log.i("PIDAnimator", "UPDATE: r = " + r + "    setPoint = " + setPoint);
+        if (Math.abs(deltar) > 180.0f) {
+            if (deltar < 0.0f) {
+                y += 360.0f;
+                y_old += 360.0f;
+            } else {
+                y -= 360.0f;
+                y_old -= 360.0f;
+            }
+        }
         r = setPoint;
     }
 
@@ -112,6 +124,6 @@ public class PIDAnimator extends TimerTask {
      * @return The current value
      */
     public float getValue() {
-        return y;
+        return y % 360.0f;
     }
 }

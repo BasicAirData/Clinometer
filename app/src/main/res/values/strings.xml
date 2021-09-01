@@ -2,9 +2,10 @@
 
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 21/5/2020
+  ~ Created by G.Capelli on 21/5/2020
+  ~ This file is part of BasicAirData Clinometer
   ~
-  ~ This file is part of BasicAirData Clinometer for Android.
+  ~ Copyright (C) 2020 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,9 +24,10 @@
 <resources>
     <string name="app_name" translatable="false">Clinometer</string>
 
-    <string name="toast_please_grant_camera_permission">Please grant the Camera Permission to enable this Feature</string>
-    <string name="toast_lay_vertical">Keep the Screen vertical and tilt the Device</string>
-    <string name="toast_calibrate_before_use">Please go to Settings\nand calibrate the App before use</string>
+    <string name="toast_please_grant_camera_permission">Please grant the camera permission to enable this feature</string>
+    <string name="toast_lay_vertical">Keep the screen vertical and tilt the device</string>
+    <string name="toast_calibrate_before_use">Please go to settings\nand calibrate the app before use</string>
+    <string name="toast_no_browser_installed">No Internet browser installed</string>
 
     <!-- Preferences -->
     <string name="Settings">Settings</string>
@@ -33,7 +35,7 @@
     <string name="pref_keep_screen_on">Keep Screen On</string>
     <string name="pref_keep_screen_on_summary">Battery drains faster</string>
 
-    <string name="pref_calibration">Calibration</string>
+    <string name="title_activity_calibration">Calibration</string>
     <string name="pref_calibration_summary_notcalibrated">Not calibrated</string>
     <string name="pref_calibration_summary_calibrated">Calibrated</string>
     <string name="pref_calibration_reset">Reset</string>
@@ -48,24 +50,24 @@
     <string name="pref_cameramode_camera_to_use">Camera</string>
     <string name="pref_cameramode_camera_front">Front Camera</string>
     <string name="pref_cameramode_camera_rear">Rear Camera</string>
-    <string name="pref_cameramode_no_cameras">This Device has no Camera</string>
-    <string name="pref_cameramode_no_permission_to_access">No Permission to access Camera</string>
+    <string name="pref_cameramode_no_cameras">This device has no camera</string>
+    <string name="pref_cameramode_no_permission_to_access">No permission to access camera</string>
     <string name="pref_cameramode_exposure_compensation">Exposure Compensation</string>
 
     <string name="pref_about">Info</string>
     <string name="pref_about_summary">About Clinometer</string>
+    <string name="pref_online_help">Online Help</string>
+    <string name="pref_online_help_summary">Explore usage and settings</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2020 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData Clinometer measures the inclination angles of your device with respect to gravity\'s direction using the onboard Accelerometers.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt</string>
-    <string name="about_description_googleplaystore">If You enjoy using this app, please take a moment to rate Clinometer in the Google Store.</string>
-    <string name="about_ok">Close</string>
+    <string name="about_description">Copyright (C) 2020 BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData Clinometer measures the inclination angles of your device with respect to gravity\'s direction using the onboard Accelerometers.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: https://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">If You enjoy using this app, please take a moment to rate Clinometer in the Google Play Store.</string>
     <string name="about_rate_this_app">Rate this App</string>
     <string name="about_unable_to_rate">Unable to reach the Store</string>
-    <string name="title_activity_calibration">Calibration</string>
 
     <!-- Calibration Activity -->
-    <string name="calibration_active_calibration">Active Calibration:</string>
+    <string name="calibration_active_calibration">Active calibration:</string>
     <string name="calibration_active_calibration_gains">Gains</string>
     <string name="calibration_active_calibration_offsets">Offsets</string>
     <string name="calibration_active_calibration_angles">Angles</string>

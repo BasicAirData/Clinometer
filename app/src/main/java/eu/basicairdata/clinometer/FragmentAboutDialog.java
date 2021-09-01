@@ -1,8 +1,9 @@
 /*
  * FragmentAboutDialog - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 2/6/2020
+ * Created by G.Capelli on 2/6/2020
+ * This file is part of BasicAirData Clinometer
  *
- * This file is part of BasicAirData Clinometer for Android.
+ * Copyright (C) 2020 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,7 +109,7 @@ public class FragmentAboutDialog extends DialogFragment {
                 break;
         }
 
-        createAboutAlert.setView(view).setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
+        createAboutAlert.setView(view).setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {}
         });

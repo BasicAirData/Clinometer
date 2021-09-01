@@ -1,11 +1,12 @@
 /*
  * CameraPreview - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 4/1/2021
+ * Created by G.Capelli on 4/1/2021
+ * This file is part of BasicAirData Clinometer
  *
  * The class is based on the developer.android.com CameraPreview Class:
  * https://developer.android.com/guide/topics/media/camera#custom-camera
  *
- * This file is part of BasicAirData Clinometer for Android.
+ * Copyright (C) 2020 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,8 +1,9 @@
 /*
  * ClinometerApplication - Singleton Java Class for Android
- * Created by G.Capelli (BasicAirData) on 10/1/2021
+ * Created by G.Capelli on 10/1/2021
+ * This file is part of BasicAirData Clinometer
  *
- * This file is part of BasicAirData Clinometer for Android.
+ * Copyright (C) 2020 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +49,7 @@ public class ClinometerApplication extends Application {
     public static final String KEY_PREF_CAMERA                        = "prefCamera";
     public static final String KEY_PREF_CAMERA_EXPOSURE_COMPENSATION  = "prefExposureCompensation";
     public static final String KEY_PREF_ABOUT                         = "prefAbout";
+    public static final String KEY_PREF_ONLINE_HELP                   = "prefOnlineHelp";
     public static final String KEY_PREF_KEEP_SCREEN_ON                = "prefKeepScreenOn";
     public static final String KEY_PREF_CALIBRATION_ANGLE_0           = "prefCalibrationAngle0";
     public static final String KEY_PREF_CALIBRATION_ANGLE_1           = "prefCalibrationAngle1";

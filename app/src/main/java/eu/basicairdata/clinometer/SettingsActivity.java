@@ -1,8 +1,9 @@
 /*
  * SettingsActivity - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 2/6/2020
+ * Created by G.Capelli on 2/6/2020
+ * This file is part of BasicAirData Clinometer
  *
- * This file is part of BasicAirData Clinometer for Android.
+ * Copyright (C) 2020 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +23,14 @@ package eu.basicairdata.clinometer;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -63,6 +67,7 @@ import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_PERMISSION;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_ONLINE_HELP;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -106,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_REQUEST_CODE) {
             Log.w("SettingsActivity", "onRequestPermissionsResult()");
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 clinometerApplication.scanCameras();
                 settingsFragment.updatePreferences();
             }
@@ -125,6 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
         SeekBarPreference preferenceExposureCompensation;
         Preference preferenceCalibration;
         Preference preferenceAbout;
+        Preference preferenceOnlineHelp;
         Preference preferenceCameraPermission;
         Preference preferenceResetCalibration;
 
@@ -178,6 +184,25 @@ public class SettingsActivity extends AppCompatActivity {
                     FragmentAboutDialog aboutDialog = new FragmentAboutDialog();
 
                     aboutDialog.show(fm, "");
+                    return false;
+                }
+            });
+
+            preferenceOnlineHelp = findPreference(KEY_PREF_ONLINE_HELP);
+            preferenceOnlineHelp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    if (isBrowserInstalled()) {
+                        // Opens the default browser and shows the Getting Started Guide page
+                        String url = "https://www.basicairdata.eu/projects/android/android-clinometer/";
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                    } else {
+                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), R.string.toast_no_browser_installed, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
                     return false;
                 }
             });
@@ -336,6 +361,18 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
             }
+        }
+
+
+        /**
+         * @return true if a browser is installed on the device.
+         */
+        private Boolean isBrowserInstalled() {
+            String url = "https://www.basicairdata.eu/projects/android/android-clinometer/";
+            Uri webAddress = Uri.parse(url);
+            Intent intentWeb = new Intent(Intent.ACTION_VIEW, webAddress);
+            intentWeb.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            return (intentWeb.resolveActivity(ClinometerApplication.getInstance().getPackageManager()) != null);
         }
     }
 }
