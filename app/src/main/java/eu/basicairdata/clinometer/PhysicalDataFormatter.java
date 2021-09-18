@@ -29,19 +29,9 @@ import java.util.Locale;
  */
 class PhysicalDataFormatter {
 
-    private static final int UM_METRIC_MS       = 0;
-    private static final int UM_METRIC_KMH      = 1;
-    private static final int UM_IMPERIAL_FPS    = 8;
-    private static final int UM_IMPERIAL_MPH    = 9;
-    private static final int UM_NAUTICAL_KN     = 16;
-    private static final int UM_NAUTICAL_MPH    = 17;
-
-    private static final float M_TO_FT   = 3.280839895f;
-    private static final float M_TO_NM   = 0.000539957f;
-    private static final float MS_TO_MPH = 2.2369363f;
-    private static final float MS_TO_KMH = 3.6f;
-    private static final float MS_TO_KN  = 1.943844491f;
-    private static final float KM_TO_MI  = 0.621371192237f;
+    public static final String UM_DEGREES                    = "0";
+    public static final String UM_RADIANS                    = "10";
+    public static final String UM_PERCENT                    = "20";
 
     private final ClinometerApplication clinometerApp = ClinometerApplication.getInstance();
 
@@ -56,31 +46,41 @@ class PhysicalDataFormatter {
         physicalData.value = "";
         physicalData.um = "";
 
-        physicalData.value = String.format(Locale.getDefault(), "%.1f", number);
-        physicalData.um = "°";
-//                switch (clinometerApp.getPrefUM()) {
-//                    case UM_METRIC_KMH:
-//                        physicalData.value = String.valueOf(Math.round(number * MS_TO_KMH));
-//                        physicalData.um = clinometerApp.getString(R.string.UM_km_h);
-//                        return (physicalData);
-//                    case UM_METRIC_MS:
-//                        physicalData.value = String.valueOf(Math.round(number));
-//                        physicalData.um = clinometerApp.getString(R.string.UM_m_s);
-//                        return (physicalData);
-//                    case UM_IMPERIAL_MPH:
-//                    case UM_NAUTICAL_MPH:
-//                        physicalData.value = String.valueOf(Math.round(number * MS_TO_MPH));
-//                        physicalData.um = clinometerApp.getString(R.string.UM_mph);
-//                        return (physicalData);
-//                    case UM_IMPERIAL_FPS:
-//                        physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
-//                        physicalData.um = clinometerApp.getString(R.string.UM_fps);
-//                        return (physicalData);
-//                    case UM_NAUTICAL_KN:
-//                        physicalData.value = String.valueOf(Math.round(number * MS_TO_KN));
-//                        physicalData.um = clinometerApp.getString(R.string.UM_kn);
-//                        return (physicalData);
-//                }
+        String format = clinometerApp.getPrefUM();
+
+        physicalData.um = clinometerApp.getString(R.string.um_percent);
+
+        if (format.equals(UM_DEGREES)) {
+            physicalData.value = String.format(Locale.getDefault(), "%.1f", number);
+            physicalData.um = clinometerApp.getString(R.string.um_degrees);
+            return (physicalData);
+        }
+        if (format.equals(UM_RADIANS)) {
+            physicalData.value = String.format(Locale.getDefault(), "%.2f", Math.toRadians(number));
+            physicalData.um = clinometerApp.getString(R.string.um_radians);
+            return (physicalData);
+        }
+        if (format.equals(UM_PERCENT)) {
+            float percent;
+            if (number == 90) percent = 1000;
+            else if (number == -90) percent = -1000;
+            else percent = (float)Math.tan(Math.toRadians(number)) * 100.0f;
+
+            if (percent >= 1000) {
+                physicalData.value = ">>";
+                physicalData.um = "";
+            }
+            else if (percent <= -1000) {
+                physicalData.value = "<<";
+                physicalData.um = "";
+            }
+            else {
+                if (Math.abs(percent) < 100) physicalData.value = String.format(Locale.getDefault(), "%.1f", percent);
+                else physicalData.value = String.format(Locale.getDefault(), "%.0f", percent);
+            }
+            return (physicalData);
+        }
+
         return (physicalData);
     }
 }

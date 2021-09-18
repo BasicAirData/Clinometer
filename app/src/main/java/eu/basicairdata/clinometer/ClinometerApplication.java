@@ -38,7 +38,6 @@ public class ClinometerApplication extends Application {
 
     public static final int CAMERA_REQUEST_CODE = 100;
 
-
     public static final String KEY_PREF_CALIBRATION                   = "prefCalibration";
     public static final String KEY_PREF_CALIBRATION_RESET             = "prefResetCalibration";
     public static final String KEY_PREF_CALIBRATION_TIME              = "prefCalibrationTime";
@@ -51,6 +50,7 @@ public class ClinometerApplication extends Application {
     public static final String KEY_PREF_ABOUT                         = "prefAbout";
     public static final String KEY_PREF_ONLINE_HELP                   = "prefOnlineHelp";
     public static final String KEY_PREF_KEEP_SCREEN_ON                = "prefKeepScreenOn";
+    public static final String KEY_PREF_UNIT_OF_MEASUREMENT           = "prefUnitOfMeasurement";
     public static final String KEY_PREF_CALIBRATION_ANGLE_0           = "prefCalibrationAngle0";
     public static final String KEY_PREF_CALIBRATION_ANGLE_1           = "prefCalibrationAngle1";
     public static final String KEY_PREF_CALIBRATION_ANGLE_2           = "prefCalibrationAngle2";
@@ -69,6 +69,7 @@ public class ClinometerApplication extends Application {
     }
 
     private SharedPreferences preferences;
+    private String prefUM = "0";
 
     private boolean hasACamera = false;                                                 // True if the device has at least a camera
     private boolean isCameraScanned = false;
@@ -81,6 +82,14 @@ public class ClinometerApplication extends Application {
     // GETTERS AND SETTERS --------------------------------------------------------------------------------------------------
     // ----------------------------------------------------------------------------------------------------------------------
 
+
+    public void setPrefUM(String prefUM) {
+        this.prefUM = prefUM;
+    }
+
+    public String getPrefUM() {
+        return prefUM;
+    }
 
     public boolean hasCamera() {
         return hasACamera;

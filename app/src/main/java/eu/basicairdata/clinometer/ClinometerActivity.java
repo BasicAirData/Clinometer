@@ -80,6 +80,7 @@ import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRAT
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_UNIT_OF_MEASUREMENT;
 
 
 public class ClinometerActivity extends AppCompatActivity implements SensorEventListener {
@@ -378,6 +379,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         loadPreferences();
 
+        phdAngle0 = physicalDataFormatter.format(angle[0]);
+        phdAngle1 = physicalDataFormatter.format(angle[1]);
+        phdAngle2 = physicalDataFormatter.format(angle[2]);
+        mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
+                + phdAngle1.value + phdAngle1.um + "  "
+                + phdAngle2.value + phdAngle2.um);
+
         mFrameLayoutClinometer.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
                 // Set the content to appear under the system bars so that the
@@ -640,6 +648,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         prefAutoLock = preferences.getBoolean(KEY_PREF_AUTOLOCK, false);
+        clinometerApplication.setPrefUM(preferences.getString(KEY_PREF_UNIT_OF_MEASUREMENT, (getResources().getStringArray(R.array.UMAnglesValues))[0]));
         prefAutoLockHorizonCheck = preferences.getBoolean(KEY_PREF_AUTOLOCK_HORIZON_CHECK, true);
         prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt(KEY_PREF_AUTOLOCK_PRECISION, 500) / 1000;
         Log.d("Clinometer", String.format("Auto Locking Tolerance = %1.3f", prefAutoLockTolerance));
