@@ -132,6 +132,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 //        return singleton;
 //    }
 
+    private PhysicalData phdAngle0;
+    private PhysicalData phdAngle1;
+    private PhysicalData phdAngle2;
+    private PhysicalDataFormatter physicalDataFormatter = new PhysicalDataFormatter();
+
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
     private TextView mTextViewToast;
@@ -590,7 +595,14 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
+
+                phdAngle0 = physicalDataFormatter.format(angle[0]);
+                phdAngle1 = physicalDataFormatter.format(angle[1]);
+                phdAngle2 = physicalDataFormatter.format(angle[2]);
+                mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
+                        + phdAngle1.value + phdAngle1.um + "  "
+                        + phdAngle2.value + phdAngle2.um);
+//                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
 
             if (Math.abs(pid.getValue() - old_PIDValue) > 0.001) {
@@ -685,7 +697,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 }
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
+                phdAngle0 = physicalDataFormatter.format(angle[0]);
+                phdAngle1 = physicalDataFormatter.format(angle[1]);
+                phdAngle2 = physicalDataFormatter.format(angle[2]);
+                mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
+                        + phdAngle1.value + phdAngle1.um + "  "
+                        + phdAngle2.value + phdAngle2.um);
+//                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
         });
         animationR.start();

@@ -61,6 +61,9 @@ public class ClinometerView extends View {
     private Paint paint_Yellow_Spirit;      // For Lines and Spirit Bubbles
     private Paint paint_bg_horizon;         // For Horizon Background
 
+    private PhysicalDataFormatter physicalDataFormatter = new PhysicalDataFormatter(); // Formatter for angles
+    private PhysicalData phdAngle;
+
     private final Rect textbounds = new Rect();
     private final RectF arcRectF = new RectF();
 
@@ -471,7 +474,8 @@ public class ClinometerView extends View {
         // Angle Z
         canvas.save();
         canvas.rotate( (float) Math.toDegrees(rot_angle_rad) + 180, xc, yc);
-        drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(90 - angles[2])),
+        phdAngle = physicalDataFormatter.format(Math.abs(90 - angles[2]));
+        drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
                 (int) (min_xy - (r1)), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 (angleTextLabels - (float) Math.toDegrees(rot_angle_rad) - 180) , paint_WhiteText);
@@ -479,27 +483,35 @@ public class ClinometerView extends View {
 
         // Angle 0 + 1
         if (displayRotation == 0f) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs - textOffsetPx, y - textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs - textOffsetPx, y - textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), textOffsetPx, (int)ys - textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, textOffsetPx, (int)ys - textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
         }
         if (displayRotation == 90f) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs + textOffsetPx, textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs + textOffsetPx, textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_90, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), textOffsetPx, (int)ys - textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, textOffsetPx, (int)ys - textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_90, paint_Yellow_Spirit);
         }
         if (displayRotation == 180f) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs + textOffsetPx, textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs + textOffsetPx, textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_180, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), x - textOffsetPx, (int)ys + textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, x - textOffsetPx, (int)ys + textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_180, paint_Yellow_Spirit);
         }
         if (displayRotation == 270f) {
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[0]), (int)xs - textOffsetPx, y - textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs - textOffsetPx, y - textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_270, paint_Yellow_Spirit);
-            drawTextWithShadow(canvas, String.format("%1.1f°", angles[1]), x - textOffsetPx, (int)ys + textOffsetPx,
+            phdAngle = physicalDataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, x - textOffsetPx, (int)ys + textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_270, paint_Yellow_Spirit);
         }
 
@@ -537,11 +549,13 @@ public class ClinometerView extends View {
 
             if (isAngle2LabelOnLeft) {
                 // SX
-                drawTextWithShadow(canvas, String.format("%1.1f°", angles[2]), textOffsetPx, yc - textOffsetPx,
+                phdAngle = physicalDataFormatter.format(angles[2]);
+                drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, textOffsetPx, yc - textOffsetPx,
                         TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
             } else {
                 // DX
-                drawTextWithShadow(canvas, String.format("%1.1f°", angles[2]), x - textOffsetPx , yc - textOffsetPx,
+                phdAngle = physicalDataFormatter.format(angles[2]);
+                drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, x - textOffsetPx , yc - textOffsetPx,
                         TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
             }
             canvas.restore();
@@ -551,12 +565,14 @@ public class ClinometerView extends View {
 
         canvas.save();
         canvas.rotate( angle1Start + angle1Extension /2, xc, yc);
-        drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle1Extension)),
+        phdAngle = physicalDataFormatter.format(Math.abs(angle1Extension));
+        drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
                 (int) (xc + (r1 * (2.1f + angle1OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 -angle1Extension /2 - refAxis + angleTextLabels , paint_WhiteText);
         canvas.rotate( 90 , xc, yc);
-        drawTextWithShadow(canvas, String.format("%1.1f°", Math.abs(angle2Extension)),
+        phdAngle = physicalDataFormatter.format(Math.abs(angle2Extension));
+        drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
                 (int) (xc + (r1 * (2.1f + angle2OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 -angle1Extension /2 - 90 - refAxis + angleTextLabels, paint_WhiteText);
