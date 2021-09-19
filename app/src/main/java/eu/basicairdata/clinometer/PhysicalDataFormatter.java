@@ -46,6 +46,8 @@ class PhysicalDataFormatter {
      * @param x The double number to convert in fraction
      * @return the fraction string
      */
+    // Based on the good Matthew556's answer on
+    // https://stackoverflow.com/questions/31585931/how-to-convert-decimal-to-fractions
     static private String convertDecimalToFraction(double x){
         double xx = Math.abs(x);
         boolean isNegative = x != Math.abs(x);
@@ -68,7 +70,7 @@ class PhysicalDataFormatter {
 
         if (k1 > 1000) return "0";
         if (h1 > 1000) return isNegative ? "<<" : ">>";
-        return (isNegative ? "-" : "") + String.format(Locale.getDefault(), "%.0f", h1) + "/"
+        return (isNegative ? "-" : "") + String.format(Locale.getDefault(), "%.0f", h1) + ":"
                 + String.format(Locale.getDefault(), "%.0f", k1);
     }
 
