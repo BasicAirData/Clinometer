@@ -69,7 +69,7 @@ public class ClinometerApplication extends Application {
     }
 
     private SharedPreferences preferences;
-    private String prefUM = "0";
+    private int prefUM = 0;
 
     private boolean hasACamera = false;                                                 // True if the device has at least a camera
     private boolean isCameraScanned = false;
@@ -83,11 +83,11 @@ public class ClinometerApplication extends Application {
     // ----------------------------------------------------------------------------------------------------------------------
 
 
-    public void setPrefUM(String prefUM) {
+    public void setPrefUM(int prefUM) {
         this.prefUM = prefUM;
     }
 
-    public String getPrefUM() {
+    public int getPrefUM() {
         return prefUM;
     }
 

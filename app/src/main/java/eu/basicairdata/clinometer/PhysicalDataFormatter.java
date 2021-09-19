@@ -29,9 +29,9 @@ import java.util.Locale;
  */
 class PhysicalDataFormatter {
 
-    public static final String UM_DEGREES                    = "0";
-    public static final String UM_RADIANS                    = "10";
-    public static final String UM_PERCENT                    = "20";
+    public static final int UM_DEGREES                    = 0;
+    public static final int UM_RADIANS                    = 10;
+    public static final int UM_PERCENT                    = 20;
 
     private final ClinometerApplication clinometerApp = ClinometerApplication.getInstance();
 
@@ -46,41 +46,40 @@ class PhysicalDataFormatter {
         physicalData.value = "";
         physicalData.um = "";
 
-        String format = clinometerApp.getPrefUM();
+        int format = clinometerApp.getPrefUM();
 
         physicalData.um = clinometerApp.getString(R.string.um_percent);
 
-        if (format.equals(UM_DEGREES)) {
-            physicalData.value = String.format(Locale.getDefault(), "%.1f", number);
-            physicalData.um = clinometerApp.getString(R.string.um_degrees);
-            return (physicalData);
-        }
-        if (format.equals(UM_RADIANS)) {
-            physicalData.value = String.format(Locale.getDefault(), "%.2f", Math.toRadians(number));
-            physicalData.um = clinometerApp.getString(R.string.um_radians);
-            return (physicalData);
-        }
-        if (format.equals(UM_PERCENT)) {
-            float percent;
-            if (number == 90) percent = 1000;
-            else if (number == -90) percent = -1000;
-            else percent = (float)Math.tan(Math.toRadians(number)) * 100.0f;
+        switch (format) {
+            case UM_DEGREES:
+                physicalData.value = String.format(Locale.getDefault(), "%.1f", number);
+                physicalData.um = clinometerApp.getString(R.string.um_degrees);
+                break;
 
-            if (percent >= 1000) {
-                physicalData.value = ">>";
-                physicalData.um = "";
-            }
-            else if (percent <= -1000) {
-                physicalData.value = "<<";
-                physicalData.um = "";
-            }
-            else {
-                if (Math.abs(percent) < 100) physicalData.value = String.format(Locale.getDefault(), "%.1f", percent);
-                else physicalData.value = String.format(Locale.getDefault(), "%.0f", percent);
-            }
-            return (physicalData);
-        }
+            case UM_RADIANS:
+                physicalData.value = String.format(Locale.getDefault(), "%.2f", Math.toRadians(number));
+                physicalData.um = clinometerApp.getString(R.string.um_radians);
+                break;
 
+            case UM_PERCENT:
+                float percent;
+                if (number == 90) percent = 1000;
+                else if (number == -90) percent = -1000;
+                else percent = (float) Math.tan(Math.toRadians(number)) * 100.0f;
+
+                if (percent >= 1000) {
+                    physicalData.value = ">>";
+                    physicalData.um = "";
+                } else if (percent <= -1000) {
+                    physicalData.value = "<<";
+                    physicalData.um = "";
+                } else {
+                    if (Math.abs(percent) < 100)
+                        physicalData.value = String.format(Locale.getDefault(), "%.1f", percent);
+                    else physicalData.value = String.format(Locale.getDefault(), "%.0f", percent);
+                }
+                break;
+        }
         return (physicalData);
     }
 }

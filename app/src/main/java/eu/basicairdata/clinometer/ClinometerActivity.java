@@ -648,7 +648,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         prefAutoLock = preferences.getBoolean(KEY_PREF_AUTOLOCK, false);
-        clinometerApplication.setPrefUM(preferences.getString(KEY_PREF_UNIT_OF_MEASUREMENT, (getResources().getStringArray(R.array.UMAnglesValues))[0]));
+        clinometerApplication.setPrefUM(Integer.parseInt(preferences.getString(KEY_PREF_UNIT_OF_MEASUREMENT, (getResources().getStringArray(R.array.UMAnglesValues))[0])));
         prefAutoLockHorizonCheck = preferences.getBoolean(KEY_PREF_AUTOLOCK_HORIZON_CHECK, true);
         prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt(KEY_PREF_AUTOLOCK_PRECISION, 500) / 1000;
         Log.d("Clinometer", String.format("Auto Locking Tolerance = %1.3f", prefAutoLockTolerance));
