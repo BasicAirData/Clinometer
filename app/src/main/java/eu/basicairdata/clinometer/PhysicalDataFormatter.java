@@ -30,10 +30,11 @@ import java.util.Locale;
 class PhysicalDataFormatter {
 
     // These values must match with arrays.xml <string-array name="UMAnglesValues">
-    public static final int UM_DEGREES      = 0;
-    public static final int UM_RADIANS      = 10;
-    public static final int UM_PERCENT      = 20;
-    public static final int UM_FRACTIONAL   = 30;
+    public static final int UM_DEGREES          = 0;
+    public static final int UM_RADIANS          = 10;
+    public static final int UM_PERCENT          = 20;
+    public static final int UM_FRACTIONAL       = 30;
+    public static final int UM_ENGINEERING_1V   = 40;
 
     private final ClinometerApplication clinometerApp = ClinometerApplication.getInstance();
 
@@ -119,6 +120,24 @@ class PhysicalDataFormatter {
 
             case UM_FRACTIONAL:
                 physicalData.value = convertDecimalToFraction((float) Math.tan(Math.toRadians(number)));
+                break;
+
+            case UM_ENGINEERING_1V:
+                physicalData.um = "";
+                float eH;
+                if (number == 90) eH = 1000;
+                else if (number == -90) eH = -1000;
+                else eH = (float) Math.tan(Math.toRadians(number));
+
+                if (eH >= 1000) {
+                    physicalData.value = ">>";
+                } else if (eH <= -1000) {
+                    physicalData.value = "<<";
+                } else {
+                    if (Math.abs(eH) < 10) physicalData.value = String.format(Locale.getDefault(), "%.3f", eH);
+                    else if (Math.abs(eH) < 100) physicalData.value = String.format(Locale.getDefault(), "%.2f", eH);
+                    else physicalData.value = String.format(Locale.getDefault(), "%.0f", eH);
+                }
                 break;
         }
         return (physicalData);
