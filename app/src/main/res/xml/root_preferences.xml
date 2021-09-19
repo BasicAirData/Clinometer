@@ -31,7 +31,13 @@
         app:defaultValue="true"
         app:icon="@drawable/ic_wb_incandescent_24"/>
 
-
+    <ListPreference
+        app:key="prefUnitOfMeasurement"
+        android:summary="%s"
+        app:title="@string/pref_unit_of_measurement"
+        android:entries="@array/UMAngles"
+        android:entryValues="@array/UMAnglesValues"
+        app:defaultValue="0"/>
 
     <Preference
         app:key="prefCalibration"

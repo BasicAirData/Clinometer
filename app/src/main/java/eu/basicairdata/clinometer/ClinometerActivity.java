@@ -80,6 +80,7 @@ import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRAT
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_UNIT_OF_MEASUREMENT;
 
 
 public class ClinometerActivity extends AppCompatActivity implements SensorEventListener {
@@ -131,6 +132,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 //    public static ClinometerActivity getInstance(){
 //        return singleton;
 //    }
+
+    private PhysicalData phdAngle0;
+    private PhysicalData phdAngle1;
+    private PhysicalData phdAngle2;
+    private PhysicalDataFormatter physicalDataFormatter = new PhysicalDataFormatter();
 
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
@@ -373,6 +379,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         loadPreferences();
 
+        phdAngle0 = physicalDataFormatter.format(angle[0]);
+        phdAngle1 = physicalDataFormatter.format(angle[1]);
+        phdAngle2 = physicalDataFormatter.format(angle[2]);
+        mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
+                + phdAngle1.value + phdAngle1.um + "  "
+                + phdAngle2.value + phdAngle2.um);
+
         mFrameLayoutClinometer.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
                 // Set the content to appear under the system bars so that the
@@ -590,7 +603,14 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
+
+                phdAngle0 = physicalDataFormatter.format(angle[0]);
+                phdAngle1 = physicalDataFormatter.format(angle[1]);
+                phdAngle2 = physicalDataFormatter.format(angle[2]);
+                mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
+                        + phdAngle1.value + phdAngle1.um + "  "
+                        + phdAngle2.value + phdAngle2.um);
+//                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
 
             if (Math.abs(pid.getValue() - old_PIDValue) > 0.001) {
@@ -628,6 +648,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         prefAutoLock = preferences.getBoolean(KEY_PREF_AUTOLOCK, false);
+        clinometerApplication.setPrefUM(Integer.parseInt(preferences.getString(KEY_PREF_UNIT_OF_MEASUREMENT, (getResources().getStringArray(R.array.UMAnglesValues))[0])));
         prefAutoLockHorizonCheck = preferences.getBoolean(KEY_PREF_AUTOLOCK_HORIZON_CHECK, true);
         prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt(KEY_PREF_AUTOLOCK_PRECISION, 500) / 1000;
         Log.d("Clinometer", String.format("Auto Locking Tolerance = %1.3f", prefAutoLockTolerance));
@@ -685,7 +706,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 }
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
+                phdAngle0 = physicalDataFormatter.format(angle[0]);
+                phdAngle1 = physicalDataFormatter.format(angle[1]);
+                phdAngle2 = physicalDataFormatter.format(angle[2]);
+                mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
+                        + phdAngle1.value + phdAngle1.um + "  "
+                        + phdAngle2.value + phdAngle2.um);
+//                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
         });
         animationR.start();
