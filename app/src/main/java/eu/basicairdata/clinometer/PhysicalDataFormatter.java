@@ -136,9 +136,10 @@ class PhysicalDataFormatter {
                 } else if (eH <= -1000) {
                     physicalData.value = "<<";
                 } else {
-                    if (Math.abs(eH) < 10) physicalData.value = (eH > 0 ? "1:" : "-1:") + String.format(Locale.getDefault(), "%.3f", Math.abs(eH));
-                    else if (Math.abs(eH) < 100) physicalData.value = (eH > 0 ? "1:" : "-1:") + String.format(Locale.getDefault(), "%.1f", Math.abs(eH));
-                    else physicalData.value = (eH > 0 ? "1:" : "-1:") + String.format(Locale.getDefault(), "%.0f", Math.abs(eH));
+                    if (Math.abs(eH) < 10) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.3f", Math.abs(eH));
+                    else if (Math.abs(eH) < 100) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.1f", Math.abs(eH));
+                    else physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.0f", Math.abs(eH));
+                    physicalData.value += ":1";
                 }
                 break;
         }
