@@ -27,10 +27,13 @@
         <item>@string/pref_unit_of_measurement_degrees</item>
         <item>@string/pref_unit_of_measurement_radians</item>
         <item>@string/pref_unit_of_measurement_percent</item>
+        <item>@string/pref_unit_of_measurement_fractional</item>
     </string-array>
+    <!-- if UMAnglesValues < 20 the app will show also 180°-angle -->
     <string-array name="UMAnglesValues">
         <item>0</item>
         <item>10</item>
         <item>20</item>
+        <item>30</item>
     </string-array>
 </resources>

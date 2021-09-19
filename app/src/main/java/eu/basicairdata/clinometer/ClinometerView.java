@@ -375,14 +375,14 @@ public class ClinometerView extends View {
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() != PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
             canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_Black15);
         r = (2.0f + angle2OffsetFromR) * r1;
         arcRectF.left = xc - r;           // The RectF for the Arc
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() != PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
             canvas.drawArc(arcRectF, angle2Start - 2, angle2Extension + 4, false, paint_Black15);
         // Spirit level Horizon
         if (!isFlat) {
@@ -444,7 +444,7 @@ public class ClinometerView extends View {
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() != PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
             canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_White);
 
         r = (2.0f + angle2OffsetFromR) * r1;
@@ -452,7 +452,7 @@ public class ClinometerView extends View {
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() != PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
             canvas.drawArc(arcRectF, angle2Start - 2, angle2Extension + 4, false, paint_White);
 
         // Bubble Circle
@@ -571,14 +571,14 @@ public class ClinometerView extends View {
         canvas.save();
         canvas.rotate( angle1Start + angle1Extension /2, xc, yc);
         phdAngle = physicalDataFormatter.format(Math.abs(angle1Extension));
-        if ((clinometerApplication.getPrefUM() != PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
             drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
                 (int) (xc + (r1 * (2.1f + angle1OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 -angle1Extension /2 - refAxis + angleTextLabels , paint_WhiteText);
         canvas.rotate( 90 , xc, yc);
         phdAngle = physicalDataFormatter.format(Math.abs(angle2Extension));
-        if ((clinometerApplication.getPrefUM() != PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
             drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
                 (int) (xc + (r1 * (2.1f + angle2OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,

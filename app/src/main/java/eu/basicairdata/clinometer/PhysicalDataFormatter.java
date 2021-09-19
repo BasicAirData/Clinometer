@@ -29,11 +29,48 @@ import java.util.Locale;
  */
 class PhysicalDataFormatter {
 
-    public static final int UM_DEGREES                    = 0;
-    public static final int UM_RADIANS                    = 10;
-    public static final int UM_PERCENT                    = 20;
+    // These values must match with arrays.xml <string-array name="UMAnglesValues">
+    public static final int UM_DEGREES      = 0;
+    public static final int UM_RADIANS      = 10;
+    public static final int UM_PERCENT      = 20;
+    public static final int UM_FRACTIONAL   = 30;
 
     private final ClinometerApplication clinometerApp = ClinometerApplication.getInstance();
+
+
+    /**
+     * It converts a double into its string representation as fraction.
+     * The standard tolerance for approximation is 1.0E-2.
+     *
+     * @param x The double number to convert in fraction
+     * @return the fraction string
+     */
+    static private String convertDecimalToFraction(double x){
+        double xx = Math.abs(x);
+        boolean isNegative = x != Math.abs(x);
+        double tolerance = 1.0E-2;
+        double h1 = 1;
+        double h2 = 0;
+        double k1 = 0;
+        double k2 = 1;
+        double b = xx;
+        do {
+            double a = Math.floor(b);
+            double aux = h1;
+            h1 = a * h1 + h2;
+            h2 = aux;
+            aux = k1;
+            k1 = a * k1 + k2;
+            k2 = aux;
+            b = 1 / (b - a);
+        } while (Math.abs(xx - h1 / k1) > xx * tolerance);
+
+        if (k1 > 1000) return "0";
+        if (h1 > 1000) return isNegative ? "<<" : ">>";
+        return (isNegative ? "-" : "") + String.format(Locale.getDefault(), "%.0f", h1) + "/"
+                + String.format(Locale.getDefault(), "%.0f", k1);
+    }
+
 
     /**
      * It returns a PhysicalData formatted basing on the given criteria and on the Preferences.
@@ -48,8 +85,6 @@ class PhysicalDataFormatter {
 
         int format = clinometerApp.getPrefUM();
 
-        physicalData.um = clinometerApp.getString(R.string.um_percent);
-
         switch (format) {
             case UM_DEGREES:
                 physicalData.value = String.format(Locale.getDefault(), "%.1f", number);
@@ -58,10 +93,12 @@ class PhysicalDataFormatter {
 
             case UM_RADIANS:
                 physicalData.value = String.format(Locale.getDefault(), "%.2f", Math.toRadians(number));
-                physicalData.um = clinometerApp.getString(R.string.um_radians);
+                physicalData.um = "";
                 break;
 
             case UM_PERCENT:
+                physicalData.um = clinometerApp.getString(R.string.um_percent);
+
                 float percent;
                 if (number == 90) percent = 1000;
                 else if (number == -90) percent = -1000;
@@ -78,6 +115,10 @@ class PhysicalDataFormatter {
                         physicalData.value = String.format(Locale.getDefault(), "%.1f", percent);
                     else physicalData.value = String.format(Locale.getDefault(), "%.0f", percent);
                 }
+                break;
+
+            case UM_FRACTIONAL:
+                physicalData.value = convertDecimalToFraction((float) Math.tan(Math.toRadians(number)));
                 break;
         }
         return (physicalData);
