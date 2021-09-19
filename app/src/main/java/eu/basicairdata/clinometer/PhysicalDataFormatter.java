@@ -34,7 +34,7 @@ class PhysicalDataFormatter {
     public static final int UM_RADIANS          = 10;
     public static final int UM_PERCENT          = 20;
     public static final int UM_FRACTIONAL       = 30;
-    public static final int UM_ENGINEERING_1V   = 40;
+    public static final int UM_ENGINEERING_1H   = 40;
 
     private final ClinometerApplication clinometerApp = ClinometerApplication.getInstance();
 
@@ -122,7 +122,7 @@ class PhysicalDataFormatter {
                 physicalData.value = convertDecimalToFraction((float) Math.tan(Math.toRadians(number)));
                 break;
 
-            case UM_ENGINEERING_1V:
+            case UM_ENGINEERING_1H:
                 physicalData.um = "";
                 float eH;
                 if (number == 90) eH = 1000;
