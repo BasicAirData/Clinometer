@@ -28,7 +28,7 @@
         <item>@string/pref_unit_of_measurement_radians</item>
         <item>@string/pref_unit_of_measurement_percent</item>
         <item>@string/pref_unit_of_measurement_fractional</item>
-        <item>@string/pref_unit_of_measurement_engineering_1H</item>
+        <!--<item>@string/pref_unit_of_measurement_engineering_1H</item>-->
     </string-array>
     <!-- if UMAnglesValues < 20 the app will show also 180°-angle -->
     <string-array name="UMAnglesValues">
@@ -36,6 +36,6 @@
         <item>10</item>
         <item>20</item>
         <item>30</item>
-        <item>40</item>
+        <!--<item>40</item>-->
     </string-array>
 </resources>

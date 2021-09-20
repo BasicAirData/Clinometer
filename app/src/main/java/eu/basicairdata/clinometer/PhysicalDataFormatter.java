@@ -34,7 +34,7 @@ class PhysicalDataFormatter {
     public static final int UM_RADIANS          = 10;
     public static final int UM_PERCENT          = 20;
     public static final int UM_FRACTIONAL       = 30;
-    public static final int UM_ENGINEERING_1H   = 40;
+//    public static final int UM_ENGINEERING_1H   = 40;
 
     private final ClinometerApplication clinometerApp = ClinometerApplication.getInstance();
 
@@ -124,24 +124,24 @@ class PhysicalDataFormatter {
                 physicalData.value = convertDecimalToFraction((float) Math.tan(Math.toRadians(number)));
                 break;
 
-            case UM_ENGINEERING_1H:
-                physicalData.um = "";
-                float eH;
-                if (number == 90) eH = 1000;
-                else if (number == -90) eH = -1000;
-                else eH = (float) Math.tan(Math.toRadians(number));
-
-                if (eH >= 1000) {
-                    physicalData.value = ">>";
-                } else if (eH <= -1000) {
-                    physicalData.value = "<<";
-                } else {
-                    if (Math.abs(eH) < 10) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.3f", Math.abs(eH));
-                    else if (Math.abs(eH) < 100) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.1f", Math.abs(eH));
-                    else physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.0f", Math.abs(eH));
-                    physicalData.value += ":1";
-                }
-                break;
+//            case UM_ENGINEERING_1H:
+//                physicalData.um = "";
+//                float eH;
+//                if (number == 90) eH = 1000;
+//                else if (number == -90) eH = -1000;
+//                else eH = (float) Math.tan(Math.toRadians(number));
+//
+//                if (eH >= 1000) {
+//                    physicalData.value = ">>";
+//                } else if (eH <= -1000) {
+//                    physicalData.value = "<<";
+//                } else {
+//                    if (Math.abs(eH) < 10) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.3f", Math.abs(eH));
+//                    else if (Math.abs(eH) < 100) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.1f", Math.abs(eH));
+//                    else physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.0f", Math.abs(eH));
+//                    physicalData.value += ":1";
+//                }
+//                break;
         }
         return (physicalData);
     }
