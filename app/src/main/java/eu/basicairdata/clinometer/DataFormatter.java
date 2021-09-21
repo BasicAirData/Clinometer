@@ -1,5 +1,5 @@
 /*
- * PhysicalDataFormatter - Java Class for Android
+ * DataFormatter - Java Class for Android
  * Created by G.Capelli on 18/9/2021
  * This file is part of BasicAirData Clinometer
  *
@@ -27,7 +27,7 @@ import java.util.Locale;
  * A helper Class for the formatting of the physical data.
  * It returns the data formatted basing on the given criteria and on the Preferences.
  */
-class PhysicalDataFormatter {
+class DataFormatter {
 
     // These values must match with arrays.xml <string-array name="UMAnglesValues">
     public static final int UM_DEGREES          = 0;
@@ -76,73 +76,62 @@ class PhysicalDataFormatter {
 
 
     /**
-     * It returns a PhysicalData formatted basing on the given criteria and on the Preferences.
+     * It returns a String containing the data formatted basing on the given criteria and on the Preferences.
      *
-     * @param number The float number to format as Physical Data
-     * @return The Physical Data containing number and unit of measurement
+     * @param number The float number to format as String
+     * @return The String containing the formatted data as number and unit of measurement
      */
-    public PhysicalData format(float number) {
-        PhysicalData physicalData = new PhysicalData();
-        physicalData.value = "";
-        physicalData.um = "";
+    public String format(float number) {
+        String s = "";
 
         int format = clinometerApp.getPrefUM();
 
         switch (format) {
             case UM_DEGREES:
-                physicalData.value = String.format(Locale.getDefault(), "%.1f", number);
-                physicalData.um = clinometerApp.getString(R.string.um_degrees);
+                s = String.format(Locale.getDefault(), "%.1f", number) + clinometerApp.getString(R.string.um_degrees);
                 break;
 
             case UM_RADIANS:
-                physicalData.value = String.format(Locale.getDefault(), "%.2f", Math.toRadians(number));
-                physicalData.um = "";
+                s = String.format(Locale.getDefault(), "%.2f", Math.toRadians(number));
                 break;
 
             case UM_PERCENT:
-                physicalData.um = clinometerApp.getString(R.string.um_percent);
-
                 float percent;
                 if (number == 90) percent = 1000;
                 else if (number == -90) percent = -1000;
                 else percent = (float) Math.tan(Math.toRadians(number)) * 100.0f;
 
-                if (percent >= 1000) {
-                    physicalData.value = ">>";
-                    physicalData.um = "";
-                } else if (percent <= -1000) {
-                    physicalData.value = "<<";
-                    physicalData.um = "";
-                } else {
+                if (percent >= 1000) s = ">>";
+                else if (percent <= -1000) s = "<<";
+                else {
                     if (Math.abs(percent) < 100)
-                        physicalData.value = String.format(Locale.getDefault(), "%.1f", percent);
-                    else physicalData.value = String.format(Locale.getDefault(), "%.0f", percent);
+                        s = String.format(Locale.getDefault(), "%.1f", percent) + clinometerApp.getString(R.string.um_percent);
+                    else s = String.format(Locale.getDefault(), "%.0f", percent) + clinometerApp.getString(R.string.um_percent);
                 }
                 break;
 
             case UM_FRACTIONAL:
-                physicalData.value = convertDecimalToFraction((float) Math.tan(Math.toRadians(number)));
+                s = convertDecimalToFraction((float) Math.tan(Math.toRadians(number)));
                 break;
 
 //            case UM_ENGINEERING_1H:
-//                physicalData.um = "";
 //                float eH;
 //                if (number == 90) eH = 1000;
 //                else if (number == -90) eH = -1000;
 //                else eH = (float) Math.tan(Math.toRadians(number));
 //
 //                if (eH >= 1000) {
-//                    physicalData.value = ">>";
+//                    s = ">>";
 //                } else if (eH <= -1000) {
-//                    physicalData.value = "<<";
+//                    s = "<<";
 //                } else {
-//                    if (Math.abs(eH) < 10) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.3f", Math.abs(eH));
-//                    else if (Math.abs(eH) < 100) physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.1f", Math.abs(eH));
-//                    else physicalData.value = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.0f", Math.abs(eH));
-//                    physicalData.value += ":1";
+//                    if (Math.abs(eH) < 10) s = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.3f", Math.abs(eH));
+//                    else if (Math.abs(eH) < 100) s = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.1f", Math.abs(eH));
+//                    else s = (eH > 0 ? "" : "-") + String.format(Locale.getDefault(), "%.0f", Math.abs(eH));
+//                    s += ":1";
 //                }
 //                break;
         }
-        return (physicalData);
+        return (s);
     }
 }

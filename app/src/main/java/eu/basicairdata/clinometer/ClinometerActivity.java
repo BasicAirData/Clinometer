@@ -133,10 +133,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 //        return singleton;
 //    }
 
-    private PhysicalData phdAngle0;
-    private PhysicalData phdAngle1;
-    private PhysicalData phdAngle2;
-    private PhysicalDataFormatter physicalDataFormatter = new PhysicalDataFormatter();
+    private String formattedAngle0;
+    private String formattedAngle1;
+    private String formattedAngle2;
+    private DataFormatter dataFormatter = new DataFormatter();
 
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
@@ -379,12 +379,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         loadPreferences();
 
-        phdAngle0 = physicalDataFormatter.format(angle[0]);
-        phdAngle1 = physicalDataFormatter.format(angle[1]);
-        phdAngle2 = physicalDataFormatter.format(angle[2]);
-        mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
-                + phdAngle1.value + phdAngle1.um + "  "
-                + phdAngle2.value + phdAngle2.um);
+        formattedAngle0 = dataFormatter.format(angle[0]);
+        formattedAngle1 = dataFormatter.format(angle[1]);
+        formattedAngle2 = dataFormatter.format(angle[2]);
+        mTextViewAngles.setText(formattedAngle0 + "  " + formattedAngle1 + "  " + formattedAngle2);
 
         mFrameLayoutClinometer.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
@@ -604,12 +602,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
 
-                phdAngle0 = physicalDataFormatter.format(angle[0]);
-                phdAngle1 = physicalDataFormatter.format(angle[1]);
-                phdAngle2 = physicalDataFormatter.format(angle[2]);
-                mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
-                        + phdAngle1.value + phdAngle1.um + "  "
-                        + phdAngle2.value + phdAngle2.um);
+                formattedAngle0 = dataFormatter.format(angle[0]);
+                formattedAngle1 = dataFormatter.format(angle[1]);
+                formattedAngle2 = dataFormatter.format(angle[2]);
+                mTextViewAngles.setText(formattedAngle0 + "  " + formattedAngle1 + "  " + formattedAngle2);
 //                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
 
@@ -706,12 +702,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 }
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-                phdAngle0 = physicalDataFormatter.format(angle[0]);
-                phdAngle1 = physicalDataFormatter.format(angle[1]);
-                phdAngle2 = physicalDataFormatter.format(angle[2]);
-                mTextViewAngles.setText(phdAngle0.value + phdAngle0.um + "  "
-                        + phdAngle1.value + phdAngle1.um + "  "
-                        + phdAngle2.value + phdAngle2.um);
+                formattedAngle0 = dataFormatter.format(angle[0]);
+                formattedAngle1 = dataFormatter.format(angle[1]);
+                formattedAngle2 = dataFormatter.format(angle[2]);
+                mTextViewAngles.setText(formattedAngle0 + "  " + formattedAngle1 + "  " + formattedAngle2);
 //                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
         });

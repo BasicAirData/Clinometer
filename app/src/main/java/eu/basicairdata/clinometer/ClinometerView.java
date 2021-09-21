@@ -62,8 +62,8 @@ public class ClinometerView extends View {
     private Paint paint_Yellow_Spirit;      // For Lines and Spirit Bubbles
     private Paint paint_bg_horizon;         // For Horizon Background
 
-    private PhysicalDataFormatter physicalDataFormatter = new PhysicalDataFormatter(); // Formatter for angles
-    private PhysicalData phdAngle;
+    private DataFormatter dataFormatter = new DataFormatter(); // Formatter for angles
+    private String formattedAngle;
 
     private final Rect textbounds = new Rect();
     private final RectF arcRectF = new RectF();
@@ -375,14 +375,14 @@ public class ClinometerView extends View {
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < DataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
             canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_Black15);
         r = (2.0f + angle2OffsetFromR) * r1;
         arcRectF.left = xc - r;           // The RectF for the Arc
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < DataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
             canvas.drawArc(arcRectF, angle2Start - 2, angle2Extension + 4, false, paint_Black15);
         // Spirit level Horizon
         if (!isFlat) {
@@ -444,7 +444,7 @@ public class ClinometerView extends View {
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < DataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
             canvas.drawArc(arcRectF, angle1Start + 2, angle1Extension - 4, false, paint_White);
 
         r = (2.0f + angle2OffsetFromR) * r1;
@@ -452,7 +452,7 @@ public class ClinometerView extends View {
         arcRectF.right = xc + r;
         arcRectF.top = yc - r;
         arcRectF.bottom = yc + r;
-        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
+        if ((clinometerApplication.getPrefUM() < DataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
             canvas.drawArc(arcRectF, angle2Start - 2, angle2Extension + 4, false, paint_White);
 
         // Bubble Circle
@@ -479,8 +479,8 @@ public class ClinometerView extends View {
         // Angle Z
         canvas.save();
         canvas.rotate( (float) Math.toDegrees(rot_angle_rad) + 180, xc, yc);
-        phdAngle = physicalDataFormatter.format(Math.abs(90 - angles[2]));
-        drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
+        formattedAngle = dataFormatter.format(Math.abs(90 - angles[2]));
+        drawTextWithShadow(canvas, formattedAngle,
                 (int) (min_xy - (r1)), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 (angleTextLabels - (float) Math.toDegrees(rot_angle_rad) - 180) , paint_WhiteText);
@@ -488,35 +488,35 @@ public class ClinometerView extends View {
 
         // Angle 0 + 1
         if (displayRotation == 0f) {
-            phdAngle = physicalDataFormatter.format(angles[0]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs - textOffsetPx, y - textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, formattedAngle, (int)xs - textOffsetPx, y - textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
-            phdAngle = physicalDataFormatter.format(angles[1]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, textOffsetPx, (int)ys - textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, formattedAngle, textOffsetPx, (int)ys - textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
         }
         if (displayRotation == 90f) {
-            phdAngle = physicalDataFormatter.format(angles[0]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs + textOffsetPx, textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, formattedAngle, (int)xs + textOffsetPx, textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_90, paint_Yellow_Spirit);
-            phdAngle = physicalDataFormatter.format(angles[1]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, textOffsetPx, (int)ys - textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, formattedAngle, textOffsetPx, (int)ys - textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_90, paint_Yellow_Spirit);
         }
         if (displayRotation == 180f) {
-            phdAngle = physicalDataFormatter.format(angles[0]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs + textOffsetPx, textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, formattedAngle, (int)xs + textOffsetPx, textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_180, paint_Yellow_Spirit);
-            phdAngle = physicalDataFormatter.format(angles[1]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, x - textOffsetPx, (int)ys + textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, formattedAngle, x - textOffsetPx, (int)ys + textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_180, paint_Yellow_Spirit);
         }
         if (displayRotation == 270f) {
-            phdAngle = physicalDataFormatter.format(angles[0]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, (int)xs - textOffsetPx, y - textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[0]);
+            drawTextWithShadow(canvas, formattedAngle, (int)xs - textOffsetPx, y - textOffsetPx,
                     TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_270, paint_Yellow_Spirit);
-            phdAngle = physicalDataFormatter.format(angles[1]);
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, x - textOffsetPx, (int)ys + textOffsetPx,
+            formattedAngle = dataFormatter.format(angles[1]);
+            drawTextWithShadow(canvas, formattedAngle, x - textOffsetPx, (int)ys + textOffsetPx,
                     TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_270, paint_Yellow_Spirit);
         }
 
@@ -554,13 +554,13 @@ public class ClinometerView extends View {
 
             if (isAngle2LabelOnLeft) {
                 // SX
-                phdAngle = physicalDataFormatter.format(angles[2]);
-                drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, textOffsetPx, yc - textOffsetPx,
+                formattedAngle = dataFormatter.format(angles[2]);
+                drawTextWithShadow(canvas, formattedAngle, textOffsetPx, yc - textOffsetPx,
                         TEXT_ALIGNMENT_LEFT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
             } else {
                 // DX
-                phdAngle = physicalDataFormatter.format(angles[2]);
-                drawTextWithShadow(canvas, phdAngle.value + phdAngle.um, x - textOffsetPx , yc - textOffsetPx,
+                formattedAngle = dataFormatter.format(angles[2]);
+                drawTextWithShadow(canvas, formattedAngle, x - textOffsetPx , yc - textOffsetPx,
                         TEXT_ALIGNMENT_RIGHT, TEXT_ALIGNMENT_BOTTOM, TEXT_ROTATION_0, paint_Yellow_Spirit);
             }
             canvas.restore();
@@ -570,16 +570,16 @@ public class ClinometerView extends View {
 
         canvas.save();
         canvas.rotate( angle1Start + angle1Extension /2, xc, yc);
-        phdAngle = physicalDataFormatter.format(Math.abs(angle1Extension));
-        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
+        formattedAngle = dataFormatter.format(Math.abs(angle1Extension));
+        if ((clinometerApplication.getPrefUM() < DataFormatter.UM_PERCENT) || (Math.abs(angle1Extension) <= 90))
+            drawTextWithShadow(canvas, formattedAngle,
                 (int) (xc + (r1 * (2.1f + angle1OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 -angle1Extension /2 - refAxis + angleTextLabels , paint_WhiteText);
         canvas.rotate( 90 , xc, yc);
-        phdAngle = physicalDataFormatter.format(Math.abs(angle2Extension));
-        if ((clinometerApplication.getPrefUM() < PhysicalDataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
-            drawTextWithShadow(canvas, phdAngle.value + phdAngle.um,
+        formattedAngle = dataFormatter.format(Math.abs(angle2Extension));
+        if ((clinometerApplication.getPrefUM() < DataFormatter.UM_PERCENT) || (Math.abs(angle2Extension) <= 90))
+            drawTextWithShadow(canvas, formattedAngle,
                 (int) (xc + (r1 * (2.1f + angle2OffsetFromR)) + (textOffsetPx * 1.5) + paint_White.measureText("100.0°") / 2), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 -angle1Extension /2 - 90 - refAxis + angleTextLabels, paint_WhiteText);
