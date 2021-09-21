@@ -92,11 +92,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         return singleton;
     }
 
-    private ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
+    private final ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
     private Vibrator vibrator;
 
     // RefAxis Animator
-    private PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
+    private final PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
     private float old_PIDValue = 0.0f;
 
     private static final int TOAST_TIME = 2500;                         // The time a toast is shown
@@ -106,7 +106,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private static final float AUTOLOCK_HORIZON_CHECK_THRESHOLD = 5.0f; // The zone of horizon check (+- 5 degrees)
     private static final float ROTATION_THRESHOLD = 5;                  // The threshold of the boundaries for DisplayRotation (in degrees)
     private static final int   SIZE_OF_MEANVARIANCE = 200;              // 2 seconds
-    private static final float ALPHA = 0.04f;                           // Weight of the new sensor reading
+
+    private static final float ALPHA = 0.03f;                          // Weight of the new sensor reading
+    private float alpha0 = ALPHA;
+    private float alpha1 = ALPHA;
+    private float alpha2 = ALPHA;
 
     private ClinometerApplication clinometerApplication;
     private SharedPreferences preferences;
@@ -136,7 +140,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private String formattedAngle0;
     private String formattedAngle1;
     private String formattedAngle2;
-    private DataFormatter dataFormatter = new DataFormatter();
+    private final DataFormatter dataFormatter = new DataFormatter();
 
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
@@ -156,13 +160,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
 
-    private float[] gravity              = {0, 0, 0};    // The (filtered) current accelerometers values
-    private float[] gravity_gain         = {0, 0, 0};
-    private float[] gravity_offset       = {0, 0, 0};
-    private float[] gravity_calibrated   = {0, 0, 0};    // The (filtered) current calibrated accelerometers values
+    private final float[] gravity              = {0, 0, 0};    // The (filtered) current accelerometers values
+    private final float[] gravity_gain         = {0, 0, 0};
+    private final float[] gravity_offset       = {0, 0, 0};
+    private final float[] gravity_calibrated   = {0, 0, 0};    // The (filtered) current calibrated accelerometers values
 
-    private float[] angle_calibration    = {0, 0, 0};    // The angles for calibration: alpha, beta, gamma (in degrees)
-    private float[] angle                = {0, 0, 0};    // The (filtered) current angles (in degrees)
+    private final float[] angle_calibration    = {0, 0, 0};    // The angles for calibration: alpha, beta, gamma (in degrees)
+    private final float[] angle                = {0, 0, 0};    // The (filtered) current angles (in degrees)
 
     private final float[][] calibrationMatrix = new float[3][3];
 
@@ -488,6 +492,9 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             // SIGNAL PROCESSING
 
             if (!isLocked) {
+                alpha0 = ALPHA * (float)(1 + Math.abs(mvGravity0.getMeanValue() - event.values[0])*0.1);
+                alpha1 = ALPHA * (float)(1 + Math.abs(mvGravity1.getMeanValue() - event.values[1])*0.1);
+                alpha2 = ALPHA * (float)(1 + Math.abs(mvGravity2.getMeanValue() - event.values[2])*0.1);
 
                 // Weighted gravity reads
 
@@ -496,16 +503,16 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     gravity[1] = (event.values[1] - gravity_offset[1]) / gravity_gain[1];   // Y
                     gravity[2] = (event.values[2] - gravity_offset[2]) / gravity_gain[2];   // Z
                 } else {
-                    gravity[0] = (1 - ALPHA) * gravity[0] + (ALPHA) * (event.values[0] - gravity_offset[0]) / gravity_gain[0];
-                    gravity[1] = (1 - ALPHA) * gravity[1] + (ALPHA) * (event.values[1] - gravity_offset[1]) / gravity_gain[1];
-                    gravity[2] = (1 - ALPHA) * gravity[2] + (ALPHA) * (event.values[2] - gravity_offset[2]) / gravity_gain[2];
+                    gravity[0] = (1 - alpha0) * gravity[0] + (alpha0) * (event.values[0] - gravity_offset[0]) / gravity_gain[0];
+                    gravity[1] = (1 - alpha1) * gravity[1] + (alpha1) * (event.values[1] - gravity_offset[1]) / gravity_gain[1];
+                    gravity[2] = (1 - alpha2) * gravity[2] + (alpha2) * (event.values[2] - gravity_offset[2]) / gravity_gain[2];
                 }
 
                 // Apply Calibration values
 
-                gravity_calibrated[0] = (float) (gravity[0] * calibrationMatrix[0][0] + gravity[1] * calibrationMatrix[0][1] + gravity[2] * calibrationMatrix[0][2]);
-                gravity_calibrated[1] = (float) (gravity[0] * calibrationMatrix[1][0] + gravity[1] * calibrationMatrix[1][1] + gravity[2] * calibrationMatrix[1][2]);
-                gravity_calibrated[2] = (float) (gravity[0] * calibrationMatrix[2][0] + gravity[1] * calibrationMatrix[2][1] + gravity[2] * calibrationMatrix[2][2]);
+                gravity_calibrated[0] = gravity[0] * calibrationMatrix[0][0] + gravity[1] * calibrationMatrix[0][1] + gravity[2] * calibrationMatrix[0][2];
+                gravity_calibrated[1] = gravity[0] * calibrationMatrix[1][0] + gravity[1] * calibrationMatrix[1][1] + gravity[2] * calibrationMatrix[1][2];
+                gravity_calibrated[2] = gravity[0] * calibrationMatrix[2][0] + gravity[1] * calibrationMatrix[2][1] + gravity[2] * calibrationMatrix[2][2];
 
                 mvGravity0.loadSample(gravity_calibrated[0]);
                 mvGravity1.loadSample(gravity_calibrated[1]);
