@@ -190,6 +190,16 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private static Camera mCamera = null;
     private CameraPreview mPreview;
 
+    private boolean doubleBackToExitPressedOnce;
+    private Handler mHandler = new Handler();
+
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            doubleBackToExitPressedOnce = false;
+        }
+    };
+
 
     // --------------------------------------------------------------------------------------------------------------------------
     // --- GETTERS AND SETTERS --------------------------------------------------------------------------------------------------
@@ -422,6 +432,25 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     public void onStop() {
         Log.w("myApp", "[#] " + this + " - onStop()");
         super.onStop();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mHandler != null) { mHandler.removeCallbacks(mRunnable); }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+        this.doubleBackToExitPressedOnce = true;
+        showToast(getString(R.string.toast_click_back_again_to_exit));
+        mHandler.postDelayed(mRunnable, TOAST_TIME);
     }
 
 

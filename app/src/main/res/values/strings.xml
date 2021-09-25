@@ -28,6 +28,7 @@
     <string name="toast_lay_vertical">Keep the screen vertical and tilt the device</string>
     <string name="toast_calibrate_before_use">Please go to settings\nand calibrate the app before use</string>
     <string name="toast_no_browser_installed">No Internet browser installed</string>
+    <string name="toast_click_back_again_to_exit">Click BACK again to exit</string>
 
     <!-- Preferences -->
     <string name="Settings">Settings</string>
