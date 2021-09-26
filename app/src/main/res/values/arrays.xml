@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ arrays.xml
+  ~ Created by G.Capelli on 18/9/2021
+  ~ This file is part of BasicAirData Clinometer
+  ~
+  ~ Copyright (C) 2011 BasicAirData
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <!-- Format for angles -->
+    <string-array name="UMAngles">
+        <item>@string/pref_unit_of_measurement_degrees</item>
+        <item>@string/pref_unit_of_measurement_radians</item>
+        <item>@string/pref_unit_of_measurement_percent</item>
+        <item>@string/pref_unit_of_measurement_fractional</item>
+        <!--<item>@string/pref_unit_of_measurement_engineering_1H</item>-->
+    </string-array>
+    <!-- if UMAnglesValues < 20 the app will show also 180°-angle -->
+    <string-array name="UMAnglesValues">
+        <item>0</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <!--<item>40</item>-->
+    </string-array>
+</resources>

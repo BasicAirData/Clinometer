@@ -28,6 +28,7 @@
     <string name="toast_lay_vertical">Keep the screen vertical and tilt the device</string>
     <string name="toast_calibrate_before_use">Please go to settings\nand calibrate the app before use</string>
     <string name="toast_no_browser_installed">No Internet browser installed</string>
+    <string name="toast_click_back_again_to_exit">Click BACK again to exit</string>
 
     <!-- Preferences -->
     <string name="Settings">Settings</string>
@@ -58,6 +59,17 @@
     <string name="pref_about_summary">About Clinometer</string>
     <string name="pref_online_help">Online Help</string>
     <string name="pref_online_help_summary">Explore usage and settings</string>
+
+    <string name="pref_unit_of_measurement">Unit of Measurement</string>
+    <string name="pref_unit_of_measurement_degrees">Degrees (°)</string>
+    <string name="pref_unit_of_measurement_radians">Radians</string>
+    <string name="pref_unit_of_measurement_percent">Percent (%)</string>
+    <string name="pref_unit_of_measurement_fractional">Fractional</string>
+    <!--<string name="pref_unit_of_measurement_engineering_1H">Engineering V:1H</string>-->
+
+    <!-- Units of Measurement -->
+    <string name="um_degrees">°</string>
+    <string name="um_percent">%</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>

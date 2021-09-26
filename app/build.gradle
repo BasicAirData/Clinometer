@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     lintOptions {
         //checkReleaseBuilds false
@@ -14,12 +14,12 @@ android {
     defaultConfig {
         applicationId "eu.basicairdata.clinometer"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 30
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '1.0.3'
-        versionCode 4
+        versionName '1.1.0'
+        versionCode 5
         // -----------------------------------------------------------------------------------------
 
         vectorDrawables.useSupportLibrary = true

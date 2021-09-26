@@ -80,6 +80,7 @@ import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRAT
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRATION_OFFSET_2;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_UNIT_OF_MEASUREMENT;
 
 
 public class ClinometerActivity extends AppCompatActivity implements SensorEventListener {
@@ -91,11 +92,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         return singleton;
     }
 
-    private ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
+    private final ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
     private Vibrator vibrator;
 
     // RefAxis Animator
-    private PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
+    private final PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
     private float old_PIDValue = 0.0f;
 
     private static final int TOAST_TIME = 2500;                         // The time a toast is shown
@@ -105,7 +106,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private static final float AUTOLOCK_HORIZON_CHECK_THRESHOLD = 5.0f; // The zone of horizon check (+- 5 degrees)
     private static final float ROTATION_THRESHOLD = 5;                  // The threshold of the boundaries for DisplayRotation (in degrees)
     private static final int   SIZE_OF_MEANVARIANCE = 200;              // 2 seconds
-    private static final float ALPHA = 0.04f;                           // Weight of the new sensor reading
+
+    private static final float ALPHA = 0.03f;                          // Weight of the new sensor reading
+    private float alpha0 = ALPHA;
+    private float alpha1 = ALPHA;
+    private float alpha2 = ALPHA;
 
     private ClinometerApplication clinometerApplication;
     private SharedPreferences preferences;
@@ -132,6 +137,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 //        return singleton;
 //    }
 
+    private String formattedAngle0;
+    private String formattedAngle1;
+    private String formattedAngle2;
+    private final DataFormatter dataFormatter = new DataFormatter();
+
     private ClinometerView mClinometerView;
     private TextView mTextViewAngles;
     private TextView mTextViewToast;
@@ -150,13 +160,13 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
 
-    private float[] gravity              = {0, 0, 0};    // The (filtered) current accelerometers values
-    private float[] gravity_gain         = {0, 0, 0};
-    private float[] gravity_offset       = {0, 0, 0};
-    private float[] gravity_calibrated   = {0, 0, 0};    // The (filtered) current calibrated accelerometers values
+    private final float[] gravity              = {0, 0, 0};    // The (filtered) current accelerometers values
+    private final float[] gravity_gain         = {0, 0, 0};
+    private final float[] gravity_offset       = {0, 0, 0};
+    private final float[] gravity_calibrated   = {0, 0, 0};    // The (filtered) current calibrated accelerometers values
 
-    private float[] angle_calibration    = {0, 0, 0};    // The angles for calibration: alpha, beta, gamma (in degrees)
-    private float[] angle                = {0, 0, 0};    // The (filtered) current angles (in degrees)
+    private final float[] angle_calibration    = {0, 0, 0};    // The angles for calibration: alpha, beta, gamma (in degrees)
+    private final float[] angle                = {0, 0, 0};    // The (filtered) current angles (in degrees)
 
     private final float[][] calibrationMatrix = new float[3][3];
 
@@ -179,6 +189,16 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private static Camera mCamera = null;
     private CameraPreview mPreview;
+
+    private boolean doubleBackToExitPressedOnce;
+    private Handler mHandler = new Handler();
+
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            doubleBackToExitPressedOnce = false;
+        }
+    };
 
 
     // --------------------------------------------------------------------------------------------------------------------------
@@ -373,6 +393,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         loadPreferences();
 
+        formattedAngle0 = dataFormatter.format(angle[0]);
+        formattedAngle1 = dataFormatter.format(angle[1]);
+        formattedAngle2 = dataFormatter.format(angle[2]);
+        mTextViewAngles.setText(formattedAngle0 + "  " + formattedAngle1 + "  " + formattedAngle2);
+
         mFrameLayoutClinometer.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_IMMERSIVE |
                 // Set the content to appear under the system bars so that the
@@ -407,6 +432,25 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     public void onStop() {
         Log.w("myApp", "[#] " + this + " - onStop()");
         super.onStop();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mHandler != null) { mHandler.removeCallbacks(mRunnable); }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+        this.doubleBackToExitPressedOnce = true;
+        showToast(getString(R.string.toast_click_back_again_to_exit));
+        mHandler.postDelayed(mRunnable, TOAST_TIME);
     }
 
 
@@ -477,6 +521,9 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             // SIGNAL PROCESSING
 
             if (!isLocked) {
+                alpha0 = ALPHA * (float)(1 + Math.abs(mvGravity0.getMeanValue() - event.values[0])*0.1);
+                alpha1 = ALPHA * (float)(1 + Math.abs(mvGravity1.getMeanValue() - event.values[1])*0.1);
+                alpha2 = ALPHA * (float)(1 + Math.abs(mvGravity2.getMeanValue() - event.values[2])*0.1);
 
                 // Weighted gravity reads
 
@@ -485,16 +532,16 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                     gravity[1] = (event.values[1] - gravity_offset[1]) / gravity_gain[1];   // Y
                     gravity[2] = (event.values[2] - gravity_offset[2]) / gravity_gain[2];   // Z
                 } else {
-                    gravity[0] = (1 - ALPHA) * gravity[0] + (ALPHA) * (event.values[0] - gravity_offset[0]) / gravity_gain[0];
-                    gravity[1] = (1 - ALPHA) * gravity[1] + (ALPHA) * (event.values[1] - gravity_offset[1]) / gravity_gain[1];
-                    gravity[2] = (1 - ALPHA) * gravity[2] + (ALPHA) * (event.values[2] - gravity_offset[2]) / gravity_gain[2];
+                    gravity[0] = (1 - alpha0) * gravity[0] + (alpha0) * (event.values[0] - gravity_offset[0]) / gravity_gain[0];
+                    gravity[1] = (1 - alpha1) * gravity[1] + (alpha1) * (event.values[1] - gravity_offset[1]) / gravity_gain[1];
+                    gravity[2] = (1 - alpha2) * gravity[2] + (alpha2) * (event.values[2] - gravity_offset[2]) / gravity_gain[2];
                 }
 
                 // Apply Calibration values
 
-                gravity_calibrated[0] = (float) (gravity[0] * calibrationMatrix[0][0] + gravity[1] * calibrationMatrix[0][1] + gravity[2] * calibrationMatrix[0][2]);
-                gravity_calibrated[1] = (float) (gravity[0] * calibrationMatrix[1][0] + gravity[1] * calibrationMatrix[1][1] + gravity[2] * calibrationMatrix[1][2]);
-                gravity_calibrated[2] = (float) (gravity[0] * calibrationMatrix[2][0] + gravity[1] * calibrationMatrix[2][1] + gravity[2] * calibrationMatrix[2][2]);
+                gravity_calibrated[0] = gravity[0] * calibrationMatrix[0][0] + gravity[1] * calibrationMatrix[0][1] + gravity[2] * calibrationMatrix[0][2];
+                gravity_calibrated[1] = gravity[0] * calibrationMatrix[1][0] + gravity[1] * calibrationMatrix[1][1] + gravity[2] * calibrationMatrix[1][2];
+                gravity_calibrated[2] = gravity[0] * calibrationMatrix[2][0] + gravity[1] * calibrationMatrix[2][1] + gravity[2] * calibrationMatrix[2][2];
 
                 mvGravity0.loadSample(gravity_calibrated[0]);
                 mvGravity1.loadSample(gravity_calibrated[1]);
@@ -590,7 +637,12 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
+
+                formattedAngle0 = dataFormatter.format(angle[0]);
+                formattedAngle1 = dataFormatter.format(angle[1]);
+                formattedAngle2 = dataFormatter.format(angle[2]);
+                mTextViewAngles.setText(formattedAngle0 + "  " + formattedAngle1 + "  " + formattedAngle2);
+//                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
 
             if (Math.abs(pid.getValue() - old_PIDValue) > 0.001) {
@@ -628,6 +680,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         prefAutoLock = preferences.getBoolean(KEY_PREF_AUTOLOCK, false);
+        clinometerApplication.setPrefUM(Integer.parseInt(preferences.getString(KEY_PREF_UNIT_OF_MEASUREMENT, (getResources().getStringArray(R.array.UMAnglesValues))[0])));
         prefAutoLockHorizonCheck = preferences.getBoolean(KEY_PREF_AUTOLOCK_HORIZON_CHECK, true);
         prefAutoLockTolerance = AUTOLOCK_MAX_TOLERANCE - (AUTOLOCK_MAX_TOLERANCE - AUTOLOCK_MIN_TOLERANCE) * preferences.getInt(KEY_PREF_AUTOLOCK_PRECISION, 500) / 1000;
         Log.d("Clinometer", String.format("Auto Locking Tolerance = %1.3f", prefAutoLockTolerance));
@@ -685,7 +738,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 }
                 // You must put this setText here in order to force the re-layout also during the rotations.
                 // Without this, if you lock the measure during the rotation animation, the layout doesn't change correctly :(
-                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
+                formattedAngle0 = dataFormatter.format(angle[0]);
+                formattedAngle1 = dataFormatter.format(angle[1]);
+                formattedAngle2 = dataFormatter.format(angle[2]);
+                mTextViewAngles.setText(formattedAngle0 + "  " + formattedAngle1 + "  " + formattedAngle2);
+//                mTextViewAngles.setText(String.format("%1.1f°  %1.1f°  %1.1f°", angle[0], angle[1], angle[2]));
             }
         });
         animationR.start();

@@ -24,6 +24,7 @@
     <string name="toast_lay_vertical">Mantieni lo schermo verticale e inclina il dispositivo</string>
     <string name="toast_calibrate_before_use">Vai nelle impostazioni\ne calibra l\'app prima dell\'utilizzo</string>
     <string name="toast_no_browser_installed">Nessun browser web installato</string>
+    <string name="toast_click_back_again_to_exit">Premi di nuovo INDIETRO per uscire</string>
     <!-- Preferences -->
     <string name="Settings">Impostazioni</string>
     <string name="pref_keep_screen_on">Mantieni lo schermo attivo</string>
@@ -48,6 +49,15 @@
     <string name="pref_about_summary">Informazioni su Clinometer</string>
     <string name="pref_online_help">Guida in linea</string>
     <string name="pref_online_help_summary">Esplora utilizzo e impostazioni</string>
+    <string name="pref_unit_of_measurement">Unità di misura</string>
+    <string name="pref_unit_of_measurement_degrees">Gradi (°)</string>
+    <string name="pref_unit_of_measurement_radians">Radianti</string>
+    <string name="pref_unit_of_measurement_percent">Percentuale (%)</string>
+    <string name="pref_unit_of_measurement_fractional">Frazionaria</string>
+    <!--<string name="pref_unit_of_measurement_engineering_1H">Engineering V:1H</string>-->
+    <!-- Units of Measurement -->
+    <string name="um_degrees">°</string>
+    <string name="um_percent">%</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright (C) 2020 BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData Clinometer misura gli angoli di inclinazione del dispositivo rispetto alla direzione della gravità utilizzando gli accelerometri di bordo.\n\nQuesto programma è software libero, rilasciato secondo i termini della GNU General Public License.\nPer maggiori dettagli consultare https://www.gnu.org/licenses/gpl.txt</string>
