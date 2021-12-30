@@ -31,6 +31,7 @@ The app is 100% Free and Open Source.
 Do you want to add a new language to the app?<br>
 Do you want to help us in translations?<br>
 Join Us on [Crowdin](https://crowdin.com/project/clinometer) and help to translate and keep updated the app in your Language!
+You can also subscribe our [Translation & Proofreading issue](https://github.com/BasicAirData/Clinometer/issues/10) to keep informed on the topic.
 
 ## Reference documents
 
