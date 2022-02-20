@@ -37,6 +37,11 @@ public class BackgroundView extends View {
     private Paint paint_DKGray;             // For Background Lines != 30°
     private boolean isShaderCreated = false;                    // True if the Background Shader has been created
 
+    private final ClinometerActivity clinometerActivity = ClinometerActivity.getInstance();
+    private final ClinometerApplication clinometerApplication = ClinometerApplication.getInstance();
+
+    private float refbgAxis = 0;             // The reference axis for ref Angles
+
     private int x;                      // The Width of Screen
     private int y;                      // The Height of Screen
     private int min_xy;                 // The minimum between Width and Height
@@ -92,6 +97,8 @@ public class BackgroundView extends View {
     protected void onDraw(Canvas canvas) {
         //super.onDraw(canvas);
 
+        refbgAxis = clinometerActivity.getbgPIDValue();
+
         x = getWidth();
         y = getHeight();
         min_xy = Math.min(x, y);
@@ -114,6 +121,9 @@ public class BackgroundView extends View {
         }
         canvas.drawCircle(xc, yc, (int) Math.sqrt(xc*xc + yc*yc), paint_bg);
 
+        canvas.save();
+        canvas.rotate(refbgAxis, xc, yc);
+
         for (angle = 0; angle < 360; angle += 10) {
             if (angle % 30 != 0) canvas.drawLine(
                 xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
@@ -122,5 +132,7 @@ public class BackgroundView extends View {
                 yc - (int) (r1 * Math.sin(Math.toRadians(angle))),
                 paint_DKGray);
         }
+
+        canvas.restore();
     }
 }
