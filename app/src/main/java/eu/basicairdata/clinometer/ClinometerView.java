@@ -613,7 +613,7 @@ public class ClinometerView extends View {
                 if ((xc <= event.getX()) && (yc > event.getY())) touchAngle = 360 + touchAngle;
 
                 if ((touchAngle - clinometerActivity.getRefAngleXY() + TOUCH_ANGLE_TOLERANCE) % 90 < TOUCH_ANGLE_TOLERANCE * 2)
-                    clinometerActivity.setRefAngleXY(clinometerActivity.getRefAngleXY() % 90 + 90 * Math.round((touchAngle - clinometerActivity.getRefAngleXY() % 90) / 90));
+                    clinometerActivity.setRefAngleXY((clinometerActivity.getRefAngleXY() % 90 + 90 * Math.round((touchAngle - clinometerActivity.getRefAngleXY() % 90) / 90)) % 360);
                     clinometerActivity.setPIDTargetValue(clinometerActivity.getRefAngleXY());
 
                 Log.w("myApp", "[#] ClinometerView - Angle = " + touchAngle);
