@@ -146,7 +146,10 @@
                 android:id="@+id/id_imageview_delta_angles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="8dp"
                 app:srcCompat="@drawable/ic_push_pin_outline_24"/>
 
             <androidx.appcompat.widget.AppCompatImageView
