@@ -35,7 +35,7 @@ import android.view.View;
 public class ClinometerView extends View {
 
     private static final float TEXT_OFFSET = 10.0f;             // The distance in dp between text and its reference geometry
-    private static final double TOUCH_ANGLE_TOLERANCE = 20;     // The tolerance (+-) for the Touch events that rotate the reference axis
+    private static final double TOUCH_ANGLE_TOLERANCE = 30;     // The tolerance (+-) for the Touch events that rotate the reference axis
 
     private static final float TEXT_ALIGNMENT_LEFT = 0.0f;
     private static final float TEXT_ALIGNMENT_CENTER = 0.5f;
