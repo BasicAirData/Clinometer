@@ -26,6 +26,9 @@ The precision of the measurement mainly depends on the accuracy of the calibrati
 
 The app is 100% Free and Open Source.
 
+The application is freely downloadable from [Google Play(tm)](https://play.google.com/store/apps/details?id=eu.basicairdata.clinometer) or directly here in this repository in /apk folder.<br>
+You can install Clinometer on your smartphone in one step, using the Google Store [QR-Code](https://github.com/BasicAirData/Clinometer/blob/master/screenshots/QRCode_Clinometer_GooglePlayStore.png) or the latest APK [QR-Code](https://github.com/BasicAirData/Clinometer/blob/master/screenshots/QRCode_Clinometer_GitHub.png);
+
 ## Translations
 
 Do you want to add a new language to the app?<br>
