@@ -106,13 +106,13 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/id_linearlayout_delta_angles"
-                android:background="@drawable/rounded_corner"
-                android:gravity="start"
-                android:layout_marginTop="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/id_linearlayout_delta_angles"-->
+<!--                android:background="@drawable/rounded_corner"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_marginTop="3dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content">-->
 
 <!--                <androidx.appcompat.widget.AppCompatImageView-->
 <!--                    android:id="@+id/id_imageview_delta_angles"-->
@@ -122,17 +122,17 @@
 <!--                    android:layout_marginEnd="3dp"-->
 <!--                    app:srcCompat="@drawable/ic_push_pin_outline_24"/>-->
 
-                <TextView
-                    android:id="@+id/id_textview_delta_angles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:paddingStart="0dp"
-                    android:textColor="@color/colorAccent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text=""/>
+<!--                <TextView-->
+<!--                    android:id="@+id/id_textview_delta_angles"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:paddingStart="0dp"-->
+<!--                    android:textColor="@color/colorAccent"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceMedium"-->
+<!--                    android:text=""/>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
         </LinearLayout>
 
         <LinearLayout

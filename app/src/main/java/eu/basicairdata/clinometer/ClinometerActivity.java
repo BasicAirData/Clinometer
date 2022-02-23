@@ -154,7 +154,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private FrameLayout mFrameLayoutClinometer;
     private FrameLayout mFrameLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
-    private LinearLayout mLinearLayoutDeltaAngles;
+//    private LinearLayout mLinearLayoutDeltaAngles;
     private LinearLayout mLinearLayoutAnglesAndDelta;
     private LinearLayout mLinearLayoutToolbar;
     private ImageView mImageViewLock;
@@ -297,7 +297,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
         mFrameLayoutOverlays = findViewById(R.id.id_framelayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
-        mLinearLayoutDeltaAngles = findViewById(R.id.id_linearlayout_delta_angles);
+//        mLinearLayoutDeltaAngles = findViewById(R.id.id_linearlayout_delta_angles);
         mLinearLayoutAnglesAndDelta = findViewById(R.id.id_linearlayout_angles_and_delta);
         mLinearLayoutToolbar = findViewById(R.id.id_linearlayout_toolbar);
 
@@ -305,7 +305,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mFrameLayoutPreview = findViewById(R.id.camera_preview);
         mBackgroundView = findViewById(R.id.id_backgroundview);
 
-        mLinearLayoutDeltaAngles.setBackground(null);
+//        mLinearLayoutDeltaAngles.setBackground(null);
         mImageViewDeltaAngles.setAlpha(0.4f);
 
         mImageViewCamera.setAlpha(0.4f);
