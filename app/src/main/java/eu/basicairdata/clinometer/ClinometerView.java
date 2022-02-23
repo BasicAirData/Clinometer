@@ -28,12 +28,14 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class ClinometerView extends View {
 
     private static final float TEXT_OFFSET = 10.0f;             // The distance in dp between text and its reference geometry
+    private static final double TOUCH_ANGLE_TOLERANCE = 30;     // The tolerance (+-) for the Touch events that rotate the reference axis
 
     private static final float TEXT_ALIGNMENT_LEFT = 0.0f;
     private static final float TEXT_ALIGNMENT_CENTER = 0.5f;
@@ -110,6 +112,7 @@ public class ClinometerView extends View {
     private float angle2Extension;     // The Arc 2 angle (-)
 
     private float refAxis = 0;             // The reference axis for white Angles
+    private float refbgAxis = 0;           // The reference axis for ref Angles
     // 0  = Horizontal axis
     // 90 = Vertical axis
 
@@ -250,6 +253,7 @@ public class ClinometerView extends View {
         isFlat = clinometerActivity.isFlat();
         displayRotation = clinometerActivity.getDisplayRotation();
         refAxis = clinometerActivity.getPIDValue();
+        refbgAxis = clinometerActivity.getbgPIDValue();
 
         // --------[ CALCULATIONS ]-----------------------------------------------------------------
 
@@ -346,6 +350,8 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND LINES ]-------------------------------------------------------------
 
+        canvas.save();
+        canvas.rotate(refbgAxis, xc, yc);
         for (angle = 0; angle < 360; angle += 30) {
             canvas.drawLine(
                     xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
@@ -354,6 +360,7 @@ public class ClinometerView extends View {
                     yc - (int) ((angle % 90 == 0 ? 0 : r1) * Math.sin(Math.toRadians(angle))),
                     paint_LTGray);
         }
+        canvas.restore();
 
         // --------[ CONTRAST SHADOWS ]----------------------------------------------------------------------
 
@@ -601,12 +608,16 @@ public class ClinometerView extends View {
 //                Log.d("SpiritLevel", String.format("TouchEvent %1.0f %1.0f", event.getX(), event.getY()));
 
                 // Change Ref Axis
-                if (Math.sqrt((xc-event.getX())*(xc-event.getX()) + (yc-event.getY())*(yc-event.getY())) > 2*r1) {
-                    if (Math.abs(xc - event.getX()) < 1 * r1) clinometerActivity.setPIDTargetValue(yc < event.getY() ? 90 : 270);
-                    if (Math.abs(yc - event.getY()) < 1 * r1) clinometerActivity.setPIDTargetValue(xc < event.getX() ? 0 : 180);
-                }
-                // Invalidate the whole view. If the view is visible.
-                //invalidate();
+                double touchAngle = Math.toDegrees(Math.asin((event.getY() - yc)/(Math.sqrt((event.getX() - xc) * (event.getX() - xc) + (event.getY() - yc) * (event.getY() - yc)))));
+                if ((xc > event.getX())) touchAngle = 180 - touchAngle;
+                if ((xc <= event.getX()) && (yc > event.getY())) touchAngle = 360 + touchAngle;
+
+                if ((touchAngle - clinometerActivity.getRefAngleXY() + TOUCH_ANGLE_TOLERANCE) % 90 < TOUCH_ANGLE_TOLERANCE * 2)
+                    clinometerActivity.setRefAngleXY((clinometerActivity.getRefAngleXY() % 90 + 90 * Math.round((touchAngle - clinometerActivity.getRefAngleXY() % 90) / 90)) % 360);
+                    clinometerActivity.setPIDTargetValue(clinometerActivity.getRefAngleXY());
+
+                Log.w("myApp", "[#] ClinometerView - Angle = " + touchAngle);
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;

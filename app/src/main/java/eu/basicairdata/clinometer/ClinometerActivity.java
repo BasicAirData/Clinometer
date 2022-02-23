@@ -23,6 +23,7 @@ package eu.basicairdata.clinometer;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -96,8 +97,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private Vibrator vibrator;
 
     // RefAxis Animator
+    private final PIDAnimator bgpid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
     private final PIDAnimator pid = new PIDAnimator(0.0f, 0.3f, 0.0f, 0.03f, 16);
     private float old_PIDValue = 0.0f;
+    private float old_bgPIDValue = 0.0f;
+
 
     private static final int TOAST_TIME = 2500;                         // The time a toast is shown
 
@@ -124,6 +128,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     private boolean isFlat = true;                       // True if the device is oriented flat (for example on a table)
     private boolean isLocked = false;                    // True if the angles are locked by user
+    private boolean isDeltaAngle = false;                // True if the delta angles is selected
     private boolean isLockRequested = false;
     private float displayRotation = 0;                   // The rotation angle from the natural position of the device
 
@@ -149,8 +154,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private FrameLayout mFrameLayoutClinometer;
     private FrameLayout mFrameLayoutOverlays;
     private LinearLayout mLinearLayoutAngles;
+//    private LinearLayout mLinearLayoutDeltaAngles;
+    private LinearLayout mLinearLayoutAnglesAndDelta;
     private LinearLayout mLinearLayoutToolbar;
     private ImageView mImageViewLock;
+    private ImageView mImageViewDeltaAngles;
     private ImageView mImageViewSettings;
     private ImageView mImageViewCamera;
     private ImageView mImageViewCameraImage;
@@ -174,7 +182,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private float gravityXYZ = 0;
     private float angleXY = 0;                          // The angle on the horizontal plane (in degrees)
     private float angleXYZ = 0;                         // The angle between XY vector and the vertical (in degrees)
-    private float angleTextLabels = 0;                   // The rotation angle for the text labels
+    private float angleTextLabels = 0;                  // The rotation angle for the text labels
 
     private final static int ACCELEROMETER_UPDATE_INTERVAL_MICROS = 10000;
 
@@ -184,6 +192,8 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private final MeanVariance mvGravity0 = new MeanVariance(16);
     private final MeanVariance mvGravity1 = new MeanVariance(16);
     private final MeanVariance mvGravity2 = new MeanVariance(16);
+
+    private float refAngleXY = 0;                       // The reference angle on the plane
 
     private ValueAnimator animationR = new ValueAnimator();
 
@@ -210,11 +220,17 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         pid.setTargetValue(newValue);
     }
 
+    public void setbgPIDTargetValue(float newValue) {
+        bgpid.setTargetValue(newValue);
+    }
 
     public float getPIDValue() {
         return pid.getValue();
     }
 
+    public float getbgPIDValue() {
+        return bgpid.getValue();
+    }
 
     public float getDisplayRotation() {
         return displayRotation;
@@ -224,32 +240,36 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         return isFlat;
     }
 
-
     public float[] getAngles() {
         return angle;
     }
-
 
     public float getAngleXY() {
         return angleXY;
     }
 
-
     public float getAngleXYZ() {
         return angleXYZ;
     }
-
 
     public float getAngleTextLabels() {
         return angleTextLabels;
     }
 
+    public float getRefAngleXY() {
+        return refAngleXY;
+    }
+
+    public void setRefAngleXY(float refAngleXY) {
+        this.refAngleXY = refAngleXY;
+    }
 
     // --------------------------------------------------------------------------------------------------------------------------
     // --- CLASS METHODS --------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------------------------
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -271,17 +291,22 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mTextViewToast = findViewById(R.id.id_textview_toast);
         mTextViewKeepScreenVertical = findViewById(R.id.id_textview_keep_screen_vertical);
         mImageViewLock = findViewById(R.id.id_imageview_lock);
+        mImageViewDeltaAngles = findViewById(R.id.id_imageview_delta_angles);
         mImageViewSettings = findViewById(R.id.id_imageview_settings);
         mImageViewCamera = findViewById(R.id.id_imageview_camera);
         mFrameLayoutClinometer = findViewById(R.id.id_framelayout_clinometer);
         mFrameLayoutOverlays = findViewById(R.id.id_framelayout_overlay);
         mLinearLayoutAngles = findViewById(R.id.id_linearlayout_angles);
+//        mLinearLayoutDeltaAngles = findViewById(R.id.id_linearlayout_delta_angles);
+        mLinearLayoutAnglesAndDelta = findViewById(R.id.id_linearlayout_angles_and_delta);
         mLinearLayoutToolbar = findViewById(R.id.id_linearlayout_toolbar);
 
         mImageViewCameraImage = findViewById(R.id.id_imageview_cameraimage);
         mFrameLayoutPreview = findViewById(R.id.camera_preview);
         mBackgroundView = findViewById(R.id.id_backgroundview);
 
+//        mLinearLayoutDeltaAngles.setBackground(null);
+        mImageViewDeltaAngles.setAlpha(0.4f);
 
         mImageViewCamera.setAlpha(0.4f);
         mLinearLayoutToolbar.setBackground(null);
@@ -306,6 +331,20 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
         // ---------- Button Listeners
 
+        mLinearLayoutAnglesAndDelta.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        mLinearLayoutToolbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
         mLinearLayoutAngles.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -319,6 +358,54 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 }
                 else isLockRequested = !isLockRequested;
                 updateLockIcon();
+                return false;
+            }
+        });
+
+        mImageViewDeltaAngles.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                bgpid.setValue(refAngleXY);
+
+                if (isDeltaAngle) {
+                    isDeltaAngle = false;
+                    mImageViewDeltaAngles.setAlpha(0.4f);
+                    mImageViewDeltaAngles.setImageResource(R.drawable.ic_push_pin_outline_24);
+
+                    Log.w("ClinometerActivity", "[#] ClinometerActivity - Current angle = " + refAngleXY + " - New angle = " + (Math.round(refAngleXY / 90) * 90) % 360);
+
+                    refAngleXY = (Math.round(refAngleXY / 90) * 90) % 360;
+                }
+                else {
+                    isDeltaAngle = true;
+                    mImageViewDeltaAngles.setAlpha(0.9f);
+                    mImageViewDeltaAngles.setImageResource(R.drawable.ic_push_pin_24);
+
+                    float newAngle = (angleXY + 90) % 360;
+
+                    Log.w("ClinometerActivity", "[#] ClinometerActivity - Current angle = " + refAngleXY + " - New angle = " + newAngle);
+
+                    if (refAngleXY == 0){
+                        if ((newAngle < 90) || (newAngle >= 270)) refAngleXY = newAngle;
+                        else refAngleXY = (newAngle + 180) % 360;
+                    }
+                    else if (refAngleXY == 90){
+                        if ((newAngle >= 0) && (newAngle < 180)) refAngleXY = newAngle;
+                        else refAngleXY = (newAngle + 180) % 360;
+                    }
+                    else if (refAngleXY == 180){
+                        if ((newAngle >= 90) && (newAngle < 270)) refAngleXY = newAngle;
+                        else refAngleXY = (newAngle + 180) % 360;
+                    }
+                    else if (refAngleXY == 270){
+                        if ((newAngle >= 180) && (newAngle < 360)) refAngleXY = newAngle;
+                        else refAngleXY = (newAngle + 180) % 360;
+                    }
+                }
+
+                setbgPIDTargetValue(refAngleXY);
+                setPIDTargetValue(refAngleXY);
                 return false;
             }
         });
@@ -648,6 +735,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             if (Math.abs(pid.getValue() - old_PIDValue) > 0.001) {
                 old_PIDValue = pid.getValue();
                 mClinometerView.invalidate();
+            }
+
+            if (Math.abs(bgpid.getValue() - old_bgPIDValue) > 0.001) {
+                old_bgPIDValue = bgpid.getValue();
+                mBackgroundView.invalidate();
             }
         }
     }

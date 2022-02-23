@@ -73,30 +73,66 @@
         android:gravity="top">
 
         <LinearLayout
-            android:id="@+id/id_linearlayout_angles"
-            android:background="@drawable/rounded_corner"
+            android:id="@+id/id_linearlayout_angles_and_delta"
+            android:orientation="vertical"
             android:gravity="start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/id_imageview_lock"
+            <LinearLayout
+                android:id="@+id/id_linearlayout_angles"
+                android:background="@drawable/rounded_corner"
+                android:gravity="start"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginEnd="3dp"
-                app:srcCompat="@drawable/ic_lock_open_24"/>
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/id_textview_angles"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:paddingStart="0dp"
-                android:textColor="@color/colorAccent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text=""/>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/id_imageview_lock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginEnd="3dp"
+                    app:srcCompat="@drawable/ic_lock_open_24"/>
 
+                <TextView
+                    android:id="@+id/id_textview_angles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:paddingStart="0dp"
+                    android:textColor="@color/colorAccent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""/>
+
+            </LinearLayout>
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/id_linearlayout_delta_angles"-->
+<!--                android:background="@drawable/rounded_corner"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_marginTop="3dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content">-->
+
+<!--                <androidx.appcompat.widget.AppCompatImageView-->
+<!--                    android:id="@+id/id_imageview_delta_angles"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:layout_marginEnd="3dp"-->
+<!--                    app:srcCompat="@drawable/ic_push_pin_outline_24"/>-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/id_textview_delta_angles"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:paddingStart="0dp"-->
+<!--                    android:textColor="@color/colorAccent"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceMedium"-->
+<!--                    android:text=""/>-->
+
+<!--            </LinearLayout>-->
         </LinearLayout>
 
         <LinearLayout
@@ -105,6 +141,16 @@
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/id_imageview_delta_angles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="12dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="8dp"
+                app:srcCompat="@drawable/ic_push_pin_outline_24"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/id_imageview_camera"
