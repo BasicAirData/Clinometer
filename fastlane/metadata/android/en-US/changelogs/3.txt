@@ -1,0 +1,3 @@
+- Added spanish language
+- Minor graphics improvements
+- A couple of bugs fixed

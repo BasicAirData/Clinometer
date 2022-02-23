@@ -1,0 +1,4 @@
+- Added Italian language
+- A link to online help
+- Some graphics improvements
+- A couple of bugs fixed

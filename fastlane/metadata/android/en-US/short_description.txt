@@ -1,0 +1,1 @@
+A simple app to measure the inclination of your device using the accelerometers
