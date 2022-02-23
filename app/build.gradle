@@ -11,6 +11,11 @@ android {
         abortOnError false
     }
 
+    aaptOptions {
+        // Disable PNG Crunching
+        cruncherEnabled = false
+    }
+
     defaultConfig {
         applicationId "eu.basicairdata.clinometer"
         minSdkVersion 19
