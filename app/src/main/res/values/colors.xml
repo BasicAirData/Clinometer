@@ -35,7 +35,7 @@
     <color name="bgpaint_dark">#070707</color>
     <color name="line_white">#dddddd</color>
     <color name="line_light">#777777</color>
-    <color name="line_dark">#4a4a4a</color>
+    <color name="line_dark">#444444</color>
 
     <color name="colorToolbarBackground">#88000000</color>
 </resources>
