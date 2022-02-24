@@ -607,16 +607,22 @@ public class ClinometerView extends View {
 //                Log.d("SpiritLevel", "Center Screen " + xc + " " + yc);
 //                Log.d("SpiritLevel", String.format("TouchEvent %1.0f %1.0f", event.getX(), event.getY()));
 
-                // Change Ref Axis
-                double touchAngle = Math.toDegrees(Math.asin((event.getY() - yc)/(Math.sqrt((event.getX() - xc) * (event.getX() - xc) + (event.getY() - yc) * (event.getY() - yc)))));
-                if ((xc > event.getX())) touchAngle = 180 - touchAngle;
-                if ((xc <= event.getX()) && (yc > event.getY())) touchAngle = 360 + touchAngle;
+                if (Math.sqrt(((event.getX() - xc) * (event.getX() - xc) + (event.getY() - yc) * (event.getY() - yc))) <= r1) {
+                    // Click the center of the screen => Toggle Locking
+                    clinometerActivity.toggleLocking();
+                    Log.w("myApp", "[#] ClinometerView - Toggle Locking");
+                } else {
+                    // Change Ref Axis
+                    double touchAngle = Math.toDegrees(Math.asin((event.getY() - yc) / (Math.sqrt((event.getX() - xc) * (event.getX() - xc) + (event.getY() - yc) * (event.getY() - yc)))));
+                    if ((xc > event.getX())) touchAngle = 180 - touchAngle;
+                    if ((xc <= event.getX()) && (yc > event.getY())) touchAngle = 360 + touchAngle;
 
-                if ((touchAngle - clinometerActivity.getRefAngleXY() + TOUCH_ANGLE_TOLERANCE) % 90 < TOUCH_ANGLE_TOLERANCE * 2)
-                    clinometerActivity.setRefAngleXY((clinometerActivity.getRefAngleXY() % 90 + 90 * Math.round((touchAngle - clinometerActivity.getRefAngleXY() % 90) / 90)) % 360);
+                    if ((touchAngle - clinometerActivity.getRefAngleXY() + TOUCH_ANGLE_TOLERANCE) % 90 < TOUCH_ANGLE_TOLERANCE * 2)
+                        clinometerActivity.setRefAngleXY((clinometerActivity.getRefAngleXY() % 90 + 90 * Math.round((touchAngle - clinometerActivity.getRefAngleXY() % 90) / 90)) % 360);
                     clinometerActivity.setPIDTargetValue(clinometerActivity.getRefAngleXY());
 
-                Log.w("myApp", "[#] ClinometerView - Angle = " + touchAngle);
+                    Log.w("myApp", "[#] ClinometerView - Angle = " + touchAngle);
+                }
 
                 break;
             case MotionEvent.ACTION_MOVE:

@@ -348,16 +348,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         mLinearLayoutAngles.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.i("SpiritLevel", "Lock onTouch");
-                if (isLocked) {
-                    isLocked = false;
-                    isLockRequested = false;
-                    if (isInCameraMode) activateCamera();
-                    mImageViewCameraImage.setImageBitmap(null);
-                    cameraPreviewBitmap = null;
-                }
-                else isLockRequested = !isLockRequested;
-                updateLockIcon();
+                toggleLocking();
                 return false;
             }
         });
@@ -748,6 +739,19 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+
+    public void toggleLocking() {
+        if (isLocked) {
+            isLocked = false;
+            isLockRequested = false;
+            if (isInCameraMode) activateCamera();
+            mImageViewCameraImage.setImageBitmap(null);
+            cameraPreviewBitmap = null;
+        }
+        else isLockRequested = !isLockRequested;
+        updateLockIcon();
     }
 
 
