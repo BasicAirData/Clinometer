@@ -370,7 +370,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 }
                 else {
                     isDeltaAngle = true;
-                    mImageViewDeltaAngles.setAlpha(0.9f);
+                    mImageViewDeltaAngles.setAlpha(1.0f);
                     mImageViewDeltaAngles.setImageResource(R.drawable.ic_push_pin_24);
 
                     float newAngle = (angleXY + 90) % 360;
@@ -758,11 +758,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private void updateLockIcon() {
         if (isLocked) {
             mImageViewLock.setImageResource(R.drawable.ic_lock_24);
-            mImageViewLock.setAlpha(0.9f);
+            mImageViewLock.setAlpha(1.0f);
         } else {
             if (isLockRequested) {
                 mImageViewLock.setImageResource(R.drawable.ic_lock_open_24);
-                mImageViewLock.setAlpha(0.9f);
+                mImageViewLock.setAlpha(1.0f);
             } else {
                 mImageViewLock.setImageResource(R.drawable.ic_lock_open_24);
                 mImageViewLock.setAlpha(0.4f);
@@ -905,7 +905,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             } else {
                 mImageViewCameraImage.setVisibility(View.VISIBLE);
             }
-            mImageViewCamera.setAlpha(0.9f);
+            mImageViewCamera.setAlpha(1.0f);
             mLinearLayoutToolbar.setBackgroundResource(R.drawable.rounded_corner);
             mBackgroundView.setVisibility(View.GONE);
         } else {

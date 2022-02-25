@@ -91,7 +91,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:layout_marginEnd="3dp"
                     app:srcCompat="@drawable/ic_lock_open_24"/>
 
                 <TextView
@@ -100,6 +99,7 @@
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:paddingStart="0dp"
+                    android:paddingEnd="14dp"
                     android:textColor="@color/colorAccent"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=""/>
