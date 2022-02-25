@@ -37,5 +37,5 @@
     <color name="line_light">#777777</color>
     <color name="line_dark">#444444</color>
 
-    <color name="colorToolbarBackground">#88000000</color>
+    <color name="colorToolbarBackground">#AA000000</color>
 </resources>
