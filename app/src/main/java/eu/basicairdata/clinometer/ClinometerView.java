@@ -486,8 +486,8 @@ public class ClinometerView extends View {
         // Angle Z
         canvas.save();
         canvas.rotate( (float) Math.toDegrees(rot_angle_rad) + 180, xc, yc);
-        formattedAngle = dataFormatter.format(Math.abs(90 - angles[2]));
-        drawTextWithShadow(canvas, formattedAngle,
+        formattedAngle = dataFormatter.format(90 - (angles[2] + clinometerActivity.getRefAngleXYZ()));
+        drawTextWithShadow(canvas, (clinometerActivity.isDeltaAngle() && !formattedAngle.startsWith("-") ? "+" + formattedAngle : formattedAngle),
                 (int) (min_xy - (r1)), yc,
                 TEXT_ALIGNMENT_CENTER, TEXT_ALIGNMENT_CENTER,
                 (angleTextLabels - (float) Math.toDegrees(rot_angle_rad) - 180) , paint_WhiteText);

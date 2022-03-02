@@ -194,6 +194,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
     private final MeanVariance mvGravity2 = new MeanVariance(16);
 
     private float refAngleXY = 0;                       // The reference angle on the plane
+    private float refAngleXYZ = 0;                      // The reference angle between the screen plane and the horizontal plane
 
     private ValueAnimator animationR = new ValueAnimator();
 
@@ -240,6 +241,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         return isFlat;
     }
 
+    public boolean isDeltaAngle() {
+        return isDeltaAngle;
+    }
+
     public float[] getAngles() {
         return angle;
     }
@@ -254,6 +259,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
     public float getAngleTextLabels() {
         return angleTextLabels;
+    }
+
+    public float getRefAngleXYZ() {
+        return refAngleXYZ;
     }
 
     public float getRefAngleXY() {
@@ -361,6 +370,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
                 if (isDeltaAngle) {
                     isDeltaAngle = false;
+                    refAngleXYZ = 0;
                     mImageViewDeltaAngles.setAlpha(0.4f);
                     mImageViewDeltaAngles.setImageResource(R.drawable.ic_push_pin_outline_24);
 
@@ -370,6 +380,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
                 }
                 else {
                     isDeltaAngle = true;
+                    refAngleXYZ = angleXYZ;
                     mImageViewDeltaAngles.setAlpha(1.0f);
                     mImageViewDeltaAngles.setImageResource(R.drawable.ic_push_pin_24);
 
