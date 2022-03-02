@@ -353,12 +353,9 @@ public class ClinometerView extends View {
         canvas.save();
         canvas.rotate(refbgAxis, xc, yc);
         for (angle = 0; angle < 360; angle += 30) {
-            canvas.drawLine(
-                    xc - (int) (diag2c * Math.cos(Math.toRadians(angle))),
-                    yc - (int) (diag2c * Math.sin(Math.toRadians(angle))),
-                    xc - (int) ((angle % 90 == 0 ? 0 : r1) * Math.cos(Math.toRadians(angle))),
-                    yc - (int) ((angle % 90 == 0 ? 0 : r1) * Math.sin(Math.toRadians(angle))),
-                    paint_LTGray);
+            if (angle % 90 == 0) canvas.drawLines(dash, 0, 20, paint_LTGray);
+            else canvas.drawLine(xc + (int) (diag2c), yc, xc + (int) (r1), yc, paint_LTGray);
+            canvas.rotate(30, xc, yc);
         }
         canvas.restore();
 
