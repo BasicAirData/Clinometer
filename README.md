@@ -14,8 +14,8 @@ The app measures the following angles:<br>
 - **X** = _Yellow_ - The angle between the horizontal plane and the horizontal axis of the screen<br>
 - **Y** = _Yellow_ - The angle between the horizontal plane and the vertical axis of the screen<br>
 - **Z** = _Yellow_ - The angle between the horizontal plane and the axis that comes out perpendicular to the screen<br>
-- **Pitch** = _White_ - The angle between the contour line (inclined, white) and the reference axis (horizontal or vertical, white) on the screen plane<br>
-- **Roll** = _White_ - The angle between the screen and the horizontal plane<br>
+- **Pitch** = _White_ - The angle between the contour line (inclined, white) and the reference axis (dashed, white) on the screen plane<br>
+- **Roll** = _White_ - The angle between the screen and the horizontal (or the pinned) plane<br>
 
 ![alt tag](https://github.com/BasicAirData/Clinometer/blob/master/screenshots/Image_01_with_notes.png)
 
