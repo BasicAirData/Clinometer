@@ -1,0 +1,4 @@
+- You can set the unit of measurement of the angles
+- Double press of BACK button to exit app
+- Some graphics improvements
+- A couple of bugs fixed

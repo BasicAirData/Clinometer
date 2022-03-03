@@ -1,0 +1,4 @@
+- Ability to perform incremental measurements
+- New better and clearer images for calibration
+- Click the center of the screen to toggle Locking
+- Small graphics improvements all around

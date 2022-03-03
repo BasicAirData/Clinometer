@@ -126,4 +126,14 @@ public class PIDAnimator extends TimerTask {
     public float getValue() {
         return y % 360.0f;
     }
+
+    public void setValue(float setPoint) {
+        P = 0;
+        I = 0;
+        D = 0;
+        u = setPoint;
+        y = setPoint;
+        y_old = setPoint;
+        r = setPoint;
+    }
 }
