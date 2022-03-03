@@ -18,14 +18,15 @@ USAGES:
 ☆ Bubble Level (horizontal)
 ☆ Clinometer (vertical)
 ☆ Measure with the Camera (vertical only)
+☆ Ability to perform incremental measurements
 
 
 MEASUREMENT:
 - X (Yellow) = The angle between the horizontal plane and the horizontal axis of the screen
 - Y (Yellow) = The angle between the horizontal plane and the vertical axis of the screen
 - Z (Yellow) = The angle between the horizontal plane and the axis that comes out perpendicular to the screen
-- Pitch (White) = The angle between the contour line (inclined, white) and the reference axis (horizontal or vertical, dashed white) on the screen plane
-- Roll (White) = The angle between the screen and the horizontal plane
+- Pitch (White) = The angle between the contour line (inclined, white) and the reference axis (dashed white) on the screen plane
+- Roll (White) = The angle between the screen and the horizontal plane (or the pinned plane when you perform an incremental measurement)
 
 
 LANGUAGES:
@@ -35,5 +36,5 @@ The translation of this app is based on users contribution. Everyone can freely 
 ADDITIONAL INFORMATION:
 - Copyright (C) 2020 BasicAirData - https://www.basicairdata.eu
 - For additional information please see https://www.basicairdata.eu/projects/android/android-clinometer/
-- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See the GNU General Public License for more details: http://www.gnu.org/licenses.
+- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See the GNU General Public License for more details: https://www.gnu.org/licenses.
 - You can view and download the source code of this app on GitHub: https://github.com/BasicAirData/Clinometer
