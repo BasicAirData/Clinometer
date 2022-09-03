@@ -245,6 +245,10 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         return isDeltaAngle;
     }
 
+    public boolean isInCameraMode() {
+        return isInCameraMode;
+    }
+
     public float[] getAngles() {
         return angle;
     }
@@ -927,6 +931,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
             mBackgroundView.setVisibility(View.VISIBLE);
             mImageViewCameraImage.setVisibility(View.GONE);
         }
+        mClinometerView.invalidate();
         return result;
     }
 

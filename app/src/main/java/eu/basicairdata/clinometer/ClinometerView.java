@@ -350,14 +350,20 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND LINES ]-------------------------------------------------------------
 
-        canvas.save();
-        canvas.rotate(refbgAxis, xc, yc);
-        for (angle = 0; angle < 360; angle += 30) {
-            if (angle % 90 == 0) canvas.drawLines(dash, 0, 20, paint_LTGray);
-            else canvas.drawLine(xc + (int) (diag2c), yc, xc + (int) (r1), yc, paint_LTGray);
-            canvas.rotate(30, xc, yc);
+
+        if (clinometerActivity.isInCameraMode()) {
+            canvas.drawLine(xc, 0, xc, y, paint_LTGray);
+            canvas.drawLine(0, yc, x, yc, paint_LTGray);
+        } else {
+            canvas.save();
+            canvas.rotate(refbgAxis, xc, yc);
+            for (angle = 0; angle < 360; angle += 30) {
+                if (angle % 90 == 0) canvas.drawLines(dash, 0, 20, paint_LTGray);
+                else canvas.drawLine(xc + (int) (diag2c), yc, xc + (int) (r1), yc, paint_LTGray);
+                canvas.rotate(30, xc, yc);
+            }
+            canvas.restore();
         }
-        canvas.restore();
 
         // --------[ CONTRAST SHADOWS ]----------------------------------------------------------------------
 
@@ -418,7 +424,10 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND CIRCLES ]-----------------------------------------------------------
 
-        for (i = 1; i <= ncircles; i=i+1) canvas.drawCircle(xc, yc, Math.round(r1*i), paint_LTGray);
+        if (!clinometerActivity.isInCameraMode()) {
+            for (i = 1; i <= ncircles; i = i + 1)
+                canvas.drawCircle(xc, yc, Math.round(r1 * i), paint_LTGray);
+        } else canvas.drawCircle(xc, yc, Math.round(r1), paint_LTGray);
         //for (int i = 2; i <= ncircles*2; i=i+2) canvas.drawCircle(xc, yc, Math.round(r1*i), paint);
         //for (int i = 3; i <= ncircles*2; i=i+2) canvas.drawCircle(xc, yc, Math.round(r1*i), paint_secondary);
 
