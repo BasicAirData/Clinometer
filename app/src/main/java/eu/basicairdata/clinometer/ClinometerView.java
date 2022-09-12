@@ -49,11 +49,14 @@ public class ClinometerView extends View {
 
     private static final float N_CIRCLES_FULLY_VISIBLE = 4.5f;
     private static final float CONTRAST_STROKE = 6f;
+    private static final int DASH_NUMBER = 12;              // The number of dashes for dashed line of major axis
 
     private final ClinometerActivity clinometerActivity = ClinometerActivity.getInstance();
     private final ClinometerApplication clinometerApplication = ClinometerApplication.getInstance();
 
     private Paint paint_LTGray;             // For Background Lines 30° + Circles
+    private Paint paint_BlackDashCamera;            // For dashed line
+    private Paint paint_WhiteDashCamera;            // For dashed line
     private Paint paint_White;              // For White Angles Lines
     private Paint paint_Black00;            // For Black Contrast Lines stroke=0
     private Paint paint_Black15;            // For Black Contrast Lines stroke=1.5
@@ -84,6 +87,7 @@ public class ClinometerView extends View {
     private float r1;                   // The radius of the first circle = 1 deg.
 
     private float dash[] = new float[20];   // The Array of Lines for Dashed Line
+    private float dashCamera[] = new float[DASH_NUMBER * 4];   // The Array of Lines for Dashed Line
     private float j;                        // the space between lines for Dashed Line
     private float ll, ls;                   // Long Line and Short Line length
 
@@ -101,6 +105,7 @@ public class ClinometerView extends View {
     private float angleTextLabels;
 
     private int textOffsetPx = 0;
+    float dashCameraLength;
 
 
     private float rot_angle_rad;            // The angle of rotation between absolute 3 o'clock and the white axis
@@ -163,13 +168,28 @@ public class ClinometerView extends View {
 
 
     private void createPaints() {
-        // create the Paint and set its color
+        // create and set the Paints
+
         paint_LTGray = new Paint();
         paint_LTGray.setColor(getResources().getColor(R.color.line_light));
         paint_LTGray.setStyle(Paint.Style.STROKE);
         paint_LTGray.setStrokeWidth(1.0f);
         paint_LTGray.setDither(true);
         paint_LTGray.setAntiAlias(true);
+
+        paint_BlackDashCamera = new Paint();
+        paint_BlackDashCamera.setColor(getResources().getColor(R.color.line_dark));
+        paint_BlackDashCamera.setStyle(Paint.Style.STROKE);
+        paint_BlackDashCamera.setStrokeWidth(1.0f);
+        paint_BlackDashCamera.setDither(true);
+        paint_BlackDashCamera.setAntiAlias(true);
+
+        paint_WhiteDashCamera = new Paint();
+        paint_WhiteDashCamera.setColor(getResources().getColor(R.color.line_white));
+        paint_WhiteDashCamera.setStyle(Paint.Style.STROKE);
+        paint_WhiteDashCamera.setStrokeWidth(1.0f);
+        paint_WhiteDashCamera.setDither(true);
+        paint_WhiteDashCamera.setAntiAlias(true);
 
         paint_White = new Paint();
         paint_White.setColor(getResources().getColor(R.color.line_white));
@@ -323,6 +343,16 @@ public class ClinometerView extends View {
         dash[19] = yc;
 
 
+        dashCameraLength = max_xy / (float)(DASH_NUMBER * 8);
+        //Log.w("myApp", "[#] ClinometerView - dashCameraLength = " + dashCameraLength);
+        for (i = 0; i < DASH_NUMBER * 4; i = i + 4) {
+            dashCamera[i] = xc - (dashCameraLength * i);
+            dashCamera[i + 1] = yc;
+            dashCamera[i + 2] = xc - (dashCameraLength * i + dashCameraLength * 2);
+            dashCamera[i + 3] = yc;
+            //Log.w("myApp", "[#] ClinometerView - dashCamera[" + i + "] = " + dashCamera[i] + ", " + dashCamera[i+1]);
+        }
+
         // For angle starting from reference axis
 //        angle2Start = refAxis;
 //        angle2Extension = - 180 + angle1Extension;
@@ -350,14 +380,28 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND LINES ]-------------------------------------------------------------
 
-        canvas.save();
-        canvas.rotate(refbgAxis, xc, yc);
-        for (angle = 0; angle < 360; angle += 30) {
-            if (angle % 90 == 0) canvas.drawLines(dash, 0, 20, paint_LTGray);
-            else canvas.drawLine(xc + (int) (diag2c), yc, xc + (int) (r1), yc, paint_LTGray);
-            canvas.rotate(30, xc, yc);
+
+        if (clinometerActivity.isInCameraMode()) {
+            canvas.save();
+            for (i = 0; i < 4; i++) {
+                canvas.drawLines(dashCamera, 0, DASH_NUMBER * 4, paint_WhiteDashCamera);
+                canvas.save();
+                canvas.translate(- dashCameraLength * 2, 0);
+                canvas.drawLines(dashCamera, 0, DASH_NUMBER * 4, paint_BlackDashCamera);
+                canvas.restore();
+                if (i < 3) canvas.rotate(90, xc, yc);
+            }
+            canvas.restore();
+        } else {
+            canvas.save();
+            canvas.rotate(refbgAxis, xc, yc);
+            for (angle = 0; angle < 360; angle += 30) {
+                if (angle % 90 == 0) canvas.drawLines(dash, 0, 20, paint_LTGray);
+                else canvas.drawLine(xc + (int) (diag2c), yc, xc + (int) (r1), yc, paint_LTGray);
+                canvas.rotate(30, xc, yc);
+            }
+            canvas.restore();
         }
-        canvas.restore();
 
         // --------[ CONTRAST SHADOWS ]----------------------------------------------------------------------
 
@@ -418,7 +462,10 @@ public class ClinometerView extends View {
 
         // --------[ BACKGROUND CIRCLES ]-----------------------------------------------------------
 
-        for (i = 1; i <= ncircles; i=i+1) canvas.drawCircle(xc, yc, Math.round(r1*i), paint_LTGray);
+        if (!clinometerActivity.isInCameraMode()) {
+            for (i = 1; i <= ncircles; i = i + 1)
+                canvas.drawCircle(xc, yc, Math.round(r1 * i), paint_LTGray);
+        } else canvas.drawCircle(xc, yc, Math.round(r1), paint_LTGray);
         //for (int i = 2; i <= ncircles*2; i=i+2) canvas.drawCircle(xc, yc, Math.round(r1*i), paint);
         //for (int i = 3; i <= ncircles*2; i=i+2) canvas.drawCircle(xc, yc, Math.round(r1*i), paint_secondary);
 
