@@ -1,0 +1,2 @@
+- Added French and German languages
+- Better readability of overlay text in camera mode
