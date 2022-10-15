@@ -23,6 +23,7 @@ package eu.basicairdata.clinometer;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -214,6 +215,7 @@ public class ClinometerView extends View {
         paint_ShadowText.setDither(true);
         paint_ShadowText.setAntiAlias(true);
         paint_ShadowText.setTextSize(getResources().getDimensionPixelSize(R.dimen.myFontSize));
+        paint_ShadowText.setShadowLayer(6, 0, 0, Color.BLACK);
         paint_ShadowText.setFakeBoldText(true);
 
         paint_Arc = new Paint();

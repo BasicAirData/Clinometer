@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli on 21/5/2020
+  ~ This file is part of BasicAirData Clinometer
+  ~
+  ~ Copyright (C) 2020 BasicAirData
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="toast_please_grant_camera_permission">Bitte erteilen Sie die Berechtigung für den Zugriff auf die Kamera, um diese Funktion zu aktivieren</string>
+    <string name="toast_lay_vertical">Bildschirm vertikal halten und das Gerät neigen</string>
+    <string name="toast_calibrate_before_use">Bitte gehen Sie zu den Einstellungen \nund kalibrieren Sie die App vor der Verwendung</string>
+    <string name="toast_no_browser_installed">Kein Internet-Browser installiert</string>
+    <string name="toast_click_back_again_to_exit">Zum Beenden nochmals auf ZURÜCK tippen</string>
+    <!-- Preferences -->
+    <string name="Settings">Einstellungen</string>
+    <string name="pref_keep_screen_on">Bildschirm anlassen</string>
+    <string name="pref_keep_screen_on_summary">Hoher Batterieverbrauch</string>
+    <string name="title_activity_calibration">Kalibrierung</string>
+    <string name="pref_calibration_summary_notcalibrated">Nicht kalibriert</string>
+    <string name="pref_calibration_summary_calibrated">Kalibriert</string>
+    <string name="pref_calibration_reset">Zurücksetzen</string>
+    <string name="pref_calibration_reset_summary">Kalibrierung löschen</string>
+    <string name="pref_autolocking">Automatisches Sperren</string>
+    <string name="pref_autolocking_summary">Messung sperren, falls stabil</string>
+    <string name="pref_autolocking_horizon">Horizont-Ausrichtung</string>
+    <string name="pref_autolocking_horizon_summary">Für vertikale Messungen</string>
+    <string name="pref_autolocking_precision">Präzision</string>
+    <string name="pref_cameramode_camera_to_use">Kamera</string>
+    <string name="pref_cameramode_camera_front">Frontkamera</string>
+    <string name="pref_cameramode_camera_rear">Rückkamera</string>
+    <string name="pref_cameramode_no_cameras">Dieses Gerät hat keine Kamera</string>
+    <string name="pref_cameramode_no_permission_to_access">Keine Berechtigung für den Kamerazugriff</string>
+    <string name="pref_cameramode_exposure_compensation">Belichtungskorrektur</string>
+    <string name="pref_about">Information</string>
+    <string name="pref_about_summary">Über Clinometer</string>
+    <string name="pref_online_help">Online-Hilfe</string>
+    <string name="pref_online_help_summary">Optionen und Einstellungen erkunden</string>
+    <string name="pref_unit_of_measurement">Maßeinheit</string>
+    <string name="pref_unit_of_measurement_degrees">Grad (°)</string>
+    <string name="pref_unit_of_measurement_radians">Bogenmaß</string>
+    <string name="pref_unit_of_measurement_percent">Prozent (%)</string>
+    <string name="pref_unit_of_measurement_fractional">Bruchteil</string>
+    <!--<string name="pref_unit_of_measurement_engineering_1H">Engineering V:1H</string>-->
+    <!-- Units of Measurement -->
+    <string name="um_degrees">°</string>
+    <string name="um_percent">%</string>
+    <!-- About Dialog -->
+    <string name="about_version">ver.</string>
+    <string name="about_description">Copyright (C) 2020 BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData Clinometer misst die Neigungswinkel Ihres Geräts in Bezug auf die Richtung der Schwerkraft mit Hilfe der Onboard-Beschleuniger.\n\nDieses Programm ist freie Software, veröffentlicht unter den Bedingungen der GNU General Public License.\nFür weitere Details siehe https://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Wenn Ihnen diese App gefällt, nehmen Sie sich bitte einen Moment Zeit, um Clinometer im Google Play Store zu bewerten.</string>
+    <string name="about_rate_this_app">Bewerte die App</string>
+    <string name="about_unable_to_rate">Der App-Store konnte nicht erreicht werden</string>
+    <!-- Calibration Activity -->
+    <string name="calibration_active_calibration">Aktive Kalibrierung:</string>
+    <string name="calibration_active_calibration_gains">Verstärkung</string>
+    <string name="calibration_active_calibration_offsets">Versatz</string>
+    <string name="calibration_active_calibration_angles">Winkel</string>
+    <string name="calibration_step1">Schritt 1 von 7\nBitte Gerät flach hinlegen und weiter drücken</string>
+    <string name="calibration_step2">Schritt 2 von 7\nBitte Gerät um 180° drehen und weiter drücken</string>
+    <string name="calibration_step3">Schritt 3 von 7\nBitte Gerät auf die linke Seite legen und weiter drücken</string>
+    <string name="calibration_step4">Schritt 4 von 7\nBitte Gerät um 180° drehen und weiter drücken</string>
+    <string name="calibration_step5">Schritt 5 von 7\nBitte Gerät vertikal legen und weiter drücken</string>
+    <string name="calibration_step6">Schritt 6 von 7\nBitte Gerät um 180° nach unten drehen und weiter drücken</string>
+    <string name="calibration_step7">Schritt 7 von 7\nBitte weiter drücken und legen das Gerät auf das Display</string>
+    <string name="calibration_calibrating">Kalibrieren...\nBitte Gerät nicht bewegen</string>
+    <string name="calibration_progress">Fortschritt</string>
+    <string name="calibration_tolerance">Toleranz</string>
+    <string name="calibration_abort">Möchten Sie wirklich den Kalibrierungsprozess abbrechen und zu den Einstellungen zurückkehren?</string>
+    <string name="next">Weiter &gt;&gt;</string>
+    <!-- Dialogs -->
+    <string name="dialog_reset_calibration_confirmation">Möchten Sie die aktuelle Kalibrierung zurücksetzen?</string>
+    <string name="dialog_calibration_completed">Kalibrierung abgeschlossen!</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="close">Schließen</string>
+</resources>
