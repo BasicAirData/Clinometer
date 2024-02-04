@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "32.0.0"
+    compileSdk 33
+    buildToolsVersion "33.0.1"
 
 
     defaultConfig {
         applicationId "eu.basicairdata.clinometer"
         minSdkVersion 19
-        targetSdkVersion 32
+        targetSdkVersion 33
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
@@ -41,6 +41,7 @@ android {
     lint {
         abortOnError false
     }
+    namespace 'eu.basicairdata.clinometer'
 
 }
 
