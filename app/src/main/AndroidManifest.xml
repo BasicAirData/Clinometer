@@ -59,6 +59,7 @@
             android:name=".SettingsActivity"
             android:label="@string/Settings"
             android:screenOrientation="nosensor"
+            android:resizeableActivity="false"
             android:theme="@style/MyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -70,6 +71,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_calibration"
             android:screenOrientation="nosensor"
+            android:resizeableActivity="false"
             android:theme="@style/MyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
