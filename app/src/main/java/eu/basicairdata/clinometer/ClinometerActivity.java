@@ -476,6 +476,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         super.onPause();
         mSensorManager.unregisterListener(this);
         if (isInCameraMode) releaseCamera(true);
+        stopCamera();
     }
 
 
