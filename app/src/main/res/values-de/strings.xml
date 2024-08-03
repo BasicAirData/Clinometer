@@ -21,7 +21,7 @@
 -->
 <resources>
     <string name="toast_please_grant_camera_permission">Bitte erteilen Sie die Berechtigung für den Zugriff auf die Kamera, um diese Funktion zu aktivieren</string>
-    <string name="toast_lay_vertical">Bildschirm vertikal halten und das Gerät neigen</string>
+    <string name="toast_lay_vertical">Bildschirm vertikal halten und das Gerät rollen oder neigen</string>
     <string name="toast_calibrate_before_use">Bitte gehen Sie zu den Einstellungen \nund kalibrieren Sie die App vor der Verwendung</string>
     <string name="toast_no_browser_installed">Kein Internet-Browser installiert</string>
     <string name="toast_click_back_again_to_exit">Zum Beenden nochmals auf ZURÜCK tippen</string>

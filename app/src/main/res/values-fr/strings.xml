@@ -21,7 +21,7 @@
 -->
 <resources>
     <string name="toast_please_grant_camera_permission">Veuillez autoriser la caméra à activer cette fonctionnalité</string>
-    <string name="toast_lay_vertical">Gardez l\'écran vertical et inclinez l\'appareil</string>
+    <string name="toast_lay_vertical">Gardez l\'écran vertical et roulez ou inclinez l\'appareil</string>
     <string name="toast_calibrate_before_use">Veuillez accéder aux paramètres\net calibrer l\'application avant utilisation</string>
     <string name="toast_no_browser_installed">Aucun navigateur Internet installé</string>
     <string name="toast_click_back_again_to_exit">Cliquez à nouveau sur RETOUR pour quitter</string>

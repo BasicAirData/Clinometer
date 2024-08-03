@@ -25,7 +25,7 @@
     <string name="app_name" translatable="false">Clinometer</string>
 
     <string name="toast_please_grant_camera_permission">Please grant the camera permission to enable this feature</string>
-    <string name="toast_lay_vertical">Keep the screen vertical and tilt the device</string>
+    <string name="toast_lay_vertical">Keep the screen vertical and roll or tilt the device</string>
     <string name="toast_calibrate_before_use">Please go to settings\nand calibrate the app before use</string>
     <string name="toast_no_browser_installed">No Internet browser installed</string>
     <string name="toast_click_back_again_to_exit">Click BACK again to exit</string>
