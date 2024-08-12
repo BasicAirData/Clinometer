@@ -21,7 +21,7 @@
 -->
 <resources>
     <string name="toast_please_grant_camera_permission">Habilite el permiso de la cámara para utilizar esta función</string>
-    <string name="toast_lay_vertical">Mantener la pantalla vertical e inclinar el dispositivo</string>
+    <string name="toast_lay_vertical">Mantener la pantalla vertical e enrollar o inclinar el dispositivo</string>
     <string name="toast_calibrate_before_use">Ve a Ajustes\ny calibrar la aplicación antes de usarla</string>
     <string name="toast_no_browser_installed">Ningún navegador web instalado</string>
     <string name="toast_click_back_again_to_exit">Haga clic de nuevo para salir</string>

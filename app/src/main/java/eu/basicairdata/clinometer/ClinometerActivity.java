@@ -476,6 +476,7 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
         super.onPause();
         mSensorManager.unregisterListener(this);
         if (isInCameraMode) releaseCamera(true);
+        stopCamera();
     }
 
 
@@ -717,11 +718,11 @@ public class ClinometerActivity extends AppCompatActivity implements SensorEvent
 
                 // Show hint in camera mode
                 if (isCameraLivePreviewActive) {
-                    if (Math.abs(angle[2]) > 7.5f) {
+                    if ((Math.abs(angle[2]) > 7.5f) && (Math.abs(angle[1] % 180.0f) > 7.5f) && (Math.abs(angle[0] % 180.0f) > 7.5f)) {
                         // The Screen is in vertical
                         mTextViewKeepScreenVertical.setVisibility(View.VISIBLE);
                     }
-                    if (Math.abs(angle[2]) < 7f) {
+                    if (!((Math.abs(angle[2]) > 7f) && (Math.abs(angle[1] % 180.0f) > 7f) && (Math.abs(angle[0] % 180.0f) > 7f))) {
                         mTextViewKeepScreenVertical.setVisibility(View.GONE);
                     }
                 }

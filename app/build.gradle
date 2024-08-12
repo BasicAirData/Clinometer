@@ -1,19 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "32.0.0"
-
+    compileSdk 33
 
     defaultConfig {
         applicationId "eu.basicairdata.clinometer"
         minSdkVersion 19
-        targetSdkVersion 32
+        targetSdkVersion 33
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '1.2.2'
-        versionCode 8
+        versionName '1.2.3'
+        versionCode 9
         // -----------------------------------------------------------------------------------------
 
         vectorDrawables.useSupportLibrary = true
@@ -41,17 +39,18 @@ android {
     lint {
         abortOnError false
     }
+    namespace 'eu.basicairdata.clinometer'
 
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.preference:preference:1.2.0'
-    implementation 'androidx.navigation:navigation-fragment:2.4.1'
-    implementation 'androidx.navigation:navigation-ui:2.4.1'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.navigation:navigation-fragment:2.4.2'
+    implementation 'androidx.navigation:navigation-ui:2.4.2'
 
     implementation 'com.google.android.material:material:1.5.0'
 
