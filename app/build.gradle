@@ -10,8 +10,8 @@ android {
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '1.2.2'
-        versionCode 8
+        versionName '1.2.3'
+        versionCode 9
         // -----------------------------------------------------------------------------------------
 
         vectorDrawables.useSupportLibrary = true

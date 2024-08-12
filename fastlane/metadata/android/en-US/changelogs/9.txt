@@ -1,0 +1,2 @@
+- Improved support to Android 13
+- A couple of bugs fixed
