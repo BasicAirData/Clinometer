@@ -63,7 +63,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private Vibrator vibrator;
 
     private final static int ACCELEROMETER_UPDATE_INTERVAL_MICROS = 10000;
-    private final static float MIN_CALIBRATION_PRECISION = 0.15f;
+    private final static float MIN_CALIBRATION_PRECISION = 0.05f;
     private final static int SIZE_OF_MEANVARIANCE = 300;                    // 4 seconds
 
 
@@ -76,6 +76,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private final float[] calibrationOffset = new float[3];      // The Offsets of accelerometers
     private final float[] calibrationGain = new float[3];        // The Gains of accelerometers
     private final float[] calibrationAngle = new float[3];       // The calibration angles
+
+    private float calibrationPrecisionIncrement = 0;             // The increment of the MIN_CALIBRATION_PRECISION in case of calibration reset
 
     private AppCompatButton buttonNext;
     private ProgressBar progressBar;
@@ -441,7 +443,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                         getString(R.string.calibration_tolerance),
                         mvGravity0.getTolerance()));
                 int progress1 = (int) (10 * mvGravity0.percentLoaded());
-                int progress2 = (int) (Math.min(1000, Math.max(0, 1000 - 1000 *(mvGravity0.getTolerance() / MIN_CALIBRATION_PRECISION))));
+                int progress2 = (int) (Math.min(1000, Math.max(0, 1000 - 1000 *(mvGravity0.getTolerance() / (MIN_CALIBRATION_PRECISION + calibrationPrecisionIncrement)))));
                 progressBar.setSecondaryProgress(Math.max(progress1, progress2));
                 progressBar.setProgress(Math.min(progress1, progress2));
 
@@ -452,13 +454,17 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
                 //if (mvGravity0.isReady() && (mvGravity0.getTolerance() > MIN_CALIBRATION_PRECISION)) {
                 if (mvGravity0.isReady() && (
-                        (Math.abs(mvGravity0.getMeanValue() - event.values[0]) > MIN_CALIBRATION_PRECISION) ||
-                        (Math.abs(mvGravity1.getMeanValue() - event.values[1]) > MIN_CALIBRATION_PRECISION) ||
-                        (Math.abs(mvGravity2.getMeanValue() - event.values[2]) > MIN_CALIBRATION_PRECISION))
+                        (Math.abs(mvGravity0.getMeanValue() - event.values[0]) > (MIN_CALIBRATION_PRECISION + calibrationPrecisionIncrement)) ||
+                        (Math.abs(mvGravity1.getMeanValue() - event.values[1]) > (MIN_CALIBRATION_PRECISION + calibrationPrecisionIncrement)) ||
+                        (Math.abs(mvGravity2.getMeanValue() - event.values[2]) > (MIN_CALIBRATION_PRECISION + calibrationPrecisionIncrement)))
                 ) {
                     mvGravity0.reset();
                     mvGravity1.reset();
                     mvGravity2.reset();
+                    if (calibrationPrecisionIncrement < 0.15f) calibrationPrecisionIncrement += 0.01f;
+                    //Log.d("Clinometer",String.format("[#] Mean value = %+1.5f    Reading = %+1.5f    Difference = %+1.5f", mvGravity0.getMeanValue(), event.values[0], mvGravity0.getMeanValue() - event.values[0]));
+                    Log.d("Clinometer",String.format("[#] New calibration precision = %+1.5f", MIN_CALIBRATION_PRECISION + calibrationPrecisionIncrement));
+
                 }
 
                 // END OF CALIBRATION STEP
@@ -473,6 +479,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                     mean[2][i] = mvGravity2.getMeanValue(SIZE_OF_MEANVARIANCE-100);
 
                     beep();
+
+                    calibrationPrecisionIncrement = 0;
 
                     currentStep++;
                     startStep();
