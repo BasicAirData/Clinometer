@@ -63,7 +63,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private Vibrator vibrator;
 
     private final static int ACCELEROMETER_UPDATE_INTERVAL_MICROS = 10000;
-    private final static float MIN_CALIBRATION_PRECISION = 0.05f;
+    private final static float MIN_CALIBRATION_PRECISION = 0.15f;
     private final static int SIZE_OF_MEANVARIANCE = 300;                    // 4 seconds
 
 
@@ -448,7 +448,14 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
                 // DEVICE MOVED
 
-                if (mvGravity0.isReady() && (mvGravity0.getTolerance() > MIN_CALIBRATION_PRECISION)) {
+                //Log.d("Clinometer",String.format("[#] Mean value = %+1.5f    Reading = %+1.5f    Difference = %+1.5f", mvGravity0.getMeanValue(), event.values[0], mvGravity0.getMeanValue() - event.values[0]));
+
+                //if (mvGravity0.isReady() && (mvGravity0.getTolerance() > MIN_CALIBRATION_PRECISION)) {
+                if (mvGravity0.isReady() && (
+                        (Math.abs(mvGravity0.getMeanValue() - event.values[0]) > MIN_CALIBRATION_PRECISION) ||
+                        (Math.abs(mvGravity1.getMeanValue() - event.values[1]) > MIN_CALIBRATION_PRECISION) ||
+                        (Math.abs(mvGravity2.getMeanValue() - event.values[2]) > MIN_CALIBRATION_PRECISION))
+                ) {
                     mvGravity0.reset();
                     mvGravity1.reset();
                     mvGravity2.reset();
