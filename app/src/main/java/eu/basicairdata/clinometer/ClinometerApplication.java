@@ -60,6 +60,7 @@ public class ClinometerApplication extends Application {
     public static final String KEY_PREF_CALIBRATION_OFFSET_0          = "prefCalibrationOffset0";
     public static final String KEY_PREF_CALIBRATION_OFFSET_1          = "prefCalibrationOffset1";
     public static final String KEY_PREF_CALIBRATION_OFFSET_2          = "prefCalibrationOffset2";
+    public static final String KEY_PREF_COLOR_THEME                   = "prefColorTheme";
 
 
     // Singleton instance

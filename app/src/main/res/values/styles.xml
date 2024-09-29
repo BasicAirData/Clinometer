@@ -1,37 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
-  ~ styles.xml
-  ~ Created by G.Capelli on 21/5/2020
-  ~ This file is part of BasicAirData Clinometer
-  ~
-  ~ Copyright (C) 2020 BasicAirData
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
--->
-
 <resources>
 
-
-    <!-- CLINOMETER ACTIVITY THEME -->
-
+    <!-- Dark Theme (Current theme) -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/bgpaint_light</item>
         <item name="colorPrimaryDark">@color/bgpaint_dark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Light Theme (New complementary theme) -->
+    <style name="AppTheme.Light" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Fullscreen Theme for both Light and Dark -->
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
@@ -39,21 +22,32 @@
         <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
     </style>
 
+    <!-- Fullscreen Light Theme -->
+    <style name="FullscreenTheme.Light" parent="AppTheme.Light">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <!-- Fullscreen ActionBarStyle remains the same -->
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
 
-
-    <!-- STANDARD THEME (for Settings, Calibration etc.) -->
-
+    <!-- MyTheme for Settings, Calibration (Dark theme) -->
     <style name="MyTheme" parent="Theme.AppCompat">
         <item name="colorPrimaryDark">@color/bgpaint_dark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- MyTheme for Light Theme (For Settings, Calibration) -->
+    <style name="MyTheme.Light" parent="Theme.AppCompat.Light">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
-    <!-- ABOUT DIALOG -->
-
+    <!-- About Dialog (Dark theme) -->
     <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="colorPrimaryDark">@color/bgpaint_dark</item>
@@ -61,21 +55,25 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:padding">0dp</item>
         <item name="android:layout_margin">0dp</item>
-
-        <!-- Set this to true if you want Full Screen without status bar -->
         <item name="android:windowFullscreen">false</item>
-
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@color/colorPrimaryDark</item>
-
-        <!-- Additionally if you want animations when dialog opening -->
-        <!-- <item name="android:windowEnterAnimation">@anim/slide_up</item>-->
-        <!-- <item name="android:windowExitAnimation">@anim/slide_down</item>-->
     </style>
 
+    <!-- Light Theme for Dialog -->
+    <style name="FullScreenDialogStyle.Light" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+    </style>
 
-    <!-- CALIBRATION PROGRESSBAR -->
-
+    <!-- Calibration Progress Bar Style (remains the same) -->
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:minHeight">25dp</item>
         <item name="android:maxHeight">250dp</item>

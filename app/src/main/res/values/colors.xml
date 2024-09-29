@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   ~ colors.xml
   ~ Created by G.Capelli on 21/5/2020
@@ -19,23 +18,26 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
 -->
 
 <resources>
-    <color name="colorPrimary">#3a3a3a</color>
-    <color name="colorPrimaryDark">#00000000</color>
-    <color name="colorAccent">#FFDD11</color>
+    <color name="colorPrimary">#e6e6e6</color>
+    <color name="colorPrimaryDark">#cccccc</color>
+    <color name="colorAccent">#FF4444</color>
 
-    <color name="bghorizon">#1AFFDD11</color>
+    <color name="bghorizon">#FFFF4444</color>
 
-    <color name="black_overlay">#66000000</color>
-    <color name="black_contrast">#44000000</color>
+    <color name="black_overlay">#66ffffff</color>
+    <color name="black_contrast">#44ffffff</color>
 
-    <color name="bgpaint_light">#3a3a3a</color>
-    <color name="bgpaint_dark">#070707</color>
-    <color name="line_white">#dddddd</color>
-    <color name="line_light">#777777</color>
-    <color name="line_dark">#444444</color>
+    <color name="bgpaint_light">#e6e6e6</color>
+    <color name="bgpaint_dark">#f2f2f2</color>
+    <color name="line_white">#333333</color>
+    <color name="line_light">#888888</color>
+    <color name="line_dark">#bbbbbb</color>
 
-    <color name="colorToolbarBackground">#AA000000</color>
+    <color name="colorToolbarBackground">#AAFFFFFF</color>
 </resources>
+

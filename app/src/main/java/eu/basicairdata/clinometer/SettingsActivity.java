@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
@@ -66,6 +67,7 @@ import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CALIBRAT
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_EXPOSURE_COMPENSATION;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_CAMERA_PERMISSION;
+import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_COLOR_THEME;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_KEEP_SCREEN_ON;
 import static eu.basicairdata.clinometer.ClinometerApplication.KEY_PREF_ONLINE_HELP;
 
@@ -127,6 +129,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.OnSharedPreferenceChangeListener listener;
 
         ListPreference preferenceCameraToUse;
+        ListPreference preferenceColorTheme;
         SeekBarPreference preferenceExposureCompensation;
         Preference preferenceCalibration;
         Preference preferenceAbout;
@@ -154,10 +157,32 @@ public class SettingsActivity extends AppCompatActivity {
                         if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(KEY_PREF_KEEP_SCREEN_ON, true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     }
+                    if (key.equals(KEY_PREF_COLOR_THEME)) {
+                        boolean isDarkMode = prefs.getBoolean(KEY_PREF_COLOR_THEME, true);
+                        // Apply dark or light theme based on switch state
+                        if (isDarkMode) {
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // Force dark theme
+                        } else {
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); // Force light theme
+                        }
+
+                        // Apply the correct theme based on the preference before setting content view
+                        if (isDarkMode) {
+                            getActivity().setTheme(R.style.AppTheme); // Your dark theme
+                        } else {
+                            getActivity().setTheme(R.style.AppTheme_Light); // Your light theme
+                        }
+                        // Recreate activity to apply the theme change
+                        getActivity().recreate();
+                        getActivity().finish();
+                    }
                 }
             };
 
             preferenceCameraToUse = findPreference(KEY_PREF_CAMERA);
+
+
+
 
             preferenceCameraPermission = findPreference(KEY_PREF_CAMERA_PERMISSION);
             preferenceCameraPermission.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -362,5 +387,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         }
+
+
     }
 }

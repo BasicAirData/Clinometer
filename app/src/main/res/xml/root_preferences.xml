@@ -31,6 +31,12 @@
         app:defaultValue="true"
         app:icon="@drawable/ic_wb_incandescent_24"/>
 
+    <SwitchPreferenceCompat
+        app:key="prefColorTheme"
+        app:title="@string/prefColorTheme"
+        app:summary="@string/changeColorTheme"
+        app:defaultValue="true" />
+
     <ListPreference
         app:key="prefUnitOfMeasurement"
         android:summary="%s"
