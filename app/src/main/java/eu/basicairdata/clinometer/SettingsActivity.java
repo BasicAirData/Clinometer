@@ -297,7 +297,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (preferences.contains(KEY_PREF_CALIBRATION_ANGLE_0)) {
                 preferenceCalibration.setSummary(getResources().getString(R.string.pref_calibration_summary_calibrated) + " ("
-                                + dfdt.format(preferences.getLong(KEY_PREF_CALIBRATION_TIME, 0)) + ")");
+                        + dfdt.format(preferences.getLong(KEY_PREF_CALIBRATION_TIME, 0)) + ")");
                 preferenceResetCalibration.setEnabled(true);
             } else {
                 preferenceCalibration.setSummary(getResources().getString(R.string.pref_calibration_summary_notcalibrated));
